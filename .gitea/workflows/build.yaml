@@ -1,0 +1,27 @@
+name: MonoGame CI
+
+on:
+    pull_request:
+        branches: [ main ]
+        
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+              
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: '9.0.x'
+            
+            - name: Restore Dependencies
+              run: dotnet restore
+              
+            - name: Install MonoGame Tooling
+              run: dotnet tool restore
+              
+            - name: Build Project
+              run: dotnet build --configuration Release --no-restore
