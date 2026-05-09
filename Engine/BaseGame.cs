@@ -1,5 +1,6 @@
 using Engine.Debugging;
 using Engine.Events;
+using Engine.SceneManagement;
 using Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,10 +27,12 @@ public abstract class BaseGame : Game {
     private float deltaTime = 0f;
 
     public event EventHandler<WindowResizeEventArgs> OnWindowResize;
+    public readonly SceneManager SceneManager;
 
     public BaseGame(bool isDevelopmentMode) {
         Instance = this;
         GraphicsDeviceManager = new GraphicsDeviceManager(this);
+        SceneManager = new(this);
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -68,6 +71,7 @@ public abstract class BaseGame : Game {
 
         while (accumulator >= FIXED_UPDATE_DELTA) {
             // FixedUpdate
+            SceneManager.FixedUpdate();
             OnFixedUpdate(gameTime);
 
             accumulator -= FIXED_UPDATE_DELTA;
@@ -76,6 +80,7 @@ public abstract class BaseGame : Game {
         alpha = accumulator / FIXED_UPDATE_DELTA;
         deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+        SceneManager.Update(gameTime, deltaTime);
         OnUpdate(gameTime, deltaTime);
 
         // DebugMenu.Update();
@@ -85,6 +90,7 @@ public abstract class BaseGame : Game {
 
     protected override void Draw(GameTime gameTime) {
         GraphicsDevice.Clear(Color.Black);
+        SceneManager.Draw(gameTime, SpriteBatch, alpha);
         OnDraw(gameTime, alpha);
         base.Draw(gameTime);
     }

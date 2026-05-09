@@ -12,6 +12,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />
     <Folder Include="$(MSBuildThisFileDirectory)Debugging\" />
     <Folder Include="$(MSBuildThisFileDirectory)Events\" />
+    <Folder Include="$(MSBuildThisFileDirectory)SceneManagement\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\" />
   </ItemGroup>
   <ItemGroup>
@@ -20,9 +21,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BaseGame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Component.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)debugging\Logger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\WindowResizeEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)scenemanagement\Scene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)scenemanagement\SceneManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\PathHelper.cs" />
   </ItemGroup>
