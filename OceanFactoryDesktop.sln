@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37216.2 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OceanFactoryDesktop", "OceanFactoryDesktop\OceanFactoryDesktop.csproj", "{1B5B6E48-1FC7-4CA8-BACF-1203C3B6C965}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "OceanFactory", "OceanFactory\OceanFactory.shproj", "{A0CDBD0E-3A41-42B7-9425-A838BC2C7383}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Engine", "Engine\Engine.shproj", "{C7EC647D-9286-4495-956E-CE6445E98FC0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B5B6E48-1FC7-4CA8-BACF-1203C3B6C965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B5B6E48-1FC7-4CA8-BACF-1203C3B6C965}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B5B6E48-1FC7-4CA8-BACF-1203C3B6C965}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B5B6E48-1FC7-4CA8-BACF-1203C3B6C965}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {58B99B03-E310-44BD-8DC2-B227EC2B25C4}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Engine\Engine.projitems*{1b5b6e48-1fc7-4ca8-bacf-1203c3b6c965}*SharedItemsImports = 5
+		OceanFactory\OceanFactory.projitems*{1b5b6e48-1fc7-4ca8-bacf-1203c3b6c965}*SharedItemsImports = 5
+		OceanFactory\OceanFactory.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
+		Engine\Engine.projitems*{c7ec647d-9286-4495-956e-ce6445e98fc0}*SharedItemsImports = 13
+	EndGlobalSection
+EndGlobal
