@@ -1,5 +1,6 @@
 using Engine.Debugging;
 using Engine.Events;
+using Engine.Interaction;
 using Engine.SceneManagement;
 using Engine.Utility;
 using Microsoft.Xna.Framework;
@@ -28,6 +29,7 @@ public abstract class BaseGame : Game {
 
     public event EventHandler<WindowResizeEventArgs> OnWindowResize;
     public readonly SceneManager SceneManager;
+    public readonly InputManager InputManager = new();
 
     public BaseGame(bool isDevelopmentMode) {
         Instance = this;
@@ -67,7 +69,7 @@ public abstract class BaseGame : Game {
         previousT = now;
         accumulator += frameTime;
 
-        // InputManager.Update();
+        InputManager.Update();
 
         while (accumulator >= FIXED_UPDATE_DELTA) {
             // FixedUpdate
@@ -84,7 +86,7 @@ public abstract class BaseGame : Game {
         OnUpdate(gameTime, deltaTime);
 
         // DebugMenu.Update();
-        // InputManager.LateUpdate();
+        InputManager.LateUpdate();
         base.Update(gameTime);
     }
 
