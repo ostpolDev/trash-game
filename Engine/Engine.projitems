@@ -10,9 +10,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Debugging\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Events\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utility\" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
     <None Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BaseGame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)debugging\Logger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)events\WindowResizeEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\PathHelper.cs" />
   </ItemGroup>
 </Project>

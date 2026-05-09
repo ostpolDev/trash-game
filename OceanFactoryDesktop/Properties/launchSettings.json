@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "OceanFactoryDesktop": {
+      "commandName": "Project",
+      "commandLineArgs": "--dev"
+    }
+  }
+}
