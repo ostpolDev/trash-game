@@ -24,11 +24,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)BaseGame.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Component.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)debugging\DebugMenu.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)debugging\DebugMenuManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)debugging\ImGuiRenderer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)debugging\Logger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)debugging\menus\CommandMenu.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Debugging\DebugMenu.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Debugging\DebugMenuManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Debugging\ImGuiRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Debugging\Logger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Debugging\Menus\CommandMenu.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\EditorScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\WindowResizeEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)interaction\InputManager.cs" />
