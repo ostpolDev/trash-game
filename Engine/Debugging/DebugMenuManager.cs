@@ -30,6 +30,10 @@ public class DebugMenuManager {
         _imGuiRenderer = new(game);
         _imGuiRenderer.RebuildFontAtlas();
         Viewport = game.GraphicsDevice.Viewport;
+
+#if DEBUG
+        RegisterEditor("ui", typeof(UIEditor));
+#endif
     }
 
     public static void RegisterMenu(string name, Type windowType) {
