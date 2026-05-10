@@ -61,7 +61,10 @@ public abstract class BaseGame : Game {
     private void Window_ClientSizeChanged(object sender, EventArgs e) {
         OnWindowResize?.Invoke(this, new(GraphicsDevice.Viewport));
         DebugMenuManager.OnResize(GraphicsDevice.Viewport);
+        OnWindowResized();
     }
+
+    protected virtual void OnWindowResized() { }
 
     protected override void Initialize() {
         SpriteBatch = new(GraphicsDevice);
