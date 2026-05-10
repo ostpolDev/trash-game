@@ -1,10 +1,15 @@
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
 
 namespace Engine.UI;
 
-public abstract class AbstractUIComponent {
+public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
+
+    private int zindex = 0;
+    public int ZIndex { get; private set; } = 0;
 
     public Rectangle LocalArea { get; protected set; }
     public Rectangle ScreenArea { get; protected set; }
@@ -18,6 +23,8 @@ public abstract class AbstractUIComponent {
 
     private bool PositionRelativeToParent = true;
 
+    public bool IsEnabled = true;
+
     public AbstractUIComponent(int x, int y, int width, int height, UIAnchorPosition anchorPosition) {
         LocalArea = new(x, y, width, height);
         AnchorPosition = anchorPosition;
@@ -30,10 +37,28 @@ public abstract class AbstractUIComponent {
 
     public AbstractUIComponent() : this(0, 0, 0, 0, UIAnchorPosition.TOP_LEFT) { }
 
+    public abstract void Draw(Microsoft.Xna.Framework.GameTime gameTime, SpriteBatch spriteBatch, float alpha);
+
     public void SetParent(AbstractUIComponent parent, bool updateScreenPosition = true) {
         Parent = parent;
         PositionRelativeToParent = updateScreenPosition;
+        UpdateZIndex();
         RecalculateScreenPosition();
+    }
+
+    private void UpdateZIndex() {
+        if (Parent != null)
+            ZIndex = zindex + Parent.ZIndex;
+        else
+            ZIndex = zindex;
+
+        foreach (AbstractUIComponent child in Children)
+            child.UpdateZIndex();
+    }
+
+    public void SetZIndex(int index) {
+        zindex = index;
+        UpdateZIndex();
     }
 
     /// <summary>
@@ -96,6 +121,10 @@ public abstract class AbstractUIComponent {
 
     public bool Intersects(Rectangle other) {
         return ScreenArea.IntersectsWith(other);
+    }
+
+    public int CompareTo(AbstractUIComponent other) {
+        return ZIndex - other.ZIndex;
     }
 
 }
