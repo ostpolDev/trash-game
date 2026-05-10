@@ -59,6 +59,10 @@ public class DebugMenuManager {
         EnabledMenus.Clear();
     }
 
+    public static DebugMenu GetOpenMenuByName(string name) {
+        return EnabledMenus.Find(m => m.Title == name);
+    }
+
     public static void OnResize(Viewport viewport) {
         Viewport = viewport;
         foreach (DebugMenu menu in EnabledMenus) {

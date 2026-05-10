@@ -1,4 +1,5 @@
 using Engine.Debugging;
+using Engine.Debugging.Menus;
 using Engine.Events;
 using Engine.Interaction;
 using Engine.SceneManagement;
@@ -43,15 +44,16 @@ public abstract class BaseGame : Game {
 
         Window.ClientSizeChanged += Window_ClientSizeChanged;
 
-        RegisterEngineWindows();
-
         if (isDevelopmentMode) {
+            RegisterEngineWindows();
             RegisterDebugMenus();
+
+            DebugMenuManager.CreateMenu("command").IsOpened = false;
         }
     }
 
     private void RegisterEngineWindows() {
-
+        DebugMenuManager.RegisterMenu("command", typeof(CommandMenu));
     }
 
     protected virtual void RegisterDebugMenus() { }
@@ -99,6 +101,10 @@ public abstract class BaseGame : Game {
 
         SceneManager.Update(gameTime, deltaTime);
         OnUpdate(gameTime, deltaTime);
+
+        if (InputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F1)) {
+            DebugMenuManager.GetOpenMenuByName("command").Toggle();
+        }
 
         InputManager.LateUpdate();
         base.Update(gameTime);

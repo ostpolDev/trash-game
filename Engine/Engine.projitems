@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Debugging\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Debugging\Menus\" />
     <Folder Include="$(MSBuildThisFileDirectory)Events\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interaction\" />
     <Folder Include="$(MSBuildThisFileDirectory)SceneManagement\" />
@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)debugging\DebugMenuManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)debugging\ImGuiRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)debugging\Logger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)debugging\menus\CommandMenu.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\WindowResizeEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)interaction\InputManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)scenemanagement\Scene.cs" />

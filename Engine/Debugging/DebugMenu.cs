@@ -15,12 +15,12 @@ public abstract class DebugMenu(string title) {
 
     public int ChildCount { get { return Children.Count; } }
 
-    public bool IsDisabled = false;
+    public bool IsOpened = true;
 
     protected Viewport Viewport;
 
     public virtual void Show(Viewport viewport) {
-        Viewport = viewport;
+        Resize(viewport);
         foreach (DebugMenu menu in Children) {
             menu.Show(viewport);
         }
@@ -34,11 +34,11 @@ public abstract class DebugMenu(string title) {
     }
 
     public void Draw() {
-        if (IsDisabled) return;
+        if (!IsOpened) return;
 
         PrepareWindow();
 
-        ImGui.Begin(Title, WindowFlags);
+        ImGui.Begin(Title, ref IsOpened, WindowFlags);
 
         OnDrawMenu();
 
@@ -65,6 +65,10 @@ public abstract class DebugMenu(string title) {
 
     public void RemoveChild(DebugMenu menu) {
         Children.Remove(menu);
+    }
+
+    public void Toggle() {
+        IsOpened = !IsOpened;
     }
 
 }
