@@ -137,8 +137,19 @@ public class CommandMenu : DebugMenu {
     }
 
     public struct CommandRegistryItem {
+        /// <summary>
+        /// The function to run when this command is executed. Receives the arguments as the first parameter
+        /// </summary>
         public Func<string[], CommandActionResult> Action;
+
+        /// <summary>
+        /// A short description displayed in the command list
+        /// </summary>
         public string ShortDescription;
+
+        /// <summary>
+        /// An array of lines of text to display when help is requested for this command
+        /// </summary>
         public string[] Help;
     }
 
