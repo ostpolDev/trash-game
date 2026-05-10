@@ -24,6 +24,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)BaseGame.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Component.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)debugging\DebugMenu.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)debugging\DebugMenuManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)debugging\ImGuiRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)debugging\Logger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\WindowResizeEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)interaction\InputManager.cs" />

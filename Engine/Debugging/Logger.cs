@@ -10,7 +10,7 @@ public class Logger {
 
     public enum Level { INFO, WARNING, ERROR, EXCEPTION };
 
-    private static Dictionary<string, Logger> loggerLookup = new();
+    private static readonly Dictionary<string, Logger> loggerLookup = [];
     private static FileStream stream;
     private static int iteration = 0;
     private static readonly string logPath;
@@ -18,8 +18,8 @@ public class Logger {
     public static readonly Logger Shared = Get("Generic");
 
     public static Logger Get(string name) {
-        if (loggerLookup.ContainsKey(name))
-            return loggerLookup[name];
+        if (loggerLookup.TryGetValue(name, out Logger value))
+            return value;
 
         Logger l = new(name);
         loggerLookup[name] = l;

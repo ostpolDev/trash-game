@@ -4,18 +4,14 @@ using System;
 
 namespace Engine.SceneManagement;
 
-public abstract class Scene : Component {
+public abstract class Scene(string name) : Component {
 
-    protected static Logger Logger = Logger.Get("Scenes");
+    protected readonly static Logger Logger = Logger.Get("Scenes");
 
     public event EventHandler<EventArgs> OnDoneLoading;
     public event EventHandler<EventArgs> OnUnload;
 
-    public string Name { get; private set; }
-
-    public Scene(string name) {
-        Name = name;
-    }
+    public string Name { get; private set; } = name;
 
     public virtual void Unload() {
         OnUnload?.Invoke(this, new());

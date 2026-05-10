@@ -30,18 +30,32 @@ public abstract class BaseGame : Game {
     public event EventHandler<WindowResizeEventArgs> OnWindowResize;
     public readonly SceneManager SceneManager;
     public readonly InputManager InputManager = new();
+    public readonly DebugMenuManager DebugMenuManager;
 
     public BaseGame(bool isDevelopmentMode) {
         Instance = this;
         GraphicsDeviceManager = new GraphicsDeviceManager(this);
         SceneManager = new(this);
+        DebugMenuManager = new(this);
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         IsDevelopmentMode = isDevelopmentMode;
 
         Window.ClientSizeChanged += Window_ClientSizeChanged;
+
+        RegisterEngineWindows();
+
+        if (isDevelopmentMode) {
+            RegisterDebugMenus();
+        }
     }
+
+    private void RegisterEngineWindows() {
+
+    }
+
+    protected virtual void RegisterDebugMenus() { }
 
     private void Window_ClientSizeChanged(object sender, EventArgs e) {
         OnWindowResize?.Invoke(this, new(GraphicsDevice.Viewport));
@@ -85,7 +99,6 @@ public abstract class BaseGame : Game {
         SceneManager.Update(gameTime, deltaTime);
         OnUpdate(gameTime, deltaTime);
 
-        // DebugMenu.Update();
         InputManager.LateUpdate();
         base.Update(gameTime);
     }
@@ -94,6 +107,7 @@ public abstract class BaseGame : Game {
         GraphicsDevice.Clear(Color.Black);
         SceneManager.Draw(gameTime, SpriteBatch, alpha);
         OnDraw(gameTime, alpha);
+        DebugMenuManager.Draw(gameTime);
         base.Draw(gameTime);
     }
 
