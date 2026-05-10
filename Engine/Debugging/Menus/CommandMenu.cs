@@ -113,7 +113,7 @@ public class CommandMenu : DebugMenu {
                 return CommandActionResult.SUCCESS;
             },
             ShortDescription = "Get help with the commands",
-            Help = ["Usage: help <command>", "Will display a list of all commands by default", "    command: (optional) Enter a command to get more information about it"]
+            Help = ["Usage: help <command>", "Will display a list of all commands by default", "  command: (optional) Enter a command to get more information about it"]
         });
         RegisterCommand("clear", new() {
             Action = (_) => {
@@ -129,11 +129,37 @@ public class CommandMenu : DebugMenu {
             },
             ShortDescription = "Forces the game to exit"
         });
+        RegisterCommand("editors", new() {
+            Action = (args) => {
+                if (args == null || args.Length <= 0) {
+                    return CommandActionResult.MISSING_ARGS;
+                }
+
+                string action = args[0];
+                if (action == "list") {
+                    WriteToOutput(DebugMenuManager.ListEditorScenes());
+                    WriteToOutput("Registered editors:");
+                    return CommandActionResult.SUCCESS;
+                } else if (action == "load") {
+                    if (args.Length < 2) {
+                        return CommandActionResult.MISSING_ARGS;
+                    }
+                    DebugMenuManager.SetEditorScene(args[1]);
+                    return CommandActionResult.SUCCESS;
+                }
+
+                return CommandActionResult.INVALID_ARGS;
+            },
+            ShortDescription = "Editor scene management",
+            Help = ["Usage: editors [action] <args>", "  action:", "    - load [editor_name]", "    - list"]
+        });
     }
 
     public struct CommandActionResult {
         public static readonly CommandActionResult SUCCESS = new() { WasSuccessful = true };
         public static readonly CommandActionResult FAILED = new() { WasSuccessful = false, ErrorMessage = "Something went wrong" };
+        public static readonly CommandActionResult MISSING_ARGS = new() { WasSuccessful = false, ErrorMessage = "Missing arguments" };
+        public static readonly CommandActionResult INVALID_ARGS = new() { WasSuccessful = false, ErrorMessage = "Invalid arguments" };
 
         public bool WasSuccessful;
         public string ErrorMessage;

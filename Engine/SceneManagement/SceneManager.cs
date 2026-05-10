@@ -56,6 +56,11 @@ public class SceneManager(BaseGame game) : Component {
         return scene;
     }
 
+    public void SetScene(Scene scene) {
+        ActiveScene?.Unload();
+        ActiveScene = scene;
+    }
+
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
         ActiveScene?.Draw(gameTime, spriteBatch, alpha);

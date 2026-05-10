@@ -1,3 +1,4 @@
+using Engine.Editors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -15,11 +16,14 @@ public class DebugMenuManager {
 
     private static readonly Dictionary<string, Type> MenuLookup = [];
     private static readonly List<DebugMenu> EnabledMenus = [];
+    private static readonly Dictionary<string, Type> EditorLookup = [];
 
     private readonly ImGuiRenderer _imGuiRenderer;
 
     public static bool IsShowingWindows { get { return EnabledMenus.Count > 0; } }
     public static int ShownWindowCount { get { return EnabledMenus.Count; } }
+
+    public static EditorScene ActiveEditorScene { get; private set; }
 
     public DebugMenuManager(Game game) {
         Singleton = this;
@@ -70,8 +74,47 @@ public class DebugMenuManager {
         }
     }
 
+    public static void RegisterEditor(string name, Type type) {
+        if (!type.IsAssignableTo(typeof(EditorScene))) {
+            Logger.Error($"{type.Name} is not assignable to {nameof(EditorScene)}");
+            return;
+        }
+
+        EditorLookup[name] = type;
+    }
+
+    public static void SetEditorScene(string name) {
+        ActiveEditorScene?.Unload();
+        ActiveEditorScene = null;
+
+        if (string.IsNullOrEmpty(name)) return;
+
+        if (!EditorLookup.TryGetValue(name, out Type type)) {
+            Logger.Error($"Editor scene not found: {name}");
+            return;
+        }
+
+        try {
+
+            EditorScene scene = (EditorScene)Activator.CreateInstance(type);
+            scene.Load();
+            ActiveEditorScene = scene;
+
+            BaseGame.Instance.SceneManager.SetScene(ActiveEditorScene);
+
+        } catch (Exception e) {
+            Logger.Exception(e);
+        }
+    }
+
+    public static string[] ListEditorScenes() {
+        return [.. EditorLookup.Keys];
+    }
+
     public void Draw(GameTime gameTime) {
         _imGuiRenderer.BeforeLayout(gameTime);
+
+        ActiveEditorScene?.DrawScene();
 
         foreach (DebugMenu menu in EnabledMenus)
             menu.Draw();
