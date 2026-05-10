@@ -13,6 +13,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Events\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interaction\" />
     <Folder Include="$(MSBuildThisFileDirectory)Editors\" />
+    <Folder Include="$(MSBuildThisFileDirectory)UI\" />
     <Folder Include="$(MSBuildThisFileDirectory)SceneManagement\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\" />
   </ItemGroup>
@@ -35,6 +36,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)interaction\InputManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)scenemanagement\Scene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)scenemanagement\SceneManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\AbstractUIComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\UIAnchorPosition.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\UIManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\PathHelper.cs" />
   </ItemGroup>

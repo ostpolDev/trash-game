@@ -11,6 +11,7 @@ public class UIEditor : EditorScene {
 
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
+
     }
 
     public override void DrawScene() {
@@ -20,12 +21,15 @@ public class UIEditor : EditorScene {
     }
 
     public override void FixedUpdate() {
+
     }
 
     public override void LoadContent(ContentManager contentManager) {
+
     }
 
     public override void Update(GameTime gameTime, float delta) {
+
     }
 
     protected override void OnBeginLoad() {
