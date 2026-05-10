@@ -7,6 +7,8 @@ namespace Engine.Debugging.Menus;
 
 public class CommandMenu : DebugMenu {
 
+    private static readonly Logger Logger = Logger.Get("Commands");
+
     private const int MAX_BUFFER_SIZE = 32;
 
     private static readonly Dictionary<string, CommandRegistryItem> commandLookup = [];
@@ -53,7 +55,7 @@ public class CommandMenu : DebugMenu {
                 WriteToOutput(result.ErrorMessage ?? "Something went wrong");
             }
         } catch (Exception e) {
-            Logger.Shared.Exception(e);
+            Logger.Exception(e);
             WriteToOutput("An internal error occured");
             WriteToOutput(e.Message ?? "Unknown");
         }
@@ -64,6 +66,7 @@ public class CommandMenu : DebugMenu {
     }
 
     public static void WriteToOutput(string msg) {
+        Logger.Info(msg);
         resultBuffer.Insert(0, msg);
         if (resultBuffer.Count > MAX_BUFFER_SIZE) {
             resultBuffer.RemoveRange(MAX_BUFFER_SIZE - 1, resultBuffer.Count - MAX_BUFFER_SIZE);
