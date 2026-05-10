@@ -30,13 +30,12 @@ public abstract class BaseGame : Game {
     public event EventHandler<WindowResizeEventArgs> OnWindowResize;
     public readonly SceneManager SceneManager;
     public readonly InputManager InputManager = new();
-    public readonly DebugMenuManager DebugMenuManager;
+    public DebugMenuManager DebugMenuManager { get; private set; }
 
     public BaseGame(bool isDevelopmentMode) {
         Instance = this;
         GraphicsDeviceManager = new GraphicsDeviceManager(this);
         SceneManager = new(this);
-        DebugMenuManager = new(this);
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -65,6 +64,7 @@ public abstract class BaseGame : Game {
     protected override void Initialize() {
         SpriteBatch = new(GraphicsDevice);
         HardwareSniffer.Initialize(GraphicsDevice);
+        DebugMenuManager = new(this);
         base.Initialize();
     }
 
