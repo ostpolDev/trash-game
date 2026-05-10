@@ -59,6 +59,7 @@ public abstract class BaseGame : Game {
 
     private void Window_ClientSizeChanged(object sender, EventArgs e) {
         OnWindowResize?.Invoke(this, new(GraphicsDevice.Viewport));
+        DebugMenuManager.OnResize(GraphicsDevice.Viewport);
     }
 
     protected override void Initialize() {
