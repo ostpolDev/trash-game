@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Sprites;
 
-public class Spritesheet(Texture2D texture, int spriteWidth, int spriteHeight) {
+public class Spritesheet(Texture2D texture, int spriteWidth = 0, int spriteHeight = 0) {
 
     public readonly Texture2D Texture = texture;
     public int Width { get { return Texture.Width; } }
@@ -54,6 +54,10 @@ public class Spritesheet(Texture2D texture, int spriteWidth, int spriteHeight) {
     public void Draw(SpriteBatch spriteBatch, Rectangle destination, int i, int w, int h) {
         (int x, int y) = ConvertCoordinates(i);
         Draw(spriteBatch, destination, x, y, w, h);
+    }
+
+    public void Draw(SpriteBatch spriteBatch, Rectangle destination) {
+        spriteBatch.Draw(Texture, destination, Color.White);
     }
 
 }
