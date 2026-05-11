@@ -40,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)sprites\Spritesheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\AbstractUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\ITickableUIComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\SimpleUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIAnchorPosition.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />

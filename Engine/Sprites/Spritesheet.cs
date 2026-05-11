@@ -51,6 +51,10 @@ public class Spritesheet(Texture2D texture, int spriteWidth = 0, int spriteHeigh
         spriteBatch.Draw(Texture, destination, new Rectangle(x, y, w, h), Color.White);
     }
 
+    public void Draw(SpriteBatch spriteBatch, Rectangle destination, Rectangle source) {
+        spriteBatch.Draw(Texture, destination, source, Color.White);
+    }
+
     public void Draw(SpriteBatch spriteBatch, Rectangle destination, int i, int w, int h) {
         (int x, int y) = ConvertCoordinates(i);
         Draw(spriteBatch, destination, x, y, w, h);

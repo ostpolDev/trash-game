@@ -1,8 +1,7 @@
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Numerics;
 
 namespace Engine.UI;
 
@@ -117,11 +116,11 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
     }
 
     public bool Intersects(AbstractUIComponent other) {
-        return ScreenArea.IntersectsWith(other.ScreenArea);
+        return ScreenArea.Intersects(other.ScreenArea);
     }
 
     public bool Intersects(Rectangle other) {
-        return ScreenArea.IntersectsWith(other);
+        return ScreenArea.Intersects(other);
     }
 
     public int CompareTo(AbstractUIComponent other) {
