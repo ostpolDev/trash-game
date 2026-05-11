@@ -6,7 +6,7 @@ namespace Engine.UI;
 
 public class UIManager : Component {
 
-    private readonly List<AbstractUIComponent> Components = [];
+    public readonly List<AbstractUIComponent> Components = [];
     private readonly List<ITickableUIComponent> TickableComponents = [];
 
     public int ChildCount { get { return Components.Count; } }
