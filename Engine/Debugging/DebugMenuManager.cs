@@ -25,15 +25,27 @@ public class DebugMenuManager {
 
     public static EditorScene ActiveEditorScene { get; private set; }
 
+    public static Viewport WindowViewport { get; private set; }
+
     public DebugMenuManager(Game game) {
         Singleton = this;
         _imGuiRenderer = new(game);
         _imGuiRenderer.RebuildFontAtlas();
         Viewport = game.GraphicsDevice.Viewport;
 
+
+        WindowViewport = game.GraphicsDevice.Viewport;
+        if (game is BaseGame baseGame) {
+            baseGame.OnWindowResize += BaseGame_OnWindowResize;
+        }
+
 #if DEBUG
         RegisterEditor("ui", typeof(UIEditor));
 #endif
+    }
+
+    private void BaseGame_OnWindowResize(object sender, Events.WindowResizeEventArgs e) {
+        WindowViewport = e.Viewport;
     }
 
     public static void RegisterMenu(string name, Type windowType) {

@@ -3,6 +3,7 @@ using Engine.Debugging.Menus;
 using Engine.Events;
 using Engine.Interaction;
 using Engine.SceneManagement;
+using Engine.UI;
 using Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -31,6 +32,7 @@ public abstract class BaseGame : Game {
     public event EventHandler<WindowResizeEventArgs> OnWindowResize;
     public readonly SceneManager SceneManager;
     public readonly InputManager InputManager = new();
+    public UIManager UIManager { get; private set; }
     public DebugMenuManager DebugMenuManager { get; private set; }
 
     public BaseGame(bool isDevelopmentMode) {
@@ -69,12 +71,17 @@ public abstract class BaseGame : Game {
     protected override void Initialize() {
         SpriteBatch = new(GraphicsDevice);
         HardwareSniffer.Initialize(GraphicsDevice);
+        UIManager = new();
         DebugMenuManager = new(this);
         base.Initialize();
     }
 
     protected override void LoadContent() {
         base.LoadContent();
+    }
+
+    public void SetResizable(bool isResizable = true) {
+        Window.AllowUserResizing = isResizable;
     }
 
     protected override void Update(GameTime gameTime) {
