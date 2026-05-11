@@ -59,6 +59,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
     public void SetZIndex(int index) {
         zindex = index;
         UpdateZIndex();
+        UIManager.Singleton?.SortComponentDepth();
     }
 
     /// <summary>

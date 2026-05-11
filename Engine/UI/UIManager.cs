@@ -27,6 +27,10 @@ public class UIManager : Component {
             foreach (AbstractUIComponent child in component.Children)
                 AddComponent(child, true);
 
+        SortComponentDepth();
+    }
+
+    public void SortComponentDepth() {
         Components.Sort();
     }
 
