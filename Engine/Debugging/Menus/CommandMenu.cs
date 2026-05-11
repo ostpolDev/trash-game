@@ -54,6 +54,9 @@ public class CommandMenu : DebugMenu {
             if (!result.WasSuccessful) {
                 WriteToOutput(result.ErrorMessage ?? "Something went wrong");
             }
+            if (result.CloseOnComplete) {
+                IsOpened = false;
+            }
         } catch (Exception e) {
             Logger.Exception(e);
             WriteToOutput("An internal error occured");
@@ -84,8 +87,8 @@ public class CommandMenu : DebugMenu {
 
     protected override void PrepareWindow() {
         ImGui.SetNextWindowPos(new(0, 0), ImGuiCond.Appearing);
-        ImGui.SetNextWindowSize(new(ImGui.GetWindowWidth(), 0), ImGuiCond.Always);
-        ImGui.SetNextWindowSizeConstraints(new(ImGui.GetWindowWidth(), 0), new(ImGui.GetWindowWidth(), 200));
+        ImGui.SetNextWindowSize(new(DebugMenuManager.WindowViewport.Width, 0), ImGuiCond.Always);
+        ImGui.SetNextWindowSizeConstraints(new(DebugMenuManager.WindowViewport.Width, 0), new(DebugMenuManager.WindowViewport.Width, 200));
     }
 
     static CommandMenu() {
@@ -145,7 +148,7 @@ public class CommandMenu : DebugMenu {
                         return CommandActionResult.MISSING_ARGS;
                     }
                     DebugMenuManager.SetEditorScene(args[1]);
-                    return CommandActionResult.SUCCESS;
+                    return CommandActionResult.SUCCESS_AND_CLOSE;
                 }
 
                 return CommandActionResult.INVALID_ARGS;
@@ -160,9 +163,11 @@ public class CommandMenu : DebugMenu {
         public static readonly CommandActionResult FAILED = new() { WasSuccessful = false, ErrorMessage = "Something went wrong" };
         public static readonly CommandActionResult MISSING_ARGS = new() { WasSuccessful = false, ErrorMessage = "Missing arguments" };
         public static readonly CommandActionResult INVALID_ARGS = new() { WasSuccessful = false, ErrorMessage = "Invalid arguments" };
+        public static readonly CommandActionResult SUCCESS_AND_CLOSE = new() { WasSuccessful = true, CloseOnComplete = true };
 
         public bool WasSuccessful;
         public string ErrorMessage;
+        public bool CloseOnComplete;
     }
 
     public struct CommandRegistryItem {
