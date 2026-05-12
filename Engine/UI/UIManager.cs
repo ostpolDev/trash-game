@@ -39,8 +39,10 @@ public class UIManager : Component {
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
+        spriteBatch.Begin();
         foreach (AbstractUIComponent component in Components)
             component.Draw(gameTime, spriteBatch, alpha);
+        spriteBatch.End();
     }
 
     public override void FixedUpdate() {

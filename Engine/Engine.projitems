@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Debugging\Menus\CommandMenu.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\EditorScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\UIEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)events\LoadContentEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\WindowResizeEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)interaction\InputManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)scenemanagement\Scene.cs" />

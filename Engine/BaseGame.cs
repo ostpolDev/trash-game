@@ -30,10 +30,13 @@ public abstract class BaseGame : Game {
     private float deltaTime = 0f;
 
     public event EventHandler<WindowResizeEventArgs> OnWindowResize;
+    public event EventHandler<LoadContentEventArgs> OnLoadContent;
     public readonly SceneManager SceneManager;
     public readonly InputManager InputManager = new();
     public UIManager UIManager { get; private set; }
     public DebugMenuManager DebugMenuManager { get; private set; }
+
+    public static bool HasLoadedContent { get; private set; } = false;
 
     public BaseGame(bool isDevelopmentMode) {
         Instance = this;
@@ -77,7 +80,9 @@ public abstract class BaseGame : Game {
     }
 
     protected override void LoadContent() {
+        OnLoadContent?.Invoke(this, new LoadContentEventArgs(Content));
         base.LoadContent();
+        HasLoadedContent = true;
     }
 
     public void SetResizable(bool isResizable = true) {
@@ -124,6 +129,7 @@ public abstract class BaseGame : Game {
         GraphicsDevice.Clear(Color.Black);
         SceneManager.Draw(gameTime, SpriteBatch, alpha);
         OnDraw(gameTime, alpha);
+        UIManager.Draw(gameTime, SpriteBatch, alpha);
         DebugMenuManager.Draw(gameTime);
         base.Draw(gameTime);
     }

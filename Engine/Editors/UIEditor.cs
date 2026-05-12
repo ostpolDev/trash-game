@@ -1,10 +1,12 @@
 using Engine.Debugging;
+using Engine.Sprites;
 using Engine.UI;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace Engine.Editors;
 
@@ -15,13 +17,22 @@ public class UIEditor : EditorScene {
     private bool isChildSelectionOpen;
     private AbstractUIComponent childSelectionTarget;
 
-    private readonly Type[] UI_TYPES = [];
+    public Spritesheet UI_TEXTURE { get; private set; }
+
+    private readonly Dictionary<string, Func<UIEditor, AbstractUIComponent>> UI_REGISTRY = new() {
+        { "Simple", (scene) => {
+            return new SimpleUIComponent(scene.UI_TEXTURE, new Rectangle(0, 0, 64, 64), 0, 0, 64, 64);
+        } }
+    };
+
+    private readonly string[] UI_TYPE_KEYS;
 
     public UIEditor() : base("ui-editor") {
-        BaseGame.Instance?.SetResizable();
+        BaseGame.Instance.SetResizable();
         manager = BaseGame.Instance.UIManager;
+        UI_TEXTURE = new Spritesheet("UI/panel");
+        UI_TYPE_KEYS = [.. UI_REGISTRY.Keys];
     }
-
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
 
@@ -61,9 +72,9 @@ public class UIEditor : EditorScene {
                 childSelectionTarget = null;
             }
 
-            foreach (Type type in UI_TYPES) {
-                if (ImGui.Button(type.Name)) {
-                    AddChild(type);
+            foreach (string key in UI_TYPE_KEYS) {
+                if (ImGui.Button(key)) {
+                    AddChild(key);
                     isChildSelectionOpen = false;
                 }
             }
@@ -73,13 +84,14 @@ public class UIEditor : EditorScene {
         }
     }
 
-    private void AddChild(Type type) {
-        if (type == null || !type.IsAssignableTo(typeof(AbstractUIComponent))) {
-            Logger.Error($"Child type \"{type.Name}\" is not assignable to {nameof(AbstractUIComponent)}");
+    private void AddChild(string key) {
+        if (!UI_REGISTRY.TryGetValue(key, out Func<UIEditor, AbstractUIComponent> value)) {
+            Logger.Error($"Could not create UI component of type {key}. Key not found");
             return;
         }
+
         try {
-            AbstractUIComponent component = (AbstractUIComponent)Activator.CreateInstance(type);
+            AbstractUIComponent component = value.Invoke(this);
             childSelectionTarget?.AddChild(component);
             manager.AddComponent(component);
         } catch (Exception e) { Logger.Exception(e); }

@@ -3,14 +3,39 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Sprites;
 
-public class Spritesheet(Texture2D texture, int spriteWidth = 0, int spriteHeight = 0) {
+public class Spritesheet {
 
-    public readonly Texture2D Texture = texture;
+    public Texture2D Texture { get; private set; }
     public int Width { get { return Texture.Width; } }
     public int Height { get { return Texture.Height; } }
+    public bool CanDraw { get { return Texture != null; } }
 
-    public readonly int SpriteWidth = spriteWidth;
-    public readonly int SpriteHeight = spriteHeight;
+    public readonly int SpriteWidth;
+    public readonly int SpriteHeight;
+
+    private readonly string TexturePath;
+
+    public Spritesheet(Texture2D texture, int spriteWidth = 0, int spriteHeight = 0) {
+        Texture = texture;
+        SpriteWidth = spriteWidth;
+        SpriteHeight = spriteHeight;
+    }
+
+    public Spritesheet(string path, int spriteWidth = 0, int spriteHeight = 0) {
+        SpriteWidth = spriteWidth;
+        SpriteHeight = spriteHeight;
+        TexturePath = path;
+        if (BaseGame.HasLoadedContent) {
+            Texture = BaseGame.Instance.Content.Load<Texture2D>(path);
+        } else {
+            BaseGame.Instance.OnLoadContent += Instance_OnLoadContent;
+        }
+    }
+
+    private void Instance_OnLoadContent(object sender, Events.LoadContentEventArgs e) {
+        Texture = e.ContentManager.Load<Texture2D>(TexturePath);
+        BaseGame.Instance.OnLoadContent -= Instance_OnLoadContent;
+    }
 
     public (int, int) ConvertCoordinates(int i) {
         return (i % Width, i / Width);
