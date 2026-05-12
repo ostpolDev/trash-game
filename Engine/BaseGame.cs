@@ -120,6 +120,9 @@ public abstract class BaseGame : Game {
         if (InputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F1)) {
             DebugMenuManager.GetOpenMenuByName("command").Toggle();
         }
+        if (InputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F2)) {
+            DebugMenuManager.EnableWindowDrawing = !DebugMenuManager.EnableWindowDrawing;
+        }
 
         InputManager.LateUpdate();
         base.Update(gameTime);

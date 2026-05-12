@@ -1,3 +1,5 @@
+using Engine.UI.Debugging;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,16 +15,20 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
     public Rectangle LocalArea { get; protected set; }
     public Rectangle ScreenArea { get; protected set; }
 
-    public UIAnchorPosition AnchorPosition { get; set; }
+    public UIAnchorPosition AnchorPosition { get; protected set; }
 
     public AbstractUIComponent Parent { get; protected set; }
     public readonly List<AbstractUIComponent> Children = [];
     public bool HasParent { get { return Parent != null; } }
     public int ChildCount { get { return Children.Count; } }
 
+    public string ReferenceID { get; private set; }
+
     private bool PositionRelativeToParent = true;
 
     public bool IsEnabled = true;
+
+    private UIDebugRenderer<AbstractUIComponent> DebugRenderer;
 
     public AbstractUIComponent(int x, int y, int width, int height, UIAnchorPosition anchorPosition) {
         LocalArea = new(x, y, width, height);
@@ -125,6 +131,45 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
 
     public int CompareTo(AbstractUIComponent other) {
         return ZIndex - other.ZIndex;
+    }
+
+    public void SetPosition(int x, int y) {
+        Rectangle rect = LocalArea;
+        rect.X = x;
+        rect.Y = y;
+        LocalArea = rect;
+        RecalculateScreenPosition();
+    }
+
+    public void SetArea(int w, int h) {
+        Rectangle rect = LocalArea;
+        rect.Width = w;
+        rect.Height = h;
+        LocalArea = rect;
+        RecalculateScreenPosition();
+    }
+
+    public void SetPositionAndArea(Rectangle rect) {
+        LocalArea = rect;
+        RecalculateScreenPosition();
+    }
+
+    public void SetAnchorPosition(UIAnchorPosition anchor) {
+        AnchorPosition = anchor;
+        RecalculateScreenPosition();
+    }
+
+    public virtual void SetReferenceID(string id) {
+        ReferenceID = id;
+    }
+
+    protected virtual void CreateDebugRenderer() {
+        DebugRenderer = new BaseRenderer(this);
+    }
+
+    public void DrawDebugMenu() {
+        if (DebugRenderer == null) CreateDebugRenderer();
+        DebugRenderer?.Render();
     }
 
 }

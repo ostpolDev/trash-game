@@ -14,8 +14,8 @@
     <Folder Include="$(MSBuildThisFileDirectory)Interaction\" />
     <Folder Include="$(MSBuildThisFileDirectory)Editors\" />
     <Folder Include="$(MSBuildThisFileDirectory)Sprites\" />
-    <Folder Include="$(MSBuildThisFileDirectory)UI\" />
     <Folder Include="$(MSBuildThisFileDirectory)SceneManagement\" />
+    <Folder Include="$(MSBuildThisFileDirectory)UI\Debugging\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\" />
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +40,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)scenemanagement\SceneManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\Spritesheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\AbstractUIComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\BaseRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\UIDebugRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\ITickableUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\SimpleUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIAnchorPosition.cs" />

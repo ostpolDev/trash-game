@@ -16,6 +16,7 @@ public class UIEditor : EditorScene {
 
     private bool isChildSelectionOpen;
     private AbstractUIComponent childSelectionTarget;
+    private AbstractUIComponent selectedComponent;
 
     public Spritesheet UI_TEXTURE { get; private set; }
 
@@ -39,13 +40,33 @@ public class UIEditor : EditorScene {
     }
 
     public override void DrawScene() {
-        ImGui.SetNextWindowPos(new(0, 0));
-        ImGui.SetNextWindowSize(new(150, DebugMenuManager.WindowViewport.Height), ImGuiCond.Appearing);
-        ImGui.Begin("Components", ImGuiWindowFlags.NoMove);
+        ImGui.DockSpaceOverViewport(0, ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
+
+        DrawComponentsWindow();
+        
+        if (isChildSelectionOpen) {
+            DrawChildSelectionWindow();
+        }
+
+        DrawInspectorWindow();
+    }
+
+    private void DrawComponentsWindow() {
+        ImGui.SetNextWindowPos(new(0, 0), ImGuiCond.Once);
+        ImGui.SetNextWindowSize(new(150, DebugMenuManager.WindowViewport.Height), ImGuiCond.Once);
+        ImGui.Begin("Components");
 
         if (ImGui.TreeNodeEx("Root", ImGuiTreeNodeFlags.DefaultOpen)) {
+            if (ImGui.IsItemClicked()) {
+                selectedComponent = null;
+            }
+
             foreach (AbstractUIComponent component in manager.Components) {
-                if (ImGui.TreeNodeEx(component.GetType().Name)) {
+                if (ImGui.TreeNodeEx(string.IsNullOrEmpty(component.ReferenceID) ? component.GetType().Name : component.ReferenceID)) {
+                    if (ImGui.IsItemClicked()) {
+                        selectedComponent = component;
+                    }
+
                     ImGui.TreePop();
                 }
             }
@@ -63,25 +84,37 @@ public class UIEditor : EditorScene {
         }
 
         ImGui.End();
+    }
 
-        if (isChildSelectionOpen) {
-            ImGui.SetNextWindowSize(new(200, 100), ImGuiCond.Appearing);
-            ImGui.Begin("Child Selection");
-            if (ImGui.Button("Cancel")) {
-                isChildSelectionOpen = false;
-                childSelectionTarget = null;
-            }
-
-            foreach (string key in UI_TYPE_KEYS) {
-                if (ImGui.Button(key)) {
-                    AddChild(key);
-                    isChildSelectionOpen = false;
-                }
-            }
-
-
-            ImGui.End();
+    private void DrawChildSelectionWindow() {
+        ImGui.SetNextWindowSize(new(200, 100), ImGuiCond.Appearing);
+        ImGui.Begin("Child Selection");
+        if (ImGui.Button("Cancel")) {
+            isChildSelectionOpen = false;
+            childSelectionTarget = null;
         }
+        foreach (string key in UI_TYPE_KEYS) {
+            if (ImGui.Button(key)) {
+                AddChild(key);
+                isChildSelectionOpen = false;
+            }
+        }
+
+
+        ImGui.End();
+    }
+
+    private void DrawInspectorWindow() {
+        ImGui.SetNextWindowPos(new(DebugMenuManager.WindowViewport.Width - 250, 0), ImGuiCond.Once);
+        ImGui.SetNextWindowSize(new(250, DebugMenuManager.WindowViewport.Height), ImGuiCond.Once);
+        ImGui.Begin("Inspector");
+
+        if (selectedComponent != null) {
+            ImGui.Text(selectedComponent.GetType().Name);
+            selectedComponent.DrawDebugMenu();
+        }
+
+        ImGui.End();
     }
 
     private void AddChild(string key) {

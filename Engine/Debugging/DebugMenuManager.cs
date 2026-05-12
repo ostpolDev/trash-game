@@ -1,4 +1,5 @@
 using Engine.Editors;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -23,6 +24,8 @@ public class DebugMenuManager {
     public static bool IsShowingWindows { get { return EnabledMenus.Count > 0; } }
     public static int ShownWindowCount { get { return EnabledMenus.Count; } }
 
+    public static bool EnableWindowDrawing = true;
+
     public static EditorScene ActiveEditorScene { get; private set; }
 
     public static Viewport WindowViewport { get; private set; }
@@ -33,6 +36,7 @@ public class DebugMenuManager {
         _imGuiRenderer.RebuildFontAtlas();
         Viewport = game.GraphicsDevice.Viewport;
 
+        ImGui.GetIO().ConfigFlags |= ImGuiConfigFlags.DockingEnable;
 
         WindowViewport = game.GraphicsDevice.Viewport;
         if (game is BaseGame baseGame) {
@@ -128,6 +132,8 @@ public class DebugMenuManager {
     }
 
     public void Draw(GameTime gameTime) {
+        if (!EnableWindowDrawing) return;
+
         _imGuiRenderer.BeforeLayout(gameTime);
 
         ActiveEditorScene?.DrawScene();
