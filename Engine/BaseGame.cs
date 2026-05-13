@@ -106,6 +106,7 @@ public abstract class BaseGame : Game {
         while (accumulator >= FIXED_UPDATE_DELTA) {
             // FixedUpdate
             SceneManager.FixedUpdate();
+            UIManager.FixedUpdate();
             OnFixedUpdate(gameTime);
 
             accumulator -= FIXED_UPDATE_DELTA;
