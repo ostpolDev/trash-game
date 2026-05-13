@@ -1,8 +1,8 @@
 namespace Engine.UI.Debugging;
 
-public abstract class UIDebugRenderer<T>(T component) where T : AbstractUIComponent {
+public abstract class UIDebugRenderer(AbstractUIComponent component) {
 
-    public T Component = component;
+    public AbstractUIComponent Component = component;
 
     public abstract void Render();
 

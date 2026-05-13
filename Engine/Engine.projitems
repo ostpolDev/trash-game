@@ -41,6 +41,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)sprites\Spritesheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\AbstractUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\BaseRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\SimpleRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\UIDebugRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\ITickableUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\SimpleUIComponent.cs" />

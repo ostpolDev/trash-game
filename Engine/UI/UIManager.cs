@@ -37,6 +37,17 @@ public class UIManager : Component {
         SortComponentDepth();
     }
 
+    public void RemoveComponent(AbstractUIComponent component, bool withChildren = true) {
+        List<AbstractUIComponent> toDelete = component.Delete(withChildren);
+        foreach (AbstractUIComponent item in toDelete) {
+            if (item is ITickableUIComponent tickable)
+                TickableComponents.Remove(tickable);
+            Components.Remove(item);
+        }
+
+        SortComponentDepth();
+    }
+
     public void SortComponentDepth() {
         Components.Sort();
     }

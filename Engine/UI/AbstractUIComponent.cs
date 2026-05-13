@@ -10,7 +10,7 @@ namespace Engine.UI;
 public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
 
     public readonly string UID = Guid.NewGuid().ToString();
-    private int zindex = 0;
+    public int RelativeZIndex { get; private set; } = 0;
     public int ZIndex { get; private set; } = 0;
 
     public Rectangle LocalArea { get; protected set; }
@@ -29,7 +29,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
 
     public bool IsEnabled = true;
 
-    private UIDebugRenderer<AbstractUIComponent> DebugRenderer;
+    protected UIDebugRenderer DebugRenderer;
 
     public AbstractUIComponent(int x, int y, int width, int height, UIAnchorPosition anchorPosition) {
         LocalArea = new(x, y, width, height);
@@ -46,6 +46,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
     public abstract void Draw(Microsoft.Xna.Framework.GameTime gameTime, SpriteBatch spriteBatch, float alpha);
 
     public void SetParent(AbstractUIComponent parent, bool updateScreenPosition = true) {
+        Parent?.Children.Remove(this);
         Parent = parent;
         PositionRelativeToParent = updateScreenPosition;
         UpdateZIndex();
@@ -54,16 +55,33 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
 
     private void UpdateZIndex() {
         if (Parent != null)
-            ZIndex = zindex + Parent.ZIndex;
+            ZIndex = RelativeZIndex + Parent.ZIndex;
         else
-            ZIndex = zindex;
+            ZIndex = RelativeZIndex;
 
         foreach (AbstractUIComponent child in Children)
             child.UpdateZIndex();
     }
 
+    /// <summary>
+    /// Returns a list of all components that need to be removed from the UI Manager
+    /// </summary>
+    /// <param name="recursive"></param>
+    /// <returns></returns>
+    public List<AbstractUIComponent> Delete(bool recursive = true) {
+        List<AbstractUIComponent> components = [];
+        components.Add(this);
+        foreach (AbstractUIComponent component in Children) {
+            component.SetParent(null);
+            if (recursive) {
+                components.AddRange(component.Delete(true));
+            }
+        }
+        return components;
+    }
+
     public void SetZIndex(int index) {
-        zindex = index;
+        RelativeZIndex = index;
         UpdateZIndex();
         UIManager.Singleton?.SortComponentDepth();
     }
@@ -83,8 +101,8 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
 
         Rectangle newScreenArea = GetAnchorRelativeRectangle(LocalArea, bounds, AnchorPosition);
         if (PositionRelativeToParent && HasParent) {
-            newScreenArea.X = Parent.ScreenArea.X;
-            newScreenArea.Y = Parent.ScreenArea.Y;
+            newScreenArea.X += Parent.ScreenArea.X;
+            newScreenArea.Y += Parent.ScreenArea.Y;
         }
         ScreenArea = newScreenArea;
 

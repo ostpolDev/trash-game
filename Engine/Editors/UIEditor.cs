@@ -76,7 +76,7 @@ public class UIEditor : EditorScene {
 
     private void DrawComponentTree(AbstractUIComponent component, int i) {
         string name = string.IsNullOrEmpty(component.ReferenceID) ? component.GetType().Name : component.ReferenceID;
-        if (ImGui.TreeNodeEx($"{i} - {name}")) {
+        if (ImGui.TreeNodeEx($"{name}##{component.UID}")) {
             if (ImGui.IsItemClicked()) {
                 selectedComponent = component;
             }
@@ -120,6 +120,10 @@ public class UIEditor : EditorScene {
             if (ImGui.Button("Add Child")) {
                 childSelectionTarget = selectedComponent;
                 isChildSelectionOpen = true;
+            }
+            if (ImGui.Button("Delete Component")) {
+                manager.RemoveComponent(selectedComponent);
+                selectedComponent = null;
             }
         } else {
             ImGui.Text("Root Node");
