@@ -1,4 +1,5 @@
 using Engine.UI.Debugging;
+using Engine.Utility;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,6 +31,9 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
     public bool IsEnabled = true;
 
     protected UIDebugRenderer DebugRenderer;
+
+    public readonly bool[] Stretch = new bool[2];
+    public readonly int[] Padding = new int[4];
 
     public AbstractUIComponent(int x, int y, int width, int height, UIAnchorPosition anchorPosition) {
         LocalArea = new(x, y, width, height);
@@ -104,6 +108,9 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
             newScreenArea.X += Parent.ScreenArea.X;
             newScreenArea.Y += Parent.ScreenArea.Y;
         }
+
+        newScreenArea = RecalculateStretching(newScreenArea, bounds);
+
         ScreenArea = newScreenArea;
 
         if (deep)
@@ -111,12 +118,24 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
                 component.RecalculateScreenPosition();
     }
 
+    protected Rectangle RecalculateStretching(Rectangle screenArea, Rectangle bounds) {
+        if (Stretch[0]) {
+            screenArea.Height = bounds.Bottom - Padding[0] - Padding[1];
+            screenArea.Y = bounds.Top + Padding[0];
+        }
+        if (Stretch[1]) {
+            screenArea.Width = bounds.Right - Padding[2] - Padding[3];
+            screenArea.X = bounds.Left + Padding[2];
+        }
+        return screenArea;
+    }
+
     public static Rectangle GetAnchorRelativeRectangle(Rectangle rectangle, Rectangle bounds, UIAnchorPosition anchorPosition) {
-        Vector2 pos = GetAnchorRelative(rectangle, bounds, anchorPosition);
+        Vector2 pos = GetAnchorRelativePosition(rectangle, bounds, anchorPosition);
         return new((int)pos.X, (int)pos.Y, rectangle.Width, rectangle.Height);
     }
 
-    public static Vector2 GetAnchorRelative(Rectangle rectangle, Rectangle bounds, UIAnchorPosition anchorPosition) {
+    public static Vector2 GetAnchorRelativePosition(Rectangle rectangle, Rectangle bounds, UIAnchorPosition anchorPosition) {
         return anchorPosition switch {
             UIAnchorPosition.TOP_CENTER => new((bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, rectangle.Y),
             UIAnchorPosition.TOP_RIGHT => new(bounds.Width - rectangle.Width + rectangle.X, rectangle.Y),
@@ -180,6 +199,16 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
 
     public virtual void SetReferenceID(string id) {
         ReferenceID = id;
+    }
+
+    public void SetStretching(Utility.Plane plane, bool value) {
+        Stretch[(int)plane] = value;
+        RecalculateScreenPosition();
+    }
+
+    public void SetPadding(Direction direction, int value) {
+        Padding[(int)direction] = value;
+        RecalculateScreenPosition();
     }
 
     protected virtual void CreateDebugRenderer() {

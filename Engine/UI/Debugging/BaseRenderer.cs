@@ -39,6 +39,22 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
             ImGui.Text($"Global Z: {Component.ZIndex}");
         }
         ImGui.Spacing();
+
+        if (ImGui.CollapsingHeader("Responsive")) {
+            ImGui.SeparatorText("Stretching");
+            if (ImGui.Checkbox("Vertical##stretch", ref Component.Stretch[0])) {
+                Component.RecalculateScreenPosition();
+            }
+            if (ImGui.Checkbox("Horizontal##stretch", ref Component.Stretch[1])) {
+                Component.RecalculateScreenPosition();
+            }
+            ImGui.Spacing();
+            if (ImGui.InputInt4("Padding", ref Component.Padding[0])) {
+                Component.RecalculateScreenPosition();
+            }
+
+        }
+        ImGui.Spacing();
     }
 
 }

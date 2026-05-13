@@ -80,6 +80,10 @@ public class Spritesheet {
         spriteBatch.Draw(Texture, destination, source, Color.White);
     }
 
+    public void Draw(SpriteBatch spriteBatch, Rectangle destination, Rectangle source, Color color) {
+        spriteBatch.Draw(Texture, destination, source, color);
+    }
+
     public void Draw(SpriteBatch spriteBatch, Rectangle destination, int i, int w, int h) {
         (int x, int y) = ConvertCoordinates(i);
         Draw(spriteBatch, destination, x, y, w, h);

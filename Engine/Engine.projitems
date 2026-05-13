@@ -47,7 +47,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ui\SimpleUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIAnchorPosition.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\Direction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\PathHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\Plane.cs" />
   </ItemGroup>
 </Project>
