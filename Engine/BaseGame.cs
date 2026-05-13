@@ -117,11 +117,14 @@ public abstract class BaseGame : Game {
         SceneManager.Update(gameTime, deltaTime);
         OnUpdate(gameTime, deltaTime);
 
-        if (InputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F1)) {
-            DebugMenuManager.GetOpenMenuByName("command").Toggle();
-        }
-        if (InputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F2)) {
-            DebugMenuManager.EnableWindowDrawing = !DebugMenuManager.EnableWindowDrawing;
+        if (IsDevelopmentMode) {
+            DebugMenuManager.Update(gameTime, deltaTime);
+            if (InputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F1)) {
+                DebugMenuManager.GetOpenMenuByName("command").Toggle();
+            }
+            if (InputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F2)) {
+                DebugMenuManager.EnableWindowDrawing = !DebugMenuManager.EnableWindowDrawing;
+            }
         }
 
         InputManager.LateUpdate();

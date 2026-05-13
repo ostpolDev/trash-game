@@ -144,5 +144,9 @@ public class DebugMenuManager {
         _imGuiRenderer.AfterLayout();
     }
 
+    public void Update(GameTime gameTime, float delta) {
+        ActiveEditorScene?.Update(gameTime, delta);
+    }
+
 }
 
