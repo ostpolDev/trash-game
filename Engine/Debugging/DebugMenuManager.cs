@@ -136,7 +136,7 @@ public class DebugMenuManager {
 
         _imGuiRenderer.BeforeLayout(gameTime);
 
-        ActiveEditorScene?.DrawScene();
+        ActiveEditorScene?.Draw();
 
         foreach (DebugMenu menu in EnabledMenus)
             menu.Draw();

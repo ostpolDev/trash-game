@@ -91,7 +91,8 @@ public class UIEditor : EditorScene {
 
     private void DrawChildSelectionWindow() {
         ImGui.SetNextWindowSize(new(200, 100), ImGuiCond.Appearing);
-        ImGui.Begin("Child Selection");
+        ImGui.Begin("Child Selection", ImGuiWindowFlags.MenuBar);
+
         if (ImGui.Button("Cancel")) {
             isChildSelectionOpen = false;
             childSelectionTarget = null;
@@ -147,6 +148,48 @@ public class UIEditor : EditorScene {
             childSelectionTarget?.AddChild(component);
             manager.AddComponent(component);
         } catch (Exception e) { Logger.Exception(e); }
+    }
+
+    protected override void DrawMenu() {
+        if (ImGui.BeginMenu("File")) {
+            if (ImGui.MenuItem("Import", "Ctrl + I")) {
+
+            }
+            if (ImGui.MenuItem("Export", "Ctrl + E")) {
+
+            }
+
+            ImGui.EndMenu();
+        }
+
+        if (ImGui.BeginMenu("Resources")) {
+            if (ImGui.MenuItem("Load Internal", "Ctrl + L")) {
+
+            }
+            if (ImGui.MenuItem("Load External", "Ctrl + O")) {
+
+            }
+            ImGui.Separator();
+            if (ImGui.MenuItem("Pack resources", "Ctrl + P")) {
+
+            }
+
+            ImGui.EndMenu();
+        }
+
+        if (ImGui.BeginMenu("Edit")) {
+            if (ImGui.MenuItem("Find", "Ctrl + F")) {
+
+            }
+
+            ImGui.Separator();
+
+            if (ImGui.MenuItem("Delete all")) {
+
+            }
+
+            ImGui.EndMenu();
+        }
     }
 
     public override void FixedUpdate() {
