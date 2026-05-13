@@ -61,29 +61,32 @@ public class UIEditor : EditorScene {
                 selectedComponent = null;
             }
 
-            foreach (AbstractUIComponent component in manager.Components) {
-                if (ImGui.TreeNodeEx(string.IsNullOrEmpty(component.ReferenceID) ? component.GetType().Name : component.ReferenceID)) {
-                    if (ImGui.IsItemClicked()) {
-                        selectedComponent = component;
-                    }
+            for (int i = 0; i < manager.ChildCount; i++) {
+                AbstractUIComponent component = manager.Components[i];
+                if (component.Parent != null) continue;
 
-                    ImGui.TreePop();
-                }
-            }
-
-            if (ImGui.BeginPopupContextItem()) {
-                ImGui.Text("Root");
-                if (ImGui.Button("Add Child")) {
-                    childSelectionTarget = null;
-                    isChildSelectionOpen = true;
-                }
-                ImGui.EndPopup();
+                DrawComponentTree(component, i);
             }
 
             ImGui.TreePop();
         }
 
         ImGui.End();
+    }
+
+    private void DrawComponentTree(AbstractUIComponent component, int i) {
+        string name = string.IsNullOrEmpty(component.ReferenceID) ? component.GetType().Name : component.ReferenceID;
+        if (ImGui.TreeNodeEx($"{i} - {name}")) {
+            if (ImGui.IsItemClicked()) {
+                selectedComponent = component;
+            }
+
+            for (int j = 0; j < component.ChildCount; j++) {
+                DrawComponentTree(component.Children[j], j);
+            }
+
+            ImGui.TreePop();
+        }
     }
 
     private void DrawChildSelectionWindow() {
@@ -111,7 +114,19 @@ public class UIEditor : EditorScene {
 
         if (selectedComponent != null) {
             ImGui.Text(selectedComponent.GetType().Name);
+            ImGui.Text(selectedComponent.UID);
             selectedComponent.DrawDebugMenu();
+            ImGui.Separator();
+            if (ImGui.Button("Add Child")) {
+                childSelectionTarget = selectedComponent;
+                isChildSelectionOpen = true;
+            }
+        } else {
+            ImGui.Text("Root Node");
+            if (ImGui.Button("Add Child")) {
+                childSelectionTarget = null;
+                isChildSelectionOpen = true;
+            }
         }
 
         ImGui.End();

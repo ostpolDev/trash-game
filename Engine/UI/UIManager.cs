@@ -16,6 +16,13 @@ public class UIManager : Component {
 
     public UIManager() {
         Singleton = this;
+        BaseGame.Instance.OnWindowResize += Instance_OnWindowResize;
+    }
+
+    private void Instance_OnWindowResize(object sender, Events.WindowResizeEventArgs e) {
+        foreach (AbstractUIComponent component in Components) {
+            component.RecalculateScreenPosition();
+        }
     }
 
     public void AddComponent(AbstractUIComponent component, bool withChildren = true) {

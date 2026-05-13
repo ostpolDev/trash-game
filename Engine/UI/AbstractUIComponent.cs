@@ -9,6 +9,7 @@ namespace Engine.UI;
 
 public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
 
+    public readonly string UID = Guid.NewGuid().ToString();
     private int zindex = 0;
     public int ZIndex { get; private set; } = 0;
 
@@ -71,7 +72,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
     /// 
     /// </summary>
     /// <param name="deep">If children should be updated too</param>
-    protected void RecalculateScreenPosition(bool deep = true) {
+    public void RecalculateScreenPosition(bool deep = true) {
         Rectangle bounds = new();
         if (HasParent) {
             bounds = Parent.LocalArea;
