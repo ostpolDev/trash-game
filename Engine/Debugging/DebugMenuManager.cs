@@ -45,6 +45,7 @@ public class DebugMenuManager {
 
 #if DEBUG
         RegisterEditor("ui", typeof(UIEditor));
+        RegisterEditor("serialization", typeof(SerializationEditor));
 #endif
     }
 

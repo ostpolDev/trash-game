@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Engine.Editors;
 
-public class UIEditor : EditorScene {
+internal class UIEditor : EditorScene {
 
     private readonly UIManager manager;
 
@@ -56,7 +56,7 @@ public class UIEditor : EditorScene {
         ImGui.SetNextWindowSize(new(150, DebugMenuManager.WindowViewport.Height), ImGuiCond.Once);
         ImGui.Begin("Components");
 
-        if (ImGui.TreeNodeEx("Root", ImGuiTreeNodeFlags.DefaultOpen)) {
+        if (ImGui.TreeNodeEx("Root", ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.OpenOnDoubleClick)) {
             if (ImGui.IsItemClicked()) {
                 selectedComponent = null;
             }
@@ -76,7 +76,7 @@ public class UIEditor : EditorScene {
 
     private void DrawComponentTree(AbstractUIComponent component, int i) {
         string name = string.IsNullOrEmpty(component.ReferenceID) ? component.GetType().Name : component.ReferenceID;
-        if (ImGui.TreeNodeEx($"{name}##{component.UID}")) {
+        if (ImGui.TreeNodeEx($"{name}##{component.UID}", ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.OpenOnDoubleClick)) {
             if (ImGui.IsItemClicked()) {
                 selectedComponent = component;
             }
