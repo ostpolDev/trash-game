@@ -13,12 +13,18 @@ public class InputManager {
 
     public Point MousePosition { get; private set; }
 
+    public bool IsCtrlDown { get; private set; }
+    public bool IsShiftDown { get; private set; }
+
     /// <summary>
     /// Call before other components that rely on input get updated
     /// </summary>
     public void Update() {
         CurrentState = Keyboard.GetState();
         CurrentMouseState = Mouse.GetState();
+
+        IsCtrlDown = CurrentState.IsKeyDown(Keys.LeftControl);
+        IsShiftDown = CurrentState.IsKeyDown(Keys.LeftShift);
 
         MousePosition = new(CurrentMouseState.X, CurrentMouseState.Y);
     }

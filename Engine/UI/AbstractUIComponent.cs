@@ -1,6 +1,5 @@
 using Engine.UI.Debugging;
 using Engine.Utility;
-using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
