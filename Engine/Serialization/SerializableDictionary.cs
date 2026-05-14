@@ -135,7 +135,7 @@ public class SerializableDictionary : AbstractEntry {
     }
 
     public void Put(string key, Rectangle rect) {
-        Data[key] = new RectangleEntry(rect);
+        Data[key] = new RectEntry(rect);
     }
 
     #endregion
@@ -166,7 +166,7 @@ public class SerializableDictionary : AbstractEntry {
         return !ContainsKey(key) ? def : ((DoubleEntry)Data[key]).Data;
     }
 
-    public string GetString(string key, string def = 0) {
+    public string GetString(string key, string def = "") {
         return !ContainsKey(key) ? def : ((StringEntry)Data[key]).Data;
     }
 
@@ -195,7 +195,7 @@ public class SerializableDictionary : AbstractEntry {
     }
 
     public Rectangle GetRectangle(string key) {
-        return !ContainsKey(key) ? default : ((RectangleEntry)Data[key]).Data;
+        return !ContainsKey(key) ? default : ((RectEntry)Data[key]).Data;
     }
 
     #endregion

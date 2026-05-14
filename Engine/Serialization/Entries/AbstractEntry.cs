@@ -29,7 +29,7 @@ public abstract class AbstractEntry {
             DictionaryEntryType.COLOR => new ColorEntry(),
             DictionaryEntryType.VECTOR2 => new Vector2Entry(),
             DictionaryEntryType.VECTOR3 => new Vector3Entry(),
-            DictionaryEntryType.RECTANGLE => new RectangleEntry(),
+            DictionaryEntryType.RECTANGLE => new RectEntry(),
             DictionaryEntryType.DICTIONARY => new SerializableDictionary(),
             DictionaryEntryType.INVALID => new InvalidEntry(),
             _ => null,
