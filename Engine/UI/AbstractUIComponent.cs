@@ -35,6 +35,9 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
     public readonly bool[] Stretch = new bool[2];
     public readonly int[] Padding = new int[4];
 
+    public readonly bool[] ConstraintsEnabled = new bool[4];
+    public readonly Vector2[] Constraints = new Vector2[2];
+
     public AbstractUIComponent(int x, int y, int width, int height, UIAnchorPosition anchorPosition) {
         LocalArea = new(x, y, width, height);
         AnchorPosition = anchorPosition;
@@ -103,13 +106,16 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
             bounds.Height = BaseGame.Instance.GraphicsDevice.Viewport.Height;
         }
 
-        Rectangle newScreenArea = GetAnchorRelativeRectangle(LocalArea, bounds, AnchorPosition);
+        Rectangle localArea = LocalArea;
+
+        localArea = RecalculateStretching(localArea, bounds);
+        localArea = RecalculateConstraints(localArea);
+
+        Rectangle newScreenArea = GetAnchorRelativeRectangle(localArea, bounds, AnchorPosition);
         if (PositionRelativeToParent && HasParent) {
             newScreenArea.X += Parent.ScreenArea.X;
             newScreenArea.Y += Parent.ScreenArea.Y;
         }
-
-        newScreenArea = RecalculateStretching(newScreenArea, bounds);
 
         ScreenArea = newScreenArea;
 
@@ -118,16 +124,32 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
                 component.RecalculateScreenPosition();
     }
 
-    protected Rectangle RecalculateStretching(Rectangle screenArea, Rectangle bounds) {
-        if (Stretch[0]) {
-            screenArea.Height = bounds.Bottom - Padding[0] - Padding[1];
-            screenArea.Y = bounds.Top + Padding[0];
+    protected Rectangle RecalculateStretching(Rectangle area, Rectangle bounds) {
+        if (Stretch[(int)Utility.Plane.VERTICAL]) {
+            area.Height = bounds.Bottom - Padding[0] - Padding[1];
+            area.Y = bounds.Top + Padding[0];
         }
-        if (Stretch[1]) {
-            screenArea.Width = bounds.Right - Padding[2] - Padding[3];
-            screenArea.X = bounds.Left + Padding[2];
+        if (Stretch[(int)Utility.Plane.HORIZONTAL]) {
+            area.Width = bounds.Right - Padding[2] - Padding[3];
+            area.X = bounds.Left + Padding[2];
         }
-        return screenArea;
+        return area;
+    }
+
+    protected Rectangle RecalculateConstraints(Rectangle area) {
+        if (ConstraintsEnabled[0]) {
+            area.Width = (int)Math.Max(area.Width, Constraints[0].X);
+        }
+        if (ConstraintsEnabled[1]) {
+            area.Width = (int)Math.Min(area.Width, Constraints[0].Y);
+        }
+        if (ConstraintsEnabled[2]) {
+            area.Height = (int)Math.Max(area.Height, Constraints[1].X);
+        }
+        if (ConstraintsEnabled[3]) {
+            area.Height = (int)Math.Min(area.Height, Constraints[1].Y);
+        }
+        return area;
     }
 
     public static Rectangle GetAnchorRelativeRectangle(Rectangle rectangle, Rectangle bounds, UIAnchorPosition anchorPosition) {

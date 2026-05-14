@@ -14,11 +14,19 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
     private string ReferenceID = component.ReferenceID ?? "";
     private int ZIndex = component.RelativeZIndex;
 
+    private int MinWidth = (int)component.Constraints[0].X;
+    private int MaxWidth = (int)component.Constraints[0].Y;
+    private int MinHeight = (int)component.Constraints[1].X;
+    private int MaxHeight = (int)component.Constraints[1].Y;
+
     public override void Render() {
         if (ImGui.CollapsingHeader("Properties", ImGuiTreeNodeFlags.DefaultOpen)) {
             if (ImGui.InputText("ID", ref ReferenceID, 128)) {
                 Component.SetReferenceID(ReferenceID);
             }
+            ImGui.Text($"Screen: ({Component.ScreenArea.X} | {Component.ScreenArea.Y})");
+            ImGui.Text($"Global Z: {Component.ZIndex}");
+            ImGui.Text($"Children: {Component.ChildCount}");
         }
         ImGui.Spacing();
 
@@ -42,10 +50,10 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
 
         if (ImGui.CollapsingHeader("Responsive")) {
             ImGui.SeparatorText("Stretching");
-            if (ImGui.Checkbox("Vertical##stretch", ref Component.Stretch[0])) {
+            if (ImGui.Checkbox("Vertical##stretch", ref Component.Stretch[1])) {
                 Component.RecalculateScreenPosition();
             }
-            if (ImGui.Checkbox("Horizontal##stretch", ref Component.Stretch[1])) {
+            if (ImGui.Checkbox("Horizontal##stretch", ref Component.Stretch[0])) {
                 Component.RecalculateScreenPosition();
             }
             ImGui.Spacing();
@@ -53,6 +61,53 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
                 Component.RecalculateScreenPosition();
             }
 
+        }
+        ImGui.Spacing();
+
+        if (ImGui.CollapsingHeader("Constraints")) {
+            if (ImGui.Checkbox("Min. Width", ref Component.ConstraintsEnabled[0])) {
+                Component.RecalculateScreenPosition();
+            }
+            if (Component.ConstraintsEnabled[0]) {
+                if (ImGui.InputInt("Amount##minwidth", ref MinWidth)) {
+                    Component.Constraints[0].X = MinWidth;
+                    Component.RecalculateScreenPosition();
+                }
+            }
+            ImGui.Spacing();
+
+            if (ImGui.Checkbox("Max. Width", ref Component.ConstraintsEnabled[1])) {
+                Component.RecalculateScreenPosition();
+            }
+            if (Component.ConstraintsEnabled[1]) {
+                if (ImGui.InputInt("Amount##maxwidth", ref MaxWidth)) {
+                    Component.Constraints[0].Y = MaxWidth;
+                    Component.RecalculateScreenPosition();
+                }
+            }
+            ImGui.Spacing();
+
+            if (ImGui.Checkbox("Min. Height", ref Component.ConstraintsEnabled[2])) {
+                Component.RecalculateScreenPosition();
+            }
+            if (Component.ConstraintsEnabled[2]) {
+                if (ImGui.InputInt("Amount##minheight", ref MinHeight)) {
+                    Component.Constraints[1].X = MinHeight;
+                    Component.RecalculateScreenPosition();
+                }
+            }
+            ImGui.Spacing();
+
+            if (ImGui.Checkbox("Max. Height", ref Component.ConstraintsEnabled[3])) {
+                Component.RecalculateScreenPosition();
+            }
+            if (Component.ConstraintsEnabled[3]) {
+                if (ImGui.InputInt("Amount##maxheight", ref MaxHeight)) {
+                    Component.Constraints[1].Y = MaxHeight;
+                    Component.RecalculateScreenPosition();
+                }
+            }
+            ImGui.Spacing();
         }
         ImGui.Spacing();
     }
