@@ -28,4 +28,8 @@ public class IntEntry : AbstractEntry {
         return Data.ToString();
     }
 
+    public override void RenderDebugEditor() {
+
+    }
+
 }

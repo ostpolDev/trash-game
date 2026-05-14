@@ -28,4 +28,8 @@ public class ByteEntry : AbstractEntry {
         return Data.ToString();
     }
 
+    public override void RenderDebugEditor() {
+        
+    }
+
 }

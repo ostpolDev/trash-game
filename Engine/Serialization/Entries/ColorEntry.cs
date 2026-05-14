@@ -29,4 +29,8 @@ public class ColorEntry : AbstractEntry {
         return Data.ToString();
     }
 
+    public override void RenderDebugEditor() {
+
+    }
+
 }

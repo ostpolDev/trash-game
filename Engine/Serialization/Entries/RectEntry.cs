@@ -37,4 +37,8 @@ public class RectEntry : AbstractEntry {
         return Data.ToString();
     }
 
+    public override void RenderDebugEditor() {
+
+    }
+
 }

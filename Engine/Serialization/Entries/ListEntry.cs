@@ -50,4 +50,8 @@ public class ListEntry : AbstractEntry {
         return $"{ListType} x{Count}";
     }
 
+    public override void RenderDebugEditor() {
+
+    }
+
 }

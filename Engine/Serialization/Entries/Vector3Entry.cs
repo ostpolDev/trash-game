@@ -35,4 +35,8 @@ public class Vector3Entry : AbstractEntry {
         return Data.ToString();
     }
 
+    public override void RenderDebugEditor() {
+
+    }
+
 }

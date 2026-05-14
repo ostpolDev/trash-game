@@ -16,4 +16,8 @@ public class InvalidEntry : AbstractEntry {
         return "INVALID";
     }
 
+    public override void RenderDebugEditor() {
+
+    }
+
 }

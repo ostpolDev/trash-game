@@ -83,35 +83,35 @@ public class SerializableDictionary : AbstractEntry {
     #region Put Helpers
 
     public void Put(string key, AbstractEntry entry) {
-        Data[key] = entry;
+        Data[key] = entry.SetKey(key);
     }
 
     public void Put(string key, byte b) {
-        Data[key] = new ByteEntry(b);
+        Data[key] = new ByteEntry(b).SetKey(key);
     }
 
     public void Put(string key, short s) {
-        Data[key] = new ShortEntry(s);
+        Data[key] = new ShortEntry(s).SetKey(key);
     }
 
     public void Put(string key, int i) {
-        Data[key] = new IntEntry(i);
+        Data[key] = new IntEntry(i).SetKey(key);
     }
 
     public void Put(string key, long l) {
-        Data[key] = new LongEntry(l);
+        Data[key] = new LongEntry(l).SetKey(key);
     }
 
     public void Put(string key, float f) {
-        Data[key] = new FloatEntry(f);
+        Data[key] = new FloatEntry(f).SetKey(key);
     }
 
     public void Put(string key, double d) {
-        Data[key] = new DoubleEntry(d);
+        Data[key] = new DoubleEntry(d).SetKey(key);
     }
 
     public void Put(string key, string s) {
-        Data[key] = new StringEntry(s);
+        Data[key] = new StringEntry(s).SetKey(key);
     }
 
     public void Put(string key, SerializableDictionary dictionary) {
@@ -119,23 +119,23 @@ public class SerializableDictionary : AbstractEntry {
     }
 
     public void Put(string key, Color color) {
-        Data[key] = new ColorEntry(color);
+        Data[key] = new ColorEntry(color).SetKey(key);
     }
 
     public void Put(string key, Vector2 v) {
-        Data[key] = new Vector2Entry(v);
+        Data[key] = new Vector2Entry(v).SetKey(key);
     }
 
     public void Put(string key, Vector3 v) {
-        Data[key] = new Vector3Entry(v);
+        Data[key] = new Vector3Entry(v).SetKey(key);
     }
 
     public void Put(string key, bool b) {
-        Data[key] = new ByteEntry((byte)(b ? 1 : 0));
+        Data[key] = new ByteEntry((byte)(b ? 1 : 0)).SetKey(key);
     }
 
     public void Put(string key, Rectangle rect) {
-        Data[key] = new RectEntry(rect);
+        Data[key] = new RectEntry(rect).SetKey(key);
     }
 
     #endregion

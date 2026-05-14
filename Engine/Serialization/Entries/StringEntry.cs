@@ -28,4 +28,8 @@ public class StringEntry : AbstractEntry {
         return Data;
     }
 
+    public override void RenderDebugEditor() {
+
+    }
+
 }

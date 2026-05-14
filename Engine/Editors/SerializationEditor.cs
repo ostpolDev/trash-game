@@ -4,6 +4,8 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Linq;
 
 namespace Engine.Editors;
 
@@ -11,15 +13,18 @@ internal class SerializationEditor : EditorScene {
 
     public SerializableDictionary Data { get; private set; }
 
-    private uint dockspaceId;
-
     public SerializationEditor() : base("serialization") {
         BaseGame.Instance.SetResizable(true);
     }
 
+    private SerializableDictionary AddTarget;
+    private string[] POSSIBLE_ITEMS = [.. Enum.GetValues<DictionaryEntryType>().Select(m => m.ToString())];
+    private int ToAddType = (int)DictionaryEntryType.INVALID;
+    private string ToAddKey = "";
+
+    private AbstractEntry ToEditTarget;
+
     public override void DrawScene() {
-        dockspaceId = ImGui.GetID("MyWindowDockSpace");
-        //ImGui.DockSpaceOverViewport(0, ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
 
         ImGuiViewportPtr viewport = ImGui.GetMainViewport();
         ImGui.SetNextWindowPos(viewport.WorkPos);
@@ -38,14 +43,17 @@ internal class SerializationEditor : EditorScene {
                                      | ImGuiWindowFlags.NoNavFocus;
 
         DrawTree(windowFlags);
+
+        if (AddTarget != null)
+            AddItemWindow();
+
+        if (ToEditTarget != null)
+            EditWindow();
     }
 
     private void DrawTree(ImGuiWindowFlags flags) {
         ImGui.Begin("Tree View", flags);
         ImGui.PopStyleVar(3);
-
-        //dockspaceId = ImGui.GetID("MyDockingSpace");
-        //ImGui.DockSpace(dockspaceId, new System.Numerics.Vector2(0, 0), ImGuiDockNodeFlags.None);
 
         if (Data == null) {
             if (ImGui.Button("New Tree")) {
@@ -61,19 +69,74 @@ internal class SerializationEditor : EditorScene {
     }
 
     private void TreeNode(AbstractEntry entry, int i = 0) {
-        if (ImGui.TreeNodeEx($"{entry.Key ?? "Root"}: {entry.GetEntryType()} - {entry}##{i}", ImGuiTreeNodeFlags.OpenOnArrow)) {
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow;
+        if (entry is not SerializableDictionary) {
+            flags |= ImGuiTreeNodeFlags.Leaf;
+        }
+
+        if (ImGui.TreeNodeEx($"{entry.Key ?? "Root"}: {entry.GetEntryType()} - {entry}##{i}", flags)) {
             if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsItemClicked(ImGuiMouseButton.Left)) {
                 // EDIT
+                ToEditTarget = entry;
             }
 
             if (entry is SerializableDictionary serializableDictionary) {
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
+                    // Right Click
+                    AddTarget = serializableDictionary;
+                }
+
                 foreach (var item in serializableDictionary.GetValues()) {
                     TreeNode(item, i + 1);
                 }
             }
+
             ImGui.TreePop();
         }
     }
+
+    private void AddItemWindow() {
+        ImGui.Begin("Add Item", ImGuiWindowFlags.NoCollapse);
+
+        ImGui.Combo("Item Type", ref ToAddType, POSSIBLE_ITEMS, POSSIBLE_ITEMS.Length);
+        ImGui.InputText("Key", ref ToAddKey, 64);
+
+        if (ImGui.Button("Add")) {
+            DictionaryEntryType type = (DictionaryEntryType)ToAddType;
+            if (type != DictionaryEntryType.END && type != DictionaryEntryType.INVALID && !string.IsNullOrEmpty(ToAddKey)) {
+                AddTarget.Put(ToAddKey, AbstractEntry.GetEntryFromType(type));
+                AddTarget = null;
+                ToAddKey = "";
+                ToAddType = (int)DictionaryEntryType.INVALID;
+            }
+        }
+        ImGui.SameLine();
+        if (ImGui.Button("Cancel")) {
+            AddTarget = null;
+        }
+
+        ImGui.End();
+    }
+
+    private void EditWindow() {
+        ImGui.Begin("Edit", ImGuiWindowFlags.NoCollapse);
+
+        ImGui.SeparatorText(ToEditTarget.Key);
+        ImGui.Spacing();
+
+        ToEditTarget.RenderDebugEditor();
+
+        ImGui.Spacing();
+        ImGui.SeparatorText("Other");
+        ImGui.Spacing();
+
+        if (ImGui.Button("Delete")) {
+
+        }
+
+        ImGui.End();
+    }
+
 
     protected override void DrawMenu() {
         if (ImGui.BeginMenu("File")) {

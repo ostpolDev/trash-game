@@ -15,4 +15,8 @@ public class EndEntry : AbstractEntry {
         return "END";
     }
 
+    public override void RenderDebugEditor() {
+
+    }
+
 }

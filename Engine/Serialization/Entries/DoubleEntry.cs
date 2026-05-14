@@ -28,4 +28,8 @@ public class DoubleEntry : AbstractEntry {
         return Data.ToString();
     }
 
+    public override void RenderDebugEditor() {
+
+    }
+
 }
