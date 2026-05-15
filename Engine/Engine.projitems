@@ -10,9 +10,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Editors\Windows\" />
     <Folder Include="$(MSBuildThisFileDirectory)Events\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interaction\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Editors\" />
     <Folder Include="$(MSBuildThisFileDirectory)Serialization\Entries\" />
     <Folder Include="$(MSBuildThisFileDirectory)Sprites\" />
     <Folder Include="$(MSBuildThisFileDirectory)SceneManagement\" />
@@ -35,6 +35,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)editors\EditorScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\SerializationEditor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\UIEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)editors\windows\EditorWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)editors\windows\FilePickerWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\LoadContentEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\WindowResizeEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)interaction\InputManager.cs" />

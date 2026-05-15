@@ -1,3 +1,4 @@
+using Engine.Editors.Windows;
 using Engine.Interaction;
 using Engine.Serialization;
 using Engine.Serialization.Entries;
@@ -27,6 +28,8 @@ internal class SerializationEditor : EditorScene {
 
     private AbstractEntry ToEditTarget;
     private AbstractEntry ToEditParent;
+
+    private FilePickerWindow FilePickerWindow;
 
     public SerializationEditor() : base("serialization") {
         BaseGame.Instance.SetResizable(true);
@@ -72,6 +75,11 @@ internal class SerializationEditor : EditorScene {
                     popupOpen = false;
                 }
             ImGui.End();
+        }
+
+        if (FilePickerWindow != null && FilePickerWindow.Draw()) {
+            System.Diagnostics.Debug.WriteLine(FilePickerWindow.ResultPath);
+            FilePickerWindow = null;
         }
     }
 
@@ -200,7 +208,7 @@ internal class SerializationEditor : EditorScene {
                 CreateNew();
             }
             if (ImGui.MenuItem("Import", "Ctrl + I")) {
-
+                Import();
             }
             if (ImGui.MenuItem("Export", "Ctrl + E")) {
 
@@ -217,6 +225,10 @@ internal class SerializationEditor : EditorScene {
         popupOpen = true;
     }
 
+    private void Import() {
+        FilePickerWindow = new(FilePickerWindow.Mode.FILE);
+    }
+
 
     public override void FixedUpdate() {
         
@@ -229,6 +241,8 @@ internal class SerializationEditor : EditorScene {
     public override void Update(GameTime gameTime, float delta) {
         if (inputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.N) && inputManager.IsCtrlDown) {
             CreateNew();
+        } else if (inputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.I) && inputManager.IsCtrlDown) {
+            Import();
         }
     }
 
