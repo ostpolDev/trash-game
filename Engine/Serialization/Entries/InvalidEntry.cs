@@ -1,3 +1,4 @@
+using ImGuiNET;
 using System.IO;
 
 namespace Engine.Serialization.Entries;
@@ -17,7 +18,7 @@ public class InvalidEntry : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-
+        ImGui.Text("This element has no properties");
     }
 
 }

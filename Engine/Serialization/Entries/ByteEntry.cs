@@ -1,3 +1,5 @@
+using ImGuiNET;
+using System;
 using System.IO;
 
 namespace Engine.Serialization.Entries;
@@ -29,7 +31,11 @@ public class ByteEntry : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-        
+        int d = Data;
+        if (ImGui.InputInt("Value##byte", ref d)) {
+            d = Math.Clamp(d, Byte.MinValue, Byte.MaxValue);
+            Data = (byte)d;
+        }
     }
 
 }

@@ -1,3 +1,4 @@
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System.IO;
 
@@ -38,7 +39,16 @@ public class RectEntry : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-
+        int[] Pos = [Data.X, Data.Y];
+        int[] Size = [Data.Width, Data.Height];
+        if (ImGui.InputInt2("Position##rect", ref Pos[0])) {
+            Data.X = Pos[0];
+            Data.Y = Pos[1];
+        }
+        if (ImGui.InputInt2("Size##rect", ref Size[0])) {
+            Data.Width = Size[0];
+            Data.Height = Size[1];
+        }
     }
 
 }

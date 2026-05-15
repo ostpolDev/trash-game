@@ -1,3 +1,4 @@
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System.IO;
 
@@ -30,7 +31,10 @@ public class ColorEntry : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-
+        System.Numerics.Vector4 cVec = Data.ToVector4().ToNumerics();
+        if (ImGui.ColorPicker4("Color", ref cVec)) {
+            Data = new(cVec.X, cVec.Y, cVec.Z, cVec.Z);
+        }
     }
 
 }

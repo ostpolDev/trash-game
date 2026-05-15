@@ -1,3 +1,5 @@
+using ImGuiNET;
+using System;
 using System.IO;
 
 namespace Engine.Serialization.Entries;
@@ -29,7 +31,11 @@ public class LongEntry : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-
+        double val = Convert.ToDouble(Data);
+        if (ImGui.InputDouble("Value##long", ref val)) {
+            val = Math.Clamp(val, double.MinValue, double.MaxValue);
+            Data = Convert.ToInt64(val);
+        }
     }
 
 }

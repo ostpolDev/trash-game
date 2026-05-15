@@ -16,13 +16,8 @@ internal class SerializationEditor : EditorScene {
 
     private readonly InputManager inputManager;
 
-    public SerializationEditor() : base("serialization") {
-        BaseGame.Instance.SetResizable(true);
-        inputManager = BaseGame.Instance.InputManager;
-    }
-
     private SerializableDictionary AddTarget;
-    private string[] POSSIBLE_ITEMS = [.. Enum.GetValues<DictionaryEntryType>().Select(m => m.ToString())];
+    private readonly string[] POSSIBLE_ITEMS = [.. Enum.GetValues<DictionaryEntryType>().Select(m => m.ToString())];
     private int ToAddType = (int)DictionaryEntryType.INVALID;
     private int ToChangeType = (int)DictionaryEntryType.INVALID;
     private string ToAddKey = "";
@@ -32,6 +27,11 @@ internal class SerializationEditor : EditorScene {
 
     private AbstractEntry ToEditTarget;
     private AbstractEntry ToEditParent;
+
+    public SerializationEditor() : base("serialization") {
+        BaseGame.Instance.SetResizable(true);
+        inputManager = BaseGame.Instance.InputManager;
+    }
 
     public override void DrawScene() {
 
@@ -93,7 +93,7 @@ internal class SerializationEditor : EditorScene {
     }
 
     private void TreeNode(AbstractEntry entry, AbstractEntry parent, int i = 0) {
-        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow;
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.DefaultOpen;
         if (entry is not SerializableDictionary) {
             flags |= ImGuiTreeNodeFlags.Leaf;
         }

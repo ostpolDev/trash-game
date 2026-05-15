@@ -1,3 +1,4 @@
+using ImGuiNET;
 using System.IO;
 
 namespace Engine.Serialization.Entries;
@@ -16,7 +17,7 @@ public class EndEntry : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-
+        ImGui.Text("This element has no properties");
     }
 
 }

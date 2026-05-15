@@ -1,10 +1,11 @@
+using ImGuiNET;
 using System.IO;
 
 namespace Engine.Serialization.Entries;
 
 public class StringEntry : AbstractEntry {
 
-    public string Data;
+    public string Data = "";
 
     public StringEntry() { }
 
@@ -25,11 +26,12 @@ public class StringEntry : AbstractEntry {
     }
 
     public override string ToString() {
-        return Data;
+        return Data.ReplaceLineEndings(" ");
     }
 
     public override void RenderDebugEditor() {
-
+        ImGui.InputTextMultiline("Value##text", ref Data, 2048, new());
+        ImGui.Text($"{Data.Length} / 2048");
     }
 
 }

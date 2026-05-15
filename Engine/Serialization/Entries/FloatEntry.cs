@@ -1,3 +1,4 @@
+using ImGuiNET;
 using System.IO;
 
 namespace Engine.Serialization.Entries;
@@ -29,7 +30,7 @@ public class FloatEntry : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-
+        ImGui.InputFloat("Value##float", ref Data);
     }
 
 }

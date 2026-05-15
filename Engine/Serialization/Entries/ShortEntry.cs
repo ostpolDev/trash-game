@@ -1,3 +1,5 @@
+using ImGuiNET;
+using System;
 using System.IO;
 
 namespace Engine.Serialization.Entries;
@@ -29,7 +31,11 @@ public class ShortEntry : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-
+        int val = Data;
+        if (ImGui.InputInt("Value##short", ref val)) {
+            val = Math.Clamp(val, short.MinValue, short.MaxValue);
+            Data = (short)val;
+        }
     }
 
 }

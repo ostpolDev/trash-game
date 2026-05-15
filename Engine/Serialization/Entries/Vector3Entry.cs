@@ -1,3 +1,4 @@
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System.IO;
 
@@ -36,7 +37,12 @@ public class Vector3Entry : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-
+        System.Numerics.Vector3 vec = Data.ToNumerics();
+        if (ImGui.InputFloat3("Value##vec3", ref vec)) {
+            Data.X = vec.X;
+            Data.Y = vec.Y;
+            Data.Z = vec.Z;
+        }
     }
 
 }
