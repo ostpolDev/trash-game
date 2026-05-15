@@ -312,7 +312,7 @@ internal class SerializationEditor : EditorScene {
             }
             ImGui.Separator();
             if (ImGui.MenuItem("Export raw", "Ctrl + Shift + E")) {
-
+                Export(false);
             }
             ImGui.EndMenu();
         }
