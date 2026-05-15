@@ -17,7 +17,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Sprites\" />
     <Folder Include="$(MSBuildThisFileDirectory)SceneManagement\" />
     <Folder Include="$(MSBuildThisFileDirectory)UI\Debugging\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Utility\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utility\Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
@@ -70,6 +70,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIAnchorPosition.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Direction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\exceptions\FileHeaderMissingException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\PathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Plane.cs" />

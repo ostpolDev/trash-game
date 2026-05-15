@@ -2,11 +2,14 @@ using Engine.Editors.Windows;
 using Engine.Interaction;
 using Engine.Serialization;
 using Engine.Serialization.Entries;
+using Engine.Utility;
+using Engine.Utility.Exceptions;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace Engine.Editors;
@@ -28,6 +31,10 @@ internal class SerializationEditor : EditorScene {
 
     private AbstractEntry ToEditTarget;
     private AbstractEntry ToEditParent;
+
+    private bool showMessage = false;
+    private string messageTitle = null;
+    private string messageContent = null;
 
     private FilePickerWindow FilePickerWindow;
 
@@ -78,9 +85,26 @@ internal class SerializationEditor : EditorScene {
         }
 
         if (FilePickerWindow != null && FilePickerWindow.Draw()) {
-            System.Diagnostics.Debug.WriteLine(FilePickerWindow.ResultPath);
+            HandleSelectFile();
             FilePickerWindow = null;
         }
+
+        if (showMessage) {
+            ImGui.SetNextWindowPos(new(ImGui.GetIO().DisplaySize.X / 2, ImGui.GetIO().DisplaySize.Y / 2), ImGuiCond.Appearing, new(0.5f, 0.5f));
+            ImGui.Begin(messageTitle ?? "Message", ImGuiWindowFlags.AlwaysAutoResize);
+
+            if (messageContent != null)
+                ImGui.Text(messageContent);
+
+            if (ImGui.Button("Close")) {
+                showMessage = false;
+                messageContent = null;
+                messageTitle = null;
+            }
+            ImGui.End();
+
+        }
+
     }
 
     private void DrawTree(ImGuiWindowFlags flags) {
@@ -201,6 +225,74 @@ internal class SerializationEditor : EditorScene {
         ImGui.End();
     }
 
+    private void ShowMessage(string msg, string title = null) {
+        messageContent = msg;
+        messageTitle = title;
+        showMessage = true;
+    }
+
+    private void HandleSelectFile() {
+        if (FilePickerWindow.WasCancelled) return;
+        string fileName = FilePickerWindow.ResultPath;
+        if (string.IsNullOrEmpty(fileName)) {
+            ShowMessage("No file was selected", "No File");
+            return;
+        }
+        if (FilePickerWindow.SelectMode == FilePickerWindow.SelectionMode.IMPORT) {
+            if (!File.Exists(fileName)) {
+                ShowMessage($"The following file was not found or does not exist:\n{fileName}", "File not found");
+                return;
+            }
+            string ext = Path.GetExtension(fileName);
+            if (ext != ".dat" && ext != ".gz" && ext != ".dat.gz") {
+                ShowMessage($"The following file name is invalid:\n{Path.GetFileName(fileName)}\nThe following extensions are supported: .gz, .dat");
+                return;
+            }
+
+            try {
+
+                Data = SerializableDictionary.ReadFromFile(fileName);
+
+            } catch (FileHeaderMissingException headerException) {
+                Logger.Exception(headerException);
+                ShowMessage("The file does not seem to be in the correct format", "File header missing");
+                return;
+            } catch (Exception ex) {
+                Logger.Exception(ex);
+                ShowMessage(ex.StackTrace ?? "Something went wrong", ex.Message ?? "Error");
+                return;
+            }
+
+        } else if (FilePickerWindow.SelectMode == FilePickerWindow.SelectionMode.EXPORT) {
+
+            try {
+
+                string ext = Path.GetExtension(fileName);
+                if (ext != ".dat" && ext != ".gz" && ext != ".dat.gz") {
+                    fileName = $"{fileName}.dat.gz";
+                }
+
+                SerializableDictionary.WriteToFile(fileName, Data);
+
+                ShowMessage($"Successfully saved to:\n{fileName}", "Success!");
+
+            } catch (Exception ex) {
+                Logger.Exception(ex);
+                ShowMessage(ex.StackTrace ?? "Something went wrong", ex.Message ?? "Error");
+            }
+
+        }
+    }
+
+    private void Export() {
+        if (Data == null) {
+            ShowMessage("No data to export");
+            return;
+        }
+
+        FilePickerWindow = new(FilePickerWindow.TargetType.FILE, FilePickerWindow.SelectionMode.EXPORT);
+    }
+
 
     protected override void DrawMenu() {
         if (ImGui.BeginMenu("File")) {
@@ -211,7 +303,7 @@ internal class SerializationEditor : EditorScene {
                 Import();
             }
             if (ImGui.MenuItem("Export", "Ctrl + E")) {
-
+                Export();
             }
             ImGui.EndMenu();
         }
@@ -226,7 +318,7 @@ internal class SerializationEditor : EditorScene {
     }
 
     private void Import() {
-        FilePickerWindow = new(FilePickerWindow.Mode.FILE);
+        FilePickerWindow = new(FilePickerWindow.TargetType.FILE, FilePickerWindow.SelectionMode.IMPORT);
     }
 
 
@@ -243,6 +335,8 @@ internal class SerializationEditor : EditorScene {
             CreateNew();
         } else if (inputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.I) && inputManager.IsCtrlDown) {
             Import();
+        } else if (inputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.E) && inputManager.IsCtrlDown) {
+            Export();
         }
     }
 

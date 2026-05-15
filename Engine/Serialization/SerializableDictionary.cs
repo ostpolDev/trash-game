@@ -1,13 +1,17 @@
 using Engine.Debugging;
 using Engine.Serialization.Entries;
+using Engine.Utility.Exceptions;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Text;
 
 namespace Engine.Serialization;
 
 public class SerializableDictionary : AbstractEntry {
+
+    public const string FILE_HEADER_STRING = "OSD-v1";
 
     private static readonly Logger Logger = Logger.Get("Serialization");
 
@@ -31,13 +35,19 @@ public class SerializableDictionary : AbstractEntry {
 
     public override void Write(BinaryWriter writer) {
         foreach (var item in Data) {
-            item.Value.Write(writer);
+            WriteEntry(item.Value, writer);
         }
         writer.Write((byte)DictionaryEntryType.END);
     }
 
+    private static byte[] GetHeaderBytes() {
+        return Encoding.UTF8.GetBytes(FILE_HEADER_STRING);
+    }
+
     public static void WriteToFile(string filePath, SerializableDictionary dictionary) {
         using FileStream stream = File.Create(filePath);
+        stream.Write(GetHeaderBytes());
+
         using GZipStream gZipStream = new(stream, CompressionMode.Compress);
         using BinaryWriter writer = new(gZipStream);
         dictionary.Write(writer);
@@ -50,6 +60,13 @@ public class SerializableDictionary : AbstractEntry {
         }
 
         using FileStream stream = File.OpenRead(filePath);
+        byte[] headerCheck = new byte[GetHeaderBytes().Length];
+        stream.ReadExactly(headerCheck);
+
+        string extractedData = Encoding.UTF8.GetString(headerCheck);
+        if (extractedData != FILE_HEADER_STRING)
+            throw new FileHeaderMissingException(FILE_HEADER_STRING);
+
         using GZipStream gZipStream = new(stream, CompressionMode.Decompress);
         using BinaryReader reader = new(gZipStream);
 

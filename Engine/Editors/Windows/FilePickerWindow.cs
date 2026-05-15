@@ -13,7 +13,8 @@ namespace Engine.Editors.Windows;
 internal class FilePickerWindow : EditorWindow {
 
     public string ResultPath { get; private set; }
-    public Mode PickerMode = Mode.FILE;
+    public TargetType PickerMode { get; private set; } = TargetType.FILE;
+    public SelectionMode SelectMode { get; private set; } = SelectionMode.IMPORT;
     public bool WasCancelled { get; private set; } = false;
 
     private string ItemName = "";
@@ -25,12 +26,13 @@ internal class FilePickerWindow : EditorWindow {
 
     private static readonly PathPreset[] PRESET_PATHS;
 
-    private readonly string FallbackDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+    private readonly string FallbackDir = PathHelper.GetAppDirectory();
     private long ms = 0;
     private readonly Stopwatch sw = new();
 
-    public FilePickerWindow(Mode pickerMode) {
+    public FilePickerWindow(TargetType pickerMode, SelectionMode selectionMode) {
         PickerMode = pickerMode;
+        SelectMode = selectionMode;
         SwitchPath(FallbackDir);
     }
 
@@ -76,13 +78,13 @@ internal class FilePickerWindow : EditorWindow {
                 foreach (var item in PathItems) {
                     ImGui.TableNextRow();
                     ImGui.TableNextColumn();
-                    if (ImGui.Selectable($"{(item.Type == Mode.DIRECTORY ? "+ " : "")}{item.Name}", false, ImGuiSelectableFlags.SpanAllColumns)) {
+                    if (ImGui.Selectable($"{(item.Type == TargetType.DIRECTORY ? "+ " : "")}{item.Name}", false, ImGuiSelectableFlags.SpanAllColumns)) {
                         if (item.Type == PickerMode) {
-                            ItemName = item.Path;
+                            ItemName = item.Name;
                         }
                     }
 
-                    if (item.Type == Mode.DIRECTORY && ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left)) {
+                    if (item.Type == TargetType.DIRECTORY && ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left)) {
                         SwitchPath(item.Path);
                         break;
                     }
@@ -105,7 +107,10 @@ internal class FilePickerWindow : EditorWindow {
         ImGui.InputText("Name", ref ItemName, 300);
         if (ImGui.Button("Select")) {
             ImGui.End();
-            ResultPath = ItemName;
+            if (SelectMode == SelectionMode.EXPORT) {
+                ItemName = PathHelper.MakeFileSafe(ItemName);
+            }
+            ResultPath = Path.Combine(CurrentPath, ItemName);
             return true;
         }
         ImGui.SameLine();
@@ -156,9 +161,9 @@ internal class FilePickerWindow : EditorWindow {
         List<PathItem> items = [];
         foreach (string item in Directory.EnumerateFileSystemEntries(CurrentPath)) {
             FileAttributes fileAttr = File.GetAttributes(item);
-            Mode mode = Mode.FILE;
+            TargetType mode = TargetType.FILE;
             if ((fileAttr & FileAttributes.Directory) == FileAttributes.Directory) {
-                mode = Mode.DIRECTORY;
+                mode = TargetType.DIRECTORY;
             }
 
             items.Add(new(Path.GetFileName(item), item, mode));
@@ -170,8 +175,12 @@ internal class FilePickerWindow : EditorWindow {
         ms = sw.ElapsedMilliseconds;
     }
 
-    public enum Mode {
+    public enum TargetType {
         FILE, DIRECTORY
+    }
+
+    public enum SelectionMode {
+        IMPORT, EXPORT
     }
 
 #if DEBUG
@@ -191,10 +200,10 @@ internal class FilePickerWindow : EditorWindow {
         public string Path = path ?? throw new ArgumentNullException(nameof(path));
     }
 
-    private struct PathItem(string name, string path, Mode type) : IComparable<PathItem> {
+    private struct PathItem(string name, string path, TargetType type) : IComparable<PathItem> {
         public string Name = name ?? throw new ArgumentNullException(nameof(name));
         public string Path = path ?? throw new ArgumentNullException(nameof(path));
-        public Mode Type = type;
+        public TargetType Type = type;
 
         public readonly int CompareTo(PathItem other) {
             return (int)other.Type - (int)Type;
