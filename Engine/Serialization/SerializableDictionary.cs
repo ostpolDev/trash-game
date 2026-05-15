@@ -44,13 +44,19 @@ public class SerializableDictionary : AbstractEntry {
         return Encoding.UTF8.GetBytes(FILE_HEADER_STRING);
     }
 
-    public static void WriteToFile(string filePath, SerializableDictionary dictionary) {
+    public static void WriteToFile(string filePath, SerializableDictionary dictionary, bool compress = true) {
         using FileStream stream = File.Create(filePath);
+        stream.WriteByte((byte)(compress ? 1 : 0));
         stream.Write(GetHeaderBytes());
 
-        using GZipStream gZipStream = new(stream, CompressionMode.Compress);
-        using BinaryWriter writer = new(gZipStream);
-        dictionary.Write(writer);
+        if (compress) {
+            using GZipStream gZipStream = new(stream, CompressionMode.Compress);
+            using BinaryWriter writer = new(gZipStream);
+            dictionary.Write(writer);
+        } else {
+            using BinaryWriter writer = new(stream);
+            dictionary.Write(writer);
+        }
     }
 
     public static SerializableDictionary ReadFromFile(string filePath) {
@@ -60,6 +66,7 @@ public class SerializableDictionary : AbstractEntry {
         }
 
         using FileStream stream = File.OpenRead(filePath);
+        bool isCompressed = stream.ReadByte() == 1;
         byte[] headerCheck = new byte[GetHeaderBytes().Length];
         stream.ReadExactly(headerCheck);
 
@@ -67,12 +74,19 @@ public class SerializableDictionary : AbstractEntry {
         if (extractedData != FILE_HEADER_STRING)
             throw new FileHeaderMissingException(FILE_HEADER_STRING);
 
-        using GZipStream gZipStream = new(stream, CompressionMode.Decompress);
-        using BinaryReader reader = new(gZipStream);
+        if (isCompressed) {
+            using GZipStream gZipStream = new(stream, CompressionMode.Decompress);
+            using BinaryReader reader = new(gZipStream);
+            SerializableDictionary dictionary = new();
+            dictionary.Read(reader);
+            return dictionary;
+        } else {
+            using BinaryReader reader = new(stream);
+            SerializableDictionary dictionary = new();
+            dictionary.Read(reader);
+            return dictionary;
+        }
 
-        SerializableDictionary dictionary = new();
-        dictionary.Read(reader);
-        return dictionary;
     }
 
     public bool ContainsKey(string key) {

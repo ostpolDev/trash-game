@@ -35,6 +35,7 @@ internal class SerializationEditor : EditorScene {
     private bool showMessage = false;
     private string messageTitle = null;
     private string messageContent = null;
+    private bool compressedExport = true;
 
     private FilePickerWindow FilePickerWindow;
 
@@ -269,10 +270,13 @@ internal class SerializationEditor : EditorScene {
 
                 string ext = Path.GetExtension(fileName);
                 if (ext != ".dat" && ext != ".gz" && ext != ".dat.gz") {
-                    fileName = $"{fileName}.dat.gz";
+                    fileName = $"{fileName}.dat";
+                    if (compressedExport) {
+                        fileName = $"{fileName}.gz";
+                    }
                 }
 
-                SerializableDictionary.WriteToFile(fileName, Data);
+                SerializableDictionary.WriteToFile(fileName, Data, compressedExport);
 
                 ShowMessage($"Successfully saved to:\n{fileName}", "Success!");
 
@@ -284,12 +288,13 @@ internal class SerializationEditor : EditorScene {
         }
     }
 
-    private void Export() {
+    private void Export(bool compressed = true) {
         if (Data == null) {
             ShowMessage("No data to export");
             return;
         }
 
+        compressedExport = compressed;
         FilePickerWindow = new(FilePickerWindow.TargetType.FILE, FilePickerWindow.SelectionMode.EXPORT);
     }
 
@@ -304,6 +309,10 @@ internal class SerializationEditor : EditorScene {
             }
             if (ImGui.MenuItem("Export", "Ctrl + E")) {
                 Export();
+            }
+            ImGui.Separator();
+            if (ImGui.MenuItem("Export raw", "Ctrl + Shift + E")) {
+
             }
             ImGui.EndMenu();
         }
@@ -336,7 +345,7 @@ internal class SerializationEditor : EditorScene {
         } else if (inputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.I) && inputManager.IsCtrlDown) {
             Import();
         } else if (inputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.E) && inputManager.IsCtrlDown) {
-            Export();
+            Export(!inputManager.IsShiftDown);
         }
     }
 
