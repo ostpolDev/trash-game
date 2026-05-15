@@ -24,11 +24,14 @@ internal class SerializationEditor : EditorScene {
     private SerializableDictionary AddTarget;
     private string[] POSSIBLE_ITEMS = [.. Enum.GetValues<DictionaryEntryType>().Select(m => m.ToString())];
     private int ToAddType = (int)DictionaryEntryType.INVALID;
+    private int ToChangeType = (int)DictionaryEntryType.INVALID;
     private string ToAddKey = "";
+    private string ToEditKey = "";
 
     private bool popupOpen = false;
 
     private AbstractEntry ToEditTarget;
+    private AbstractEntry ToEditParent;
 
     public override void DrawScene() {
 
@@ -99,6 +102,9 @@ internal class SerializationEditor : EditorScene {
             if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsItemClicked(ImGuiMouseButton.Left)) {
                 // EDIT
                 ToEditTarget = entry;
+                ToEditParent = parent;
+                ToChangeType = (int)entry.GetEntryType();
+                ToEditKey = entry.Key;
             }
 
             if (entry is SerializableDictionary serializableDictionary) {
@@ -140,19 +146,53 @@ internal class SerializationEditor : EditorScene {
     }
 
     private void EditWindow() {
-        ImGui.Begin("Edit", ImGuiWindowFlags.NoCollapse);
+        ImGui.Begin("Edit", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoDocking);
 
-        ImGui.SeparatorText(ToEditTarget.Key);
+        ImGui.SeparatorText($"{ToEditTarget.Key ?? "Root"} ({ToEditTarget.GetEntryType()})");
         ImGui.Spacing();
 
         ToEditTarget.RenderDebugEditor();
 
         ImGui.Spacing();
-        ImGui.SeparatorText("Other");
+
+        if (ToEditParent is SerializableDictionary dict) {
+            ImGui.SeparatorText("Other");
+            ImGui.Spacing();
+
+            if (ImGui.Button("Delete")) {
+                dict.Delete(ToEditTarget.Key);
+                ToEditTarget = null;
+            }
+
+            ImGui.Spacing();
+            ImGui.SeparatorText("Type");
+
+            ImGui.Combo("New Type", ref ToChangeType, POSSIBLE_ITEMS, POSSIBLE_ITEMS.Length);
+            if (ImGui.Button("Change Type")) {
+                string key = ToEditTarget.Key;
+                ToEditTarget = AbstractEntry.GetEntryFromType((DictionaryEntryType)ToChangeType);
+                dict.Put(key, ToEditTarget);
+            }
+        }
+
+        if (ToEditKey != null) {
+            ImGui.Spacing();
+            ImGui.SeparatorText("Key");
+
+            ImGui.InputText("New Key", ref ToEditKey, 64);
+            if (ImGui.Button("Rename")) {
+                ToEditTarget.SetKey(ToEditKey);
+            }
+
+            ImGui.Spacing();
+        }
+
+        ImGui.Spacing();
+        ImGui.Separator();
         ImGui.Spacing();
 
-        if (ImGui.Button("Delete")) {
-
+        if (ImGui.Button("Close")) {
+            ToEditTarget = null;
         }
 
         ImGui.End();

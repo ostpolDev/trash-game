@@ -138,6 +138,10 @@ public class SerializableDictionary : AbstractEntry {
         Data[key] = new RectEntry(rect).SetKey(key);
     }
 
+    public void Delete(string key) {
+        Data.Remove(key);
+    }
+
     #endregion
 
     #region Get Helpers

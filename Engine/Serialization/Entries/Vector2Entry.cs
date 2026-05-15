@@ -1,3 +1,4 @@
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System.IO;
 
@@ -34,7 +35,8 @@ public class Vector2Entry : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-
+        ImGui.InputFloat("X##vec2", ref Data.X);
+        ImGui.InputFloat("Y##vec2", ref Data.Y);
     }
 
 }
