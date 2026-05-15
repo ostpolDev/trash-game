@@ -148,43 +148,38 @@ internal class SerializationEditor : EditorScene {
     private void EditWindow() {
         ImGui.Begin("Edit", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoDocking);
 
-        ImGui.SeparatorText($"{ToEditTarget.Key ?? "Root"} ({ToEditTarget.GetEntryType()})");
-        ImGui.Spacing();
-
-        ToEditTarget.RenderDebugEditor();
-
+        if (ImGui.CollapsingHeader($"{ToEditTarget.Key ?? "Root"} ({ToEditTarget.GetEntryType()})", ImGuiTreeNodeFlags.DefaultOpen)) {
+            ToEditTarget.RenderDebugEditor();
+        }
         ImGui.Spacing();
 
         if (ToEditParent is SerializableDictionary dict) {
-            ImGui.SeparatorText("Other");
-            ImGui.Spacing();
-
-            if (ImGui.Button("Delete")) {
-                dict.Delete(ToEditTarget.Key);
-                ToEditTarget = null;
+            if (ImGui.CollapsingHeader("Other")) {
+                if (ImGui.Button("Delete")) {
+                    dict.Delete(ToEditTarget.Key);
+                    ToEditTarget = null;
+                }
             }
-
             ImGui.Spacing();
-            ImGui.SeparatorText("Type");
 
-            ImGui.Combo("New Type", ref ToChangeType, POSSIBLE_ITEMS, POSSIBLE_ITEMS.Length);
-            if (ImGui.Button("Change Type")) {
-                string key = ToEditTarget.Key;
-                ToEditTarget = AbstractEntry.GetEntryFromType((DictionaryEntryType)ToChangeType);
-                dict.Put(key, ToEditTarget);
+            if (ImGui.CollapsingHeader("Type")) {
+                ImGui.Combo("New Type", ref ToChangeType, POSSIBLE_ITEMS, POSSIBLE_ITEMS.Length);
+                if (ImGui.Button("Change Type")) {
+                    string key = ToEditTarget.Key;
+                    ToEditTarget = AbstractEntry.GetEntryFromType((DictionaryEntryType)ToChangeType);
+                    dict.Put(key, ToEditTarget);
+                }
             }
         }
 
-        if (ToEditKey != null) {
-            ImGui.Spacing();
-            ImGui.SeparatorText("Key");
+        ImGui.Spacing();
 
+        if (ToEditKey != null && ImGui.CollapsingHeader("Key")) {
             ImGui.InputText("New Key", ref ToEditKey, 64);
             if (ImGui.Button("Rename")) {
                 ToEditTarget.SetKey(ToEditKey);
             }
 
-            ImGui.Spacing();
         }
 
         ImGui.Spacing();
