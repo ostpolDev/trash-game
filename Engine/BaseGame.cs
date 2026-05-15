@@ -119,7 +119,6 @@ public abstract class BaseGame : Game {
         OnUpdate(gameTime, deltaTime);
 
         if (IsDevelopmentMode) {
-            DebugMenuManager.Update(gameTime, deltaTime);
             if (InputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F1)) {
                 DebugMenuManager.GetOpenMenuByName("command").Toggle();
             }

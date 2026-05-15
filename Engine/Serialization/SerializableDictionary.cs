@@ -204,4 +204,8 @@ public class SerializableDictionary : AbstractEntry {
         return $"{Count} entries";
     }
 
+    public override void RenderDebugEditor() {
+        
+    }
+
 }

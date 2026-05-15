@@ -1,3 +1,4 @@
+using Engine.Interaction;
 using Engine.Serialization;
 using Engine.Serialization.Entries;
 using ImGuiNET;
@@ -13,14 +14,19 @@ internal class SerializationEditor : EditorScene {
 
     public SerializableDictionary Data { get; private set; }
 
+    private readonly InputManager inputManager;
+
     public SerializationEditor() : base("serialization") {
         BaseGame.Instance.SetResizable(true);
+        inputManager = BaseGame.Instance.InputManager;
     }
 
     private SerializableDictionary AddTarget;
     private string[] POSSIBLE_ITEMS = [.. Enum.GetValues<DictionaryEntryType>().Select(m => m.ToString())];
     private int ToAddType = (int)DictionaryEntryType.INVALID;
     private string ToAddKey = "";
+
+    private bool popupOpen = false;
 
     private AbstractEntry ToEditTarget;
 
@@ -49,6 +55,21 @@ internal class SerializationEditor : EditorScene {
 
         if (ToEditTarget != null)
             EditWindow();
+
+        if (popupOpen) {
+            ImGui.Begin("Confirm New", ImGuiWindowFlags.Modal | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse);
+                ImGui.Text("Are you sure? This will replace the existing Data.");
+                if (ImGui.Button("Confirm")) {
+                    Data = null;
+                    popupOpen = false;
+                    CreateNew();
+                }
+                ImGui.SameLine();
+                if (ImGui.Button("Cancel")) {
+                    popupOpen = false;
+                }
+            ImGui.End();
+        }
     }
 
     private void DrawTree(ImGuiWindowFlags flags) {
@@ -57,18 +78,18 @@ internal class SerializationEditor : EditorScene {
 
         if (Data == null) {
             if (ImGui.Button("New Tree")) {
-                Data = new();
+                CreateNew();
             }
             ImGui.End();
             return;
         }
 
-        TreeNode(Data);
+        TreeNode(Data, null);
 
         ImGui.End();
     }
 
-    private void TreeNode(AbstractEntry entry, int i = 0) {
+    private void TreeNode(AbstractEntry entry, AbstractEntry parent, int i = 0) {
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow;
         if (entry is not SerializableDictionary) {
             flags |= ImGuiTreeNodeFlags.Leaf;
@@ -87,7 +108,7 @@ internal class SerializationEditor : EditorScene {
                 }
 
                 foreach (var item in serializableDictionary.GetValues()) {
-                    TreeNode(item, i + 1);
+                    TreeNode(item, entry, i + 1);
                 }
             }
 
@@ -140,17 +161,25 @@ internal class SerializationEditor : EditorScene {
 
     protected override void DrawMenu() {
         if (ImGui.BeginMenu("File")) {
-            if (ImGui.MenuItem("New")) {
-                Data = new();
+            if (ImGui.MenuItem("New", "Ctrl + N")) {
+                CreateNew();
             }
-            if (ImGui.MenuItem("Import")) {
+            if (ImGui.MenuItem("Import", "Ctrl + I")) {
 
             }
-            if (ImGui.MenuItem("Export")) {
+            if (ImGui.MenuItem("Export", "Ctrl + E")) {
 
             }
             ImGui.EndMenu();
         }
+    }
+
+    private void CreateNew() {
+        if (Data == null) {
+            Data = new();
+            return;
+        }
+        popupOpen = true;
     }
 
 
@@ -163,7 +192,9 @@ internal class SerializationEditor : EditorScene {
     }
 
     public override void Update(GameTime gameTime, float delta) {
-        
+        if (inputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.N) && inputManager.IsCtrlDown) {
+            CreateNew();
+        }
     }
 
     protected override void OnBeginLoad() {
