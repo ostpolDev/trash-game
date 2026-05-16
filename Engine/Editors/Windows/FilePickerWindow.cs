@@ -71,8 +71,8 @@ internal class FilePickerWindow : EditorWindow {
             Vector2 outerSize = new(0, 250);
 
             if (ImGui.BeginTable("##table", 2, flags, outerSize)) {
-                ImGui.TableSetupColumn("Name");
-                ImGui.TableSetupColumn("Type");
+                ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthStretch, 0.8f);
+                ImGui.TableSetupColumn("Type", ImGuiTableColumnFlags.WidthFixed);
                 ImGui.TableHeadersRow();
 
                 foreach (var item in PathItems) {
@@ -90,7 +90,7 @@ internal class FilePickerWindow : EditorWindow {
                     }
 
                     ImGui.TableNextColumn();
-                    ImGui.Text(item.Type.ToString());
+                    ImGui.Text(item.DisplayType ?? item.Type.ToString());
                     
                 }
 
@@ -166,7 +166,11 @@ internal class FilePickerWindow : EditorWindow {
                 mode = TargetType.DIRECTORY;
             }
 
-            items.Add(new(Path.GetFileName(item), item, mode));
+            string ext = Path.GetExtension(item);
+            if (string.IsNullOrEmpty(ext)) {
+                ext = null;
+            }
+            items.Add(new(Path.GetFileName(item), item, ext, mode));
         }
         PathItems.AddRange(items.OrderByDescending(p => p.Type).ThenBy(p => p.Name));
 
@@ -200,10 +204,11 @@ internal class FilePickerWindow : EditorWindow {
         public string Path = path ?? throw new ArgumentNullException(nameof(path));
     }
 
-    private struct PathItem(string name, string path, TargetType type) : IComparable<PathItem> {
+    private struct PathItem(string name, string path, string displayType, TargetType type) : IComparable<PathItem> {
         public string Name = name ?? throw new ArgumentNullException(nameof(name));
         public string Path = path ?? throw new ArgumentNullException(nameof(path));
         public TargetType Type = type;
+        public string DisplayType = displayType;
 
         public readonly int CompareTo(PathItem other) {
             return (int)other.Type - (int)Type;
