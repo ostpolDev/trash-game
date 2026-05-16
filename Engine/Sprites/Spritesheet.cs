@@ -1,3 +1,4 @@
+using Engine.Serialization;
 using Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,6 +36,10 @@ public class Spritesheet {
         } else {
             BaseGame.Instance.OnLoadContent += Instance_OnLoadContent;
         }
+    }
+
+    public static Spritesheet FromFile(string filePath, GraphicsDevice graphicsDevice) {
+        return SpritesheetSerializer.ReadFromFile(filePath, graphicsDevice);
     }
 
     public bool ContainsSprite(Identifier identifier) {
