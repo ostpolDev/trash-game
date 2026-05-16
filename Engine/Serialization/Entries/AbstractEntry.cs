@@ -34,6 +34,7 @@ public abstract class AbstractEntry {
             DictionaryEntryType.RECTANGLE => new RectEntry(),
             DictionaryEntryType.DICTIONARY => new SerializableDictionary(),
             DictionaryEntryType.INVALID => new InvalidEntry(),
+            DictionaryEntryType.IDENTIFIER => new IdentifierEntry(),
             _ => null,
         };
     }

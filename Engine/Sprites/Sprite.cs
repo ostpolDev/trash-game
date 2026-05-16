@@ -17,7 +17,7 @@ public class Sprite(Spritesheet sheet, Rectangle rectangle) {
     }
 
     public void MoveUV(int x, int y) {
-        MoveUV(new Rectangle(x, y, SourceRectangle.Width, SourceRectangle.Height))
+        MoveUV(new Rectangle(x, y, SourceRectangle.Width, SourceRectangle.Height));
     }
 
     public void MoveUV(int x, int y, int width, int height) {

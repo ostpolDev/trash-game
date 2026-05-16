@@ -50,6 +50,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\DoubleEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\EndEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\FloatEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\IdentifierEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\IntEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\InvalidEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\ListEntry.cs" />

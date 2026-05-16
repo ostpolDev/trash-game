@@ -1,6 +1,8 @@
 using Engine.Debugging;
 using Engine.Serialization.Entries;
+using Engine.Utility;
 using Engine.Utility.Exceptions;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
@@ -169,6 +171,10 @@ public class SerializableDictionary : AbstractEntry {
         Data[key] = new RectEntry(rect).SetKey(key);
     }
 
+    public void Put(string key, Identifier identifier) {
+        Data[key] = new IdentifierEntry(identifier).SetKey(key);
+    }
+
     public void Delete(string key) {
         Data.Remove(key);
     }
@@ -233,6 +239,10 @@ public class SerializableDictionary : AbstractEntry {
         return !ContainsKey(key) ? default : ((RectEntry)Data[key]).Data;
     }
 
+    public Identifier GetIdentifier(string key) {
+        return !ContainsKey(key) ? Identifier.EMPTY : ((IdentifierEntry)Data[key]).Data;
+    }
+
     #endregion
 
     public override string ToString() {
@@ -240,7 +250,7 @@ public class SerializableDictionary : AbstractEntry {
     }
 
     public override void RenderDebugEditor() {
-        
+        ImGui.Text("No data to be edited");
     }
 
 }
