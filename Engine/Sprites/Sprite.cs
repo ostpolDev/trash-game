@@ -6,7 +6,7 @@ namespace Engine.Sprites;
 public class Sprite(Spritesheet sheet, Rectangle rectangle) {
 
     public readonly Spritesheet Sheet = sheet;
-    public readonly Rectangle SourceRectangle = rectangle;
+    public Rectangle SourceRectangle { get; private set; } = rectangle;
 
     public void Draw(SpriteBatch spriteBatch, Rectangle destination) {
         Sheet.Draw(spriteBatch, destination, SourceRectangle);
@@ -14,6 +14,18 @@ public class Sprite(Spritesheet sheet, Rectangle rectangle) {
 
     public void Draw(SpriteBatch spriteBatch, Rectangle destination, Color color) {
         Sheet.Draw(spriteBatch, destination, SourceRectangle, color);
+    }
+
+    public void MoveUV(int x, int y) {
+        MoveUV(new Rectangle(x, y, SourceRectangle.Width, SourceRectangle.Height));
+    }
+
+    public void MoveUV(int x, int y, int width, int height) {
+        MoveUV(new Rectangle(x, y, width, height));
+    }
+
+    public void MoveUV(Rectangle rect) {
+        SourceRectangle = rect;
     }
 
 }

@@ -22,7 +22,7 @@ internal class UIEditor : EditorScene {
 
     private readonly Dictionary<string, Func<UIEditor, AbstractUIComponent>> UI_REGISTRY = new() {
         { "Simple", (scene) => {
-            return new SimpleUIComponent(scene.UI_TEXTURE, new Rectangle(0, 0, 64, 64), 0, 0, 64, 64);
+            return new SimpleUIComponent(scene.UI_TEXTURE.CreateSprite(0, 0, 64, 64), 0, 0, 64, 64);
         } }
     };
 

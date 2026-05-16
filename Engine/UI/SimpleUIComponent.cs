@@ -7,21 +7,19 @@ namespace Engine.UI;
 
 public class SimpleUIComponent : AbstractUIComponent {
 
-    public readonly Spritesheet Spritesheet;
-    public Rectangle SourceRectangle;
+    public readonly Sprite Sprite;
     public Color Color = Color.White;
 
-    public SimpleUIComponent(Spritesheet spritesheet, Rectangle source, int x = 0, int y = 0, int w = 0, int h = 0, UIAnchorPosition anchorPosition = UIAnchorPosition.TOP_LEFT) : base(x, y, w, h, anchorPosition) {
-        Spritesheet = spritesheet;
-        SourceRectangle = source;
+    public SimpleUIComponent(Sprite sprite, int x = 0, int y = 0, int w = 0, int h = 0, UIAnchorPosition anchorPosition = UIAnchorPosition.TOP_LEFT) : base(x, y, w, h, anchorPosition) {
+        Sprite = sprite;
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
-        Spritesheet.Draw(spriteBatch, ScreenArea, SourceRectangle, Color);
+        Sprite.Draw(spriteBatch, ScreenArea, Color);
     }
 
-    public void SetSourceRectangle(int x, int y, int width, int height) {
-        SourceRectangle = new(x, y, width, height);
+    public void SetSpriteUV(int x, int y, int width, int height) {
+        Sprite.MoveUV(x, y, width, height);
     }
 
     protected override void CreateDebugRenderer() {
