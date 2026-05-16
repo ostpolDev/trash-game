@@ -32,6 +32,22 @@ public class Spritesheet {
         }
     }
 
+    public Sprite CreateSprite(Rectangle rectangle) {
+        return new(this, rectangle);
+    }
+
+    public Sprite CreateSprite(int i) {
+        return new(this, GetRectangleForSprite(i));
+    }
+
+    public Sprite CreateSprite(int x, int y) {
+        return new(this, GetRectangleForSprite(x, y));
+    }
+
+    public Sprite CreateSprite(int x, int y, int width, int height) {
+        return new(this, new Rectangle(x, y, width, height));
+    }
+
     private void Instance_OnLoadContent(object sender, Events.LoadContentEventArgs e) {
         Texture = e.ContentManager.Load<Texture2D>(TexturePath);
         BaseGame.Instance.OnLoadContent -= Instance_OnLoadContent;
