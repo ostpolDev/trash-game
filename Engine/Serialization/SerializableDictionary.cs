@@ -48,6 +48,10 @@ public class SerializableDictionary : AbstractEntry {
 
     public static void WriteToFile(string filePath, SerializableDictionary dictionary, bool compress = true) {
         using FileStream stream = File.Create(filePath);
+        WriteToFile(stream, dictionary, compress);
+    }
+
+    public static void WriteToFile(FileStream stream, SerializableDictionary dictionary, bool compress = true) {
         stream.WriteByte((byte)(compress ? 1 : 0));
         stream.Write(GetHeaderBytes());
 
@@ -68,6 +72,10 @@ public class SerializableDictionary : AbstractEntry {
         }
 
         using FileStream stream = File.OpenRead(filePath);
+        return ReadFromFile(stream);
+    }
+
+    public static SerializableDictionary ReadFromFile(FileStream stream) {
         bool isCompressed = stream.ReadByte() == 1;
         byte[] headerCheck = new byte[GetHeaderBytes().Length];
         stream.ReadExactly(headerCheck);
@@ -88,7 +96,6 @@ public class SerializableDictionary : AbstractEntry {
             dictionary.Read(reader);
             return dictionary;
         }
-
     }
 
     public bool ContainsKey(string key) {
