@@ -3,16 +3,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Sprites;
 
-public class Sprite(Spritesheet sheet, Rectangle rectangle) {
+public struct Sprite(Spritesheet sheet, Rectangle rectangle) {
 
     public readonly Spritesheet Sheet = sheet;
     public Rectangle SourceRectangle { get; private set; } = rectangle;
 
-    public void Draw(SpriteBatch spriteBatch, Rectangle destination) {
+    public readonly void Draw(SpriteBatch spriteBatch, Rectangle destination) {
         Sheet.Draw(spriteBatch, destination, SourceRectangle);
     }
 
-    public void Draw(SpriteBatch spriteBatch, Rectangle destination, Color color) {
+    public readonly void Draw(SpriteBatch spriteBatch, Rectangle destination, Color color) {
         Sheet.Draw(spriteBatch, destination, SourceRectangle, color);
     }
 
