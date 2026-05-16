@@ -3,21 +3,21 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Sprites;
 
-public struct Sprite(Spritesheet sheet, Rectangle rectangle) {
+public class Sprite(Spritesheet sheet, Rectangle rectangle) {
 
     public readonly Spritesheet Sheet = sheet;
     public Rectangle SourceRectangle { get; private set; } = rectangle;
 
-    public readonly void Draw(SpriteBatch spriteBatch, Rectangle destination) {
+    public void Draw(SpriteBatch spriteBatch, Rectangle destination) {
         Sheet.Draw(spriteBatch, destination, SourceRectangle);
     }
 
-    public readonly void Draw(SpriteBatch spriteBatch, Rectangle destination, Color color) {
+    public void Draw(SpriteBatch spriteBatch, Rectangle destination, Color color) {
         Sheet.Draw(spriteBatch, destination, SourceRectangle, color);
     }
 
     public void MoveUV(int x, int y) {
-        MoveUV(new Rectangle(x, y, SourceRectangle.Width, SourceRectangle.Height));
+        MoveUV(new Rectangle(x, y, SourceRectangle.Width, SourceRectangle.Height))
     }
 
     public void MoveUV(int x, int y, int width, int height) {
