@@ -74,6 +74,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)utility\Direction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\exceptions\FileHeaderMissingException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\Identifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\PathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Plane.cs" />
   </ItemGroup>

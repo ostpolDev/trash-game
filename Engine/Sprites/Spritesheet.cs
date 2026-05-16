@@ -1,5 +1,7 @@
+using Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace Engine.Sprites;
 
@@ -14,6 +16,9 @@ public class Spritesheet {
     public readonly int SpriteHeight;
 
     private readonly string TexturePath;
+
+    private readonly Dictionary<Identifier, Sprite> SpriteLookup = [];
+    public int SpriteCount { get { return SpriteLookup.Count; } }
 
     public Spritesheet(Texture2D texture, int spriteWidth = 0, int spriteHeight = 0) {
         Texture = texture;
@@ -32,20 +37,8 @@ public class Spritesheet {
         }
     }
 
-    public Sprite CreateSprite(Rectangle rectangle) {
-        return new(this, rectangle);
-    }
-
-    public Sprite CreateSprite(int i) {
-        return new(this, GetRectangleForSprite(i));
-    }
-
-    public Sprite CreateSprite(int x, int y) {
-        return new(this, GetRectangleForSprite(x, y));
-    }
-
-    public Sprite CreateSprite(int x, int y, int width, int height) {
-        return new(this, new Rectangle(x, y, width, height));
+    public bool ContainsSprite(Identifier identifier) {
+        return SpriteLookup.ContainsKey(identifier);
     }
 
     private void Instance_OnLoadContent(object sender, Events.LoadContentEventArgs e) {
@@ -79,6 +72,8 @@ public class Spritesheet {
         return GetRectangleForSprite(x, y, w, h);
     }
 
+    #region Draw Helpers
+
     public void Draw(SpriteBatch spriteBatch, Rectangle destination, int i) {
         (int x, int y) = ConvertCoordinates(i);
         Draw(spriteBatch, destination, x, y, SpriteWidth, SpriteHeight);
@@ -108,5 +103,65 @@ public class Spritesheet {
     public void Draw(SpriteBatch spriteBatch, Rectangle destination) {
         spriteBatch.Draw(Texture, destination, Color.White);
     }
+
+    #endregion
+
+    #region Sprite Helpers
+
+    public Sprite CreateSprite(Rectangle rectangle) {
+        return new(this, rectangle);
+    }
+
+    public Sprite CreateSprite(int i) {
+        return new(this, GetRectangleForSprite(i));
+    }
+
+    public Sprite CreateSprite(int x, int y) {
+        return new(this, GetRectangleForSprite(x, y));
+    }
+
+    public Sprite CreateSprite(int x, int y, int width, int height) {
+        return new(this, new Rectangle(x, y, width, height));
+    }
+
+    public Sprite Get(Identifier identifier) {
+        if (!SpriteLookup.TryGetValue(identifier, out Sprite sprite)) return null;
+        return sprite;
+    }
+
+    public Spritesheet With(Identifier identifier, Sprite sprite) {
+        SpriteLookup[identifier] = sprite;
+        return this;
+    }
+
+    public Spritesheet With(Identifier identifier, int i) {
+        SpriteLookup[identifier] = CreateSprite(i);
+        return this;
+    }
+
+    public Spritesheet With(Identifier identifier, int x, int y) {
+        SpriteLookup[identifier] = CreateSprite(x, y);
+        return this;
+    }
+
+    public Spritesheet With(Identifier identifier, int x, int y, int width, int height) {
+        SpriteLookup[identifier] = CreateSprite(x, y, width, height);
+        return this;
+    }
+
+    public Spritesheet With(Identifier identifier, Rectangle rectangle) {
+        SpriteLookup[identifier] = CreateSprite(rectangle);
+        return this;
+    }
+
+    public void AddSprite(Identifier identifier, Sprite sprite) {
+        SpriteLookup[identifier] = sprite;
+    }
+
+    public void RemoveSprite(Identifier identifier) {
+        SpriteLookup.Remove(identifier);
+    }
+
+    #endregion
 
 }
