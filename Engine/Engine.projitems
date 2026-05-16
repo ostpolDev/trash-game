@@ -59,6 +59,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\StringEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\Vector2Entry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\Vector3Entry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)serialization\ISerializable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\SerializableDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\Spritesheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\AbstractUIComponent.cs" />
