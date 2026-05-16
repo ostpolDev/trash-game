@@ -56,7 +56,7 @@ internal class FilePickerWindow : EditorWindow {
         }
         ImGui.SameLine();
         if (ImGui.ArrowButton("##Up", ImGuiDir.Up)) {
-            SwitchPath(Directory.GetParent(CurrentPath).FullName);
+            SwitchPath(Directory.GetParent(CurrentPath)?.FullName);
         }
         ImGui.Text($"{PathItems.Count} Item{(PathItems.Count != 1 ? "s" : "")} ({ms} ms)");
 
@@ -74,6 +74,17 @@ internal class FilePickerWindow : EditorWindow {
                 ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthStretch, 0.8f);
                 ImGui.TableSetupColumn("Type", ImGuiTableColumnFlags.WidthFixed);
                 ImGui.TableHeadersRow();
+
+                if (Directory.GetParent(CurrentPath) != null) {
+                    ImGui.TableNextRow();
+                    ImGui.TableNextColumn();
+                    ImGui.Selectable("..", false, ImGuiSelectableFlags.SpanAllColumns);
+                    if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left)) {
+                        SwitchPath(Directory.GetParent(CurrentPath).FullName);
+                    }
+                    ImGui.TableNextColumn();
+                    ImGui.Text("");
+                }
 
                 foreach (var item in PathItems) {
                     ImGui.TableNextRow();
@@ -125,6 +136,8 @@ internal class FilePickerWindow : EditorWindow {
     }
 
     private void SwitchPath(string path) {
+        if (string.IsNullOrEmpty(path)) return;
+
         if (IsLoading) return;
         sw.Reset();
         sw.Start();
