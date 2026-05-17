@@ -19,6 +19,20 @@ public class PathHelper {
         return dir;
     }
 
+    public static string GetRuntimeContentDirectory() {
+        string dir = Path.Combine(GetAppDirectory(), "RuntimeContent");
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+        return dir;
+    }
+
+    public static string GetModsDirectory() {
+        string dir = Path.Combine(GetAppDirectory(), "Mods");
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+        return dir;
+    }
+
     public static string MakeFileSafe(string str, char replacement = '-') {
         foreach (char c in Path.GetInvalidFileNameChars())
             str = str.Replace(c, replacement);
