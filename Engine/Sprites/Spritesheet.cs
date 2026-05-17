@@ -18,7 +18,7 @@ public class Spritesheet {
 
     public readonly string TexturePath;
 
-    private readonly Dictionary<Identifier, Sprite> SpriteLookup = [];
+    public readonly Dictionary<Identifier, Sprite> SpriteLookup = [];
     public int SpriteCount { get { return SpriteLookup.Count; } }
 
     public Spritesheet(Texture2D texture, int spriteWidth = 0, int spriteHeight = 0) {

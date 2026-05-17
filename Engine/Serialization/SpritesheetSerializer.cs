@@ -18,6 +18,20 @@ public class SpritesheetSerializer {
         if (spritesheet.TexturePath != null)
             data.Put("texture_path", spritesheet.TexturePath);
 
+        SerializableDictionary sprites = new();
+        foreach (var item in spritesheet.SpriteLookup) {
+            SerializableDictionary serializedSprite = new();
+            serializedSprite.Put("id", item.Key);
+            serializedSprite.Put("source", item.Value.SourceRectangle);
+
+            sprites.Put(item.Key.ToString(), serializedSprite);
+        }
+
+        data.Put("sprites", sprites);
+
+        if (Path.GetExtension(filePath) != EXTENSION)
+            filePath = Path.ChangeExtension(filePath, EXTENSION);
+
         using FileStream stream = File.Create(filePath);
         SerializableDictionary.WriteToFile(stream, data);
 
@@ -38,6 +52,9 @@ public class SpritesheetSerializer {
     }
 
     public static Spritesheet ReadFromFile(string filePath, GraphicsDevice graphicsDevice) {
+        if (Path.GetExtension(filePath) != EXTENSION)
+            filePath = Path.ChangeExtension(filePath, EXTENSION);
+
         if (!File.Exists(filePath)) {
             Logger.Error($"Cannot read file at: {filePath}");
             return null;
@@ -66,6 +83,21 @@ public class SpritesheetSerializer {
         texture.SetData(colors);
 
         return new(texture, data.GetInt("sprite_width"), data.GetInt("sprite_height"));
+    }
+
+    public static SerializableDictionary ReadInfoFromFile(string filePath) {
+        if (Path.GetExtension(filePath) != EXTENSION)
+            filePath = Path.ChangeExtension(filePath, EXTENSION);
+
+        if (!File.Exists(filePath)) {
+            Logger.Error($"Cannot read file at: {filePath}");
+            return null;
+        }
+
+        using FileStream stream = File.OpenRead(filePath);
+        SerializableDictionary data = SerializableDictionary.ReadFromFile(stream);
+
+        return data;
     }
 
 }
