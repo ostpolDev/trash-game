@@ -1,6 +1,9 @@
 using Engine.Debugging;
 using Engine.Sprites;
+using Engine.Utility;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Engine.Serialization;
@@ -19,12 +22,14 @@ public class SpritesheetSerializer {
             data.Put("texture_path", spritesheet.TexturePath);
 
         SerializableDictionary sprites = new();
+        int i = 0;
         foreach (var item in spritesheet.SpriteLookup) {
             SerializableDictionary serializedSprite = new();
             serializedSprite.Put("id", item.Key);
             serializedSprite.Put("source", item.Value.SourceRectangle);
 
-            sprites.Put(item.Key.ToString(), serializedSprite);
+            sprites.Put(i.ToString(), serializedSprite);
+            i++;
         }
 
         data.Put("sprites", sprites);
@@ -63,26 +68,45 @@ public class SpritesheetSerializer {
         using FileStream stream = File.OpenRead(filePath);
         SerializableDictionary data = SerializableDictionary.ReadFromFile(stream);
 
+        Spritesheet toReturn = null;
+
         using BinaryReader reader = new(stream);
 
         if (reader.ReadByte() == 0) {
             if (data.ContainsKey("texture_path")) {
-                return new(data.GetString("texture_path"), data.GetInt("sprite_width"), data.GetInt("sprite_height"));
+                toReturn = new(data.GetString("texture_path"), data.GetInt("sprite_width"), data.GetInt("sprite_height"));
             } else {
-                return new((Texture2D)null, data.GetInt("sprite_width"), data.GetInt("sprite_height"));
+                toReturn = new((Texture2D)null, data.GetInt("sprite_width"), data.GetInt("sprite_height"));
+            }
+        } else {
+            int width = reader.ReadInt32();
+            int height = reader.ReadInt32();
+            int size = reader.ReadInt32();
+
+            byte[] colors = reader.ReadBytes(size);
+
+            Texture2D texture = new(graphicsDevice, width, height);
+            texture.SetData(colors);
+
+            toReturn = new(texture, data.GetInt("sprite_width"), data.GetInt("sprite_height"));
+        }
+
+        if (toReturn != null) {
+            SerializableDictionary sprites = data.GetSerializableDictionary("sprites");
+            if (sprites != null) {
+                for (int i = 0; i < sprites.Count; i++) {
+                    SerializableDictionary sprite = sprites.GetSerializableDictionary(i.ToString());
+                    Identifier key = sprite.GetIdentifier("id");
+                    Rectangle rect = sprite.GetRectangle("source");
+                    toReturn.AddSprite(key, new(toReturn, rect));
+                }
+            } else {
+                Logger.Warning($"No sprites found in data for sheet: ${Path.GetFileName(filePath)}");
             }
         }
 
-        int width = reader.ReadInt32();
-        int height = reader.ReadInt32();
-        int size = reader.ReadInt32();
+        return toReturn;
 
-        byte[] colors = reader.ReadBytes(size);
-
-        Texture2D texture = new(graphicsDevice, width, height);
-        texture.SetData(colors);
-
-        return new(texture, data.GetInt("sprite_width"), data.GetInt("sprite_height"));
     }
 
     public static SerializableDictionary ReadInfoFromFile(string filePath) {
