@@ -1,11 +1,13 @@
+using Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Sprites;
 
-public class Sprite(Spritesheet sheet, Rectangle rectangle) {
+public class Sprite(Spritesheet sheet, Identifier identifier, Rectangle rectangle) {
 
     public readonly Spritesheet Sheet = sheet;
+    public readonly Identifier Identifier = identifier;
     public Rectangle SourceRectangle { get; private set; } = rectangle;
 
     public void Draw(SpriteBatch spriteBatch, Rectangle destination) {

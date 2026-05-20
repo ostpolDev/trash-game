@@ -1,3 +1,4 @@
+using Engine.Serialization;
 using Engine.Sprites;
 using Engine.UI.Debugging;
 using Microsoft.Xna.Framework;
@@ -22,10 +23,25 @@ public class SimpleUIComponent : AbstractUIComponent {
         Sprite.MoveUV(x, y, width, height);
     }
 
+
+    public override void LoadData(SerializableDictionary dictionary) {
+        base.LoadData(dictionary);
+        Color = dictionary.GetColor("color");
+        // TODO: Load Sprite
+    }
+
+    public override void WriteData(SerializableDictionary dictionary) {
+        base.WriteData(dictionary);
+        dictionary.Put("sprite", Sprite.Identifier);
+        dictionary.Put("color", Color);
+    }
+
+
 #if DEBUG
     protected override void CreateDebugRenderer() {
         DebugRenderer = new SimpleRenderer(this);
     }
+
 #endif
 
 }

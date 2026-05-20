@@ -1,3 +1,4 @@
+using Engine.Serialization;
 using Engine.UI.Debugging;
 using Engine.Utility;
 using Microsoft.Xna.Framework;
@@ -7,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Engine.UI;
 
-public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
+public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, ISerializable {
 
     public readonly string UID = Guid.NewGuid().ToString();
     public int RelativeZIndex { get; private set; } = 0;
@@ -232,6 +233,27 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
     public void SetPadding(Direction direction, int value) {
         Padding[(int)direction] = value;
         RecalculateScreenPosition();
+    }
+
+    public virtual void LoadData(SerializableDictionary dictionary) {
+        LocalArea = dictionary.GetRectangle("position");
+        AnchorPosition = (UIAnchorPosition)dictionary.GetByte("anchor");
+        SetZIndex(dictionary.GetInt("z"));
+        PositionRelativeToParent = dictionary.GetBool("relative_position");
+        IsEnabled = dictionary.GetBool("enabled");
+
+        RecalculateScreenPosition();
+    }
+
+    public virtual void WriteData(SerializableDictionary dictionary) {
+        dictionary.Put("type", GetType().Name.ToString());
+        dictionary.Put("position", LocalArea);
+        dictionary.Put("anchor", (byte)AnchorPosition);
+        if (HasParent)
+            dictionary.Put("parent", Parent.UID);
+        dictionary.Put("z", RelativeZIndex);
+        dictionary.Put("relative_position", PositionRelativeToParent);
+        dictionary.Put("enabled", IsEnabled);
     }
 
 #if DEBUG

@@ -1,10 +1,11 @@
+using Engine.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
 namespace Engine.UI;
 
-public class UIManager : Component {
+public class UIManager : Component, ISerializable {
 
     public readonly List<AbstractUIComponent> Components = [];
     private readonly List<ITickableUIComponent> TickableComponents = [];
@@ -66,6 +67,14 @@ public class UIManager : Component {
     public override void FixedUpdate() {
         foreach (ITickableUIComponent tickable in TickableComponents)
             tickable.Tick();
+    }
+
+    public void LoadData(SerializableDictionary dictionary) {
+        throw new System.NotImplementedException();
+    }
+
+    public void WriteData(SerializableDictionary dictionary) {
+        throw new System.NotImplementedException();
     }
 
 }

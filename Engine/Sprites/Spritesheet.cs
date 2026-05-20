@@ -2,11 +2,14 @@ using Engine.Serialization;
 using Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace Engine.Sprites;
 
 public class Spritesheet {
+
+    public readonly string UID = Guid.NewGuid().ToString();
 
     public Texture2D Texture { get; private set; }
     public int Width { get { return Texture.Width; } }
@@ -113,20 +116,20 @@ public class Spritesheet {
 
     #region Sprite Helpers
 
-    public Sprite CreateSprite(Rectangle rectangle) {
-        return new(this, rectangle);
+    public Sprite CreateSprite(Rectangle rectangle, Identifier identifier) {
+        return new(this, identifier, rectangle);
     }
 
-    public Sprite CreateSprite(int i) {
-        return new(this, GetRectangleForSprite(i));
+    public Sprite CreateSprite(int i, Identifier identifier) {
+        return new(this, identifier, GetRectangleForSprite(i));
     }
 
-    public Sprite CreateSprite(int x, int y) {
-        return new(this, GetRectangleForSprite(x, y));
+    public Sprite CreateSprite(int x, int y, Identifier identifier) {
+        return new(this, identifier, GetRectangleForSprite(x, y));
     }
 
-    public Sprite CreateSprite(int x, int y, int width, int height) {
-        return new(this, new Rectangle(x, y, width, height));
+    public Sprite CreateSprite(int x, int y, int width, int height, Identifier identifier) {
+        return new(this, identifier, new Rectangle(x, y, width, height));
     }
 
     public Sprite Get(Identifier identifier) {
@@ -140,22 +143,22 @@ public class Spritesheet {
     }
 
     public Spritesheet With(Identifier identifier, int i) {
-        SpriteLookup[identifier] = CreateSprite(i);
+        SpriteLookup[identifier] = CreateSprite(i, identifier);
         return this;
     }
 
     public Spritesheet With(Identifier identifier, int x, int y) {
-        SpriteLookup[identifier] = CreateSprite(x, y);
+        SpriteLookup[identifier] = CreateSprite(x, y, identifier);
         return this;
     }
 
     public Spritesheet With(Identifier identifier, int x, int y, int width, int height) {
-        SpriteLookup[identifier] = CreateSprite(x, y, width, height);
+        SpriteLookup[identifier] = CreateSprite(x, y, width, height, identifier);
         return this;
     }
 
     public Spritesheet With(Identifier identifier, Rectangle rectangle) {
-        SpriteLookup[identifier] = CreateSprite(rectangle);
+        SpriteLookup[identifier] = CreateSprite(rectangle, identifier);
         return this;
     }
 
