@@ -22,8 +22,10 @@ public class SimpleUIComponent : AbstractUIComponent {
         Sprite.MoveUV(x, y, width, height);
     }
 
+#if DEBUG
     protected override void CreateDebugRenderer() {
         DebugRenderer = new SimpleRenderer(this);
     }
+#endif
 
 }

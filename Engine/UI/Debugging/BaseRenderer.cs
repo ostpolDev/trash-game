@@ -4,6 +4,8 @@ using System.Linq;
 
 namespace Engine.UI.Debugging;
 
+#if DEBUG
+
 public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(component) {
 
     private static readonly string[] AnchorPositions = [.. Enum.GetValues<UIAnchorPosition>().Select(m => m.ToString())];
@@ -113,3 +115,5 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
     }
 
 }
+
+#endif

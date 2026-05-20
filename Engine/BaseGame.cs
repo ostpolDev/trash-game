@@ -51,7 +51,9 @@ public abstract class BaseGame : Game {
 
         if (isDevelopmentMode) {
             RegisterEngineWindows();
+#if DEBUG
             RegisterDebugMenus();
+#endif
 
             DebugMenuManager.CreateMenu("command").IsOpened = false;
         }

@@ -29,7 +29,9 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
 
     public bool IsEnabled = true;
 
+#if DEBUG
     protected UIDebugRenderer DebugRenderer;
+#endif
 
     public readonly bool[] Stretch = new bool[2];
     public readonly int[] Padding = new int[4];
@@ -232,6 +234,8 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
         RecalculateScreenPosition();
     }
 
+#if DEBUG
+
     protected virtual void CreateDebugRenderer() {
         DebugRenderer = new BaseRenderer(this);
     }
@@ -240,5 +244,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent> {
         if (DebugRenderer == null) CreateDebugRenderer();
         DebugRenderer?.Render();
     }
+
+#endif
 
 }

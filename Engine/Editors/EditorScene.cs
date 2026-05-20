@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Editors;
 
+#if DEBUG
+
 public abstract class EditorScene(string name) : Scene(name) {
 
     public void Draw() {
@@ -27,3 +29,5 @@ public abstract class EditorScene(string name) : Scene(name) {
     protected abstract void DrawMenu();
 
 }
+
+#endif

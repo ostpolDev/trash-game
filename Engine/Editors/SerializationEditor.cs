@@ -2,7 +2,6 @@ using Engine.Editors.Windows;
 using Engine.Interaction;
 using Engine.Serialization;
 using Engine.Serialization.Entries;
-using Engine.Utility;
 using Engine.Utility.Exceptions;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
@@ -13,6 +12,8 @@ using System.IO;
 using System.Linq;
 
 namespace Engine.Editors;
+
+#if DEBUG
 
 internal class SerializationEditor : EditorScene {
 
@@ -358,3 +359,5 @@ internal class SerializationEditor : EditorScene {
     }
 
 }
+
+#endif

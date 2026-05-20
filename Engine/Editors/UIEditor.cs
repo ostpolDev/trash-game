@@ -10,6 +10,8 @@ using System.Collections.Generic;
 
 namespace Engine.Editors;
 
+#if DEBUG
+
 internal class UIEditor : EditorScene {
 
     private readonly UIManager manager;
@@ -209,3 +211,5 @@ internal class UIEditor : EditorScene {
     }
 
 }
+
+#endif

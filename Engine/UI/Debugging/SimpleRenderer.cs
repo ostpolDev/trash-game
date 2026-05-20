@@ -3,6 +3,8 @@ using System.Numerics;
 
 namespace Engine.UI.Debugging;
 
+#if DEBUG
+
 public class SimpleRenderer(SimpleUIComponent component) : BaseRenderer(component) {
 
     private readonly int[] UVPos = [component.Sprite.SourceRectangle.X, component.Sprite.SourceRectangle.Y];
@@ -34,3 +36,5 @@ public class SimpleRenderer(SimpleUIComponent component) : BaseRenderer(componen
     }
 
 }
+
+#endif

@@ -17,7 +17,11 @@ public class DebugMenuManager {
 
     private static readonly Dictionary<string, Type> MenuLookup = [];
     private static readonly List<DebugMenu> EnabledMenus = [];
+
+#if DEBUG
     private static readonly Dictionary<string, Type> EditorLookup = [];
+    public static EditorScene ActiveEditorScene { get; private set; }
+#endif
 
     private readonly ImGuiRenderer _imGuiRenderer;
 
@@ -25,8 +29,6 @@ public class DebugMenuManager {
     public static int ShownWindowCount { get { return EnabledMenus.Count; } }
 
     public static bool EnableWindowDrawing = true;
-
-    public static EditorScene ActiveEditorScene { get; private set; }
 
     public static Viewport WindowViewport { get; private set; }
 
@@ -95,6 +97,7 @@ public class DebugMenuManager {
         }
     }
 
+#if DEBUG
     public static void RegisterEditor(string name, Type type) {
         if (!type.IsAssignableTo(typeof(EditorScene))) {
             Logger.Error($"{type.Name} is not assignable to {nameof(EditorScene)}");
@@ -132,12 +135,16 @@ public class DebugMenuManager {
         return [.. EditorLookup.Keys];
     }
 
+#endif
+
     public void Draw(GameTime gameTime) {
         if (!EnableWindowDrawing) return;
 
         _imGuiRenderer.BeforeLayout(gameTime);
 
+#if DEBUG
         ActiveEditorScene?.Draw();
+#endif
 
         foreach (DebugMenu menu in EnabledMenus)
             menu.Draw();

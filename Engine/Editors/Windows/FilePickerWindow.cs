@@ -10,6 +10,8 @@ using System.Numerics;
 
 namespace Engine.Editors.Windows;
 
+#if DEBUG
+
 internal class FilePickerWindow : EditorWindow {
 
     public string ResultPath { get; private set; }
@@ -200,7 +202,6 @@ internal class FilePickerWindow : EditorWindow {
         IMPORT, EXPORT
     }
 
-#if DEBUG
     static FilePickerWindow() {
         PRESET_PATHS = [
                 new("App Data", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)),
@@ -210,7 +211,6 @@ internal class FilePickerWindow : EditorWindow {
                 new("Game Dir", PathHelper.GetAppDirectory())
         ];
     }
-#endif
 
     private struct PathPreset(string name, string path) {
         public string Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -229,3 +229,5 @@ internal class FilePickerWindow : EditorWindow {
     }
 
 }
+
+#endif
