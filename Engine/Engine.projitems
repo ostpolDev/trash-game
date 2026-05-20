@@ -78,6 +78,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)utility\Direction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\drawing\IsometricHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\drawing\Polygon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\drawing\SpriteBatchExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\exceptions\FileHeaderMissingException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Identifier.cs" />
