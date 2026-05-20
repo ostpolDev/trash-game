@@ -10,7 +10,7 @@ public static class SpritesheetExtensions {
     }
 
     public static Spritesheet CreateSpritesheet(this Texture2D texture, int spriteWidth, int spriteHeight) {
-        return new(texture, spriteWidth, spriteHeight);
+        return new(texture, null, spriteWidth, spriteHeight);
     }
 
 }

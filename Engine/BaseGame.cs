@@ -3,6 +3,7 @@ using Engine.Debugging.Menus;
 using Engine.Events;
 using Engine.Interaction;
 using Engine.SceneManagement;
+using Engine.Sprites;
 using Engine.UI;
 using Engine.Utility;
 using Microsoft.Xna.Framework;
@@ -33,6 +34,7 @@ public abstract class BaseGame : Game {
     public event EventHandler<LoadContentEventArgs> OnLoadContent;
     public readonly SceneManager SceneManager;
     public readonly InputManager InputManager = new();
+    public readonly SpriteManager SpriteManager = new();
     public UIManager UIManager { get; private set; }
     public DebugMenuManager DebugMenuManager { get; private set; }
 

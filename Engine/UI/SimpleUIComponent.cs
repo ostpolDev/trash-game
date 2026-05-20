@@ -1,6 +1,8 @@
+using Engine.Debugging;
 using Engine.Serialization;
 using Engine.Sprites;
 using Engine.UI.Debugging;
+using Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -8,7 +10,7 @@ namespace Engine.UI;
 
 public class SimpleUIComponent : AbstractUIComponent {
 
-    public readonly Sprite Sprite;
+    public Sprite Sprite { get; private set; }
     public Color Color = Color.White;
 
     public SimpleUIComponent(Sprite sprite, int x = 0, int y = 0, int w = 0, int h = 0, UIAnchorPosition anchorPosition = UIAnchorPosition.TOP_LEFT) : base(x, y, w, h, anchorPosition) {
@@ -27,7 +29,13 @@ public class SimpleUIComponent : AbstractUIComponent {
     public override void LoadData(SerializableDictionary dictionary) {
         base.LoadData(dictionary);
         Color = dictionary.GetColor("color");
-        // TODO: Load Sprite
+        Identifier spriteId = dictionary.GetIdentifier("sprite");
+        Sprite = BaseGame.Instance.SpriteManager.GetSprite(spriteId);
+
+        if (Sprite == null) {
+            Logger.Shared.Error($"Failed to load sprite {spriteId} for UI component. Disabling component {UID} / {GetType().Name}.");
+            IsEnabled = false;
+        }
     }
 
     public override void WriteData(SerializableDictionary dictionary) {

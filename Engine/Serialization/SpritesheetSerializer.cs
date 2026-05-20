@@ -14,6 +14,7 @@ public class SpritesheetSerializer {
 
     public static void WriteToFile(Spritesheet spritesheet, string filePath) {
         SerializableDictionary data = new();
+        data.Put("id", spritesheet.UID);
         data.Put("sprite_width", spritesheet.SpriteWidth);
         data.Put("sprite_height", spritesheet.SpriteHeight);
 
@@ -66,6 +67,7 @@ public class SpritesheetSerializer {
 
         using FileStream stream = File.OpenRead(filePath);
         SerializableDictionary data = SerializableDictionary.ReadFromFile(stream);
+        string uid = data.GetString("id", null);
 
         Spritesheet toReturn = null;
 
@@ -73,9 +75,9 @@ public class SpritesheetSerializer {
 
         if (reader.ReadByte() == 0) {
             if (data.ContainsKey("texture_path")) {
-                toReturn = new(data.GetString("texture_path"), data.GetInt("sprite_width"), data.GetInt("sprite_height"));
+                toReturn = new(data.GetString("texture_path"), uid, data.GetInt("sprite_width"), data.GetInt("sprite_height"));
             } else {
-                toReturn = new((Texture2D)null, data.GetInt("sprite_width"), data.GetInt("sprite_height"));
+                toReturn = new((Texture2D)null, uid, data.GetInt("sprite_width"), data.GetInt("sprite_height"));
             }
         } else {
             int width = reader.ReadInt32();
@@ -87,7 +89,7 @@ public class SpritesheetSerializer {
             Texture2D texture = new(graphicsDevice, width, height);
             texture.SetData(colors);
 
-            toReturn = new(texture, data.GetInt("sprite_width"), data.GetInt("sprite_height"));
+            toReturn = new(texture, uid, data.GetInt("sprite_width"), data.GetInt("sprite_height"));
         }
 
         if (toReturn != null) {
@@ -97,7 +99,7 @@ public class SpritesheetSerializer {
                     SerializableDictionary sprite = sprites.GetSerializableDictionary(i.ToString());
                     Identifier key = sprite.GetIdentifier("id");
                     Rectangle rect = sprite.GetRectangle("source");
-                    toReturn.AddSprite(key, new(toReturn, rect));
+                    toReturn.AddSprite(key, new(toReturn, key, rect));
                 }
             } else {
                 Logger.Warning($"No sprites found in data for sheet: ${Path.GetFileName(filePath)}");

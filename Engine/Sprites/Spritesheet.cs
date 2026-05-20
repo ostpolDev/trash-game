@@ -9,7 +9,7 @@ namespace Engine.Sprites;
 
 public class Spritesheet {
 
-    public readonly string UID = Guid.NewGuid().ToString();
+    public readonly string UID;
 
     public Texture2D Texture { get; private set; }
     public int Width { get { return Texture.Width; } }
@@ -24,16 +24,18 @@ public class Spritesheet {
     public readonly Dictionary<Identifier, Sprite> SpriteLookup = [];
     public int SpriteCount { get { return SpriteLookup.Count; } }
 
-    public Spritesheet(Texture2D texture, int spriteWidth = 0, int spriteHeight = 0) {
+    public Spritesheet(Texture2D texture, string uid = null, int spriteWidth = 0, int spriteHeight = 0) {
         Texture = texture;
         SpriteWidth = spriteWidth;
         SpriteHeight = spriteHeight;
+        UID = uid ?? Guid.NewGuid().ToString();
     }
 
-    public Spritesheet(string path, int spriteWidth = 0, int spriteHeight = 0) {
+    public Spritesheet(string path, string uid = null, int spriteWidth = 0, int spriteHeight = 0) {
         SpriteWidth = spriteWidth;
         SpriteHeight = spriteHeight;
         TexturePath = path;
+        UID = uid ?? Guid.NewGuid().ToString();
         if (BaseGame.HasLoadedContent) {
             Texture = BaseGame.Instance.Content.Load<Texture2D>(path);
         } else {

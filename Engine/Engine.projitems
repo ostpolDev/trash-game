@@ -65,6 +65,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)serialization\SerializableDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\SpritesheetSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\Sprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)sprites\SpriteManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\Spritesheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\SpritesheetExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\AbstractUIComponent.cs" />
