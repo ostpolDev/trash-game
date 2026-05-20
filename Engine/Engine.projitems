@@ -18,6 +18,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)SceneManagement\" />
     <Folder Include="$(MSBuildThisFileDirectory)UI\Debugging\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Exceptions\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utility\Drawing\" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
@@ -75,6 +76,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIAnchorPosition.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Direction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\drawing\IsometricHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\exceptions\FileHeaderMissingException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Identifier.cs" />
