@@ -1,5 +1,6 @@
 using Engine.Serialization;
 using Engine.Utility;
+using Engine.Utility.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -106,6 +107,18 @@ public class Spritesheet {
         return new Rectangle(0, 0, Width, Height).Contains(rectangle);
     }
 
+    public Sprite BlitAndAddSprite(Texture2D source, Rectangle sourceRectangle, Identifier id) {
+        Rectangle freeRect = GetFreeSpritePosition(sourceRectangle.Width, sourceRectangle.Height);
+        if (!IsValidPosition(freeRect)) {
+            return null;
+        }
+
+        Texture.Blit(source, sourceRectangle, freeRect);
+        Sprite sprite = CreateSprite(freeRect, id);
+        AddSprite(sprite);
+        return sprite;
+    }
+
     #region Draw Helpers
 
     public void Draw(SpriteBatch spriteBatch, Rectangle destination, int i) {
@@ -190,6 +203,10 @@ public class Spritesheet {
 
     public void AddSprite(Identifier identifier, Sprite sprite) {
         SpriteLookup[identifier] = sprite;
+    }
+
+    public void AddSprite(Sprite sprite) {
+        SpriteLookup[sprite.Identifier] = sprite;
     }
 
     public void RemoveSprite(Identifier identifier) {
