@@ -25,11 +25,14 @@ public class Spritesheet {
     public readonly Dictionary<Identifier, Sprite> SpriteLookup = [];
     public int SpriteCount { get { return SpriteLookup.Count; } }
 
+    public Rectangle Bounds { get; private set; }
+
     public Spritesheet(Texture2D texture, string uid = null, int spriteWidth = 0, int spriteHeight = 0) {
         Texture = texture;
         SpriteWidth = spriteWidth;
         SpriteHeight = spriteHeight;
         UID = uid ?? Guid.NewGuid().ToString();
+        Bounds = new(0, 0, texture.Width, texture.Height);
     }
 
     public Spritesheet(string path, string uid = null, int spriteWidth = 0, int spriteHeight = 0) {
@@ -39,6 +42,7 @@ public class Spritesheet {
         UID = uid ?? Guid.NewGuid().ToString();
         if (BaseGame.HasLoadedContent) {
             Texture = BaseGame.Instance.Content.Load<Texture2D>(path);
+            Bounds = new(0, 0, Texture.Width, Texture.Height);
         } else {
             BaseGame.Instance.OnLoadContent += Instance_OnLoadContent;
         }
@@ -55,6 +59,7 @@ public class Spritesheet {
     private void Instance_OnLoadContent(object sender, Events.LoadContentEventArgs e) {
         Texture = e.ContentManager.Load<Texture2D>(TexturePath);
         BaseGame.Instance.OnLoadContent -= Instance_OnLoadContent;
+        Bounds = new(0, 0, Texture.Width, Texture.Height);
     }
 
     public (int, int) ConvertCoordinates(int i) {
@@ -104,7 +109,7 @@ public class Spritesheet {
     }
 
     public bool IsValidPosition(Rectangle rectangle) {
-        return new Rectangle(0, 0, Width, Height).Contains(rectangle);
+        return Bounds.Contains(rectangle);
     }
 
     public Sprite BlitAndAddSprite(Texture2D source, Rectangle sourceRectangle, Identifier id) {
