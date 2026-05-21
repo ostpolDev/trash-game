@@ -115,13 +115,18 @@ public class Spritesheet {
                 if (!IsValidPosition(check))
                     continue;
 
+                bool hasIntersected = false;
+
                 foreach (var item in SpriteLookup) {
-                    if (!item.Value.SourceRectangle.Intersects(check)) {
-                        return check;
-                    } else {
+                    if (item.Value.SourceRectangle.Intersects(check)) {
                         x += item.Value.SourceRectangle.Width;
+                        hasIntersected = true;
                         break;
                     }
+                }
+
+                if (!hasIntersected) {
+                    return check;
                 }
 
             }
