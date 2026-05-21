@@ -103,14 +103,18 @@ public class Spritesheet {
     }
 
     public Rectangle GetFreeSpritePosition() {
-        return GetFreeSpritePosition(SpriteWidth, SpriteHeight);
+        return GetFreeSpritePosition(new(0, 0, SpriteWidth, SpriteHeight));
     }
 
-    public Rectangle GetFreeSpritePosition(int spriteWidth, int spriteHeight) {
-        for (int x = 0; x < Width; x += spriteWidth) {
-            for (int y = 0; y < Height; y += spriteHeight) {
+    public Rectangle GetFreeSpritePosition(Rectangle target) {
 
-                Rectangle check = new(x, y, spriteWidth, spriteHeight);
+        for (int x = 0; x < Width - target.Width; x++) {
+            for (int y = 0; y < Height - target.Height; y++) {
+
+                Rectangle check = new(x, y, target.Width, target.Height);
+                if (!IsValidPosition(check))
+                    continue;
+
                 foreach (var item in SpriteLookup) {
                     if (!item.Value.SourceRectangle.Intersects(check)) {
                         return check;
@@ -119,6 +123,7 @@ public class Spritesheet {
 
             }
         }
+
         return new(-1, -1, 0, 0);
     }
 
@@ -127,7 +132,7 @@ public class Spritesheet {
     }
 
     public Sprite BlitAndAddSprite(Texture2D source, Rectangle sourceRectangle, Identifier id) {
-        Rectangle freeRect = GetFreeSpritePosition(sourceRectangle.Width, sourceRectangle.Height);
+        Rectangle freeRect = GetFreeSpritePosition(sourceRectangle);
         if (!IsValidPosition(freeRect)) {
             return null;
         }
