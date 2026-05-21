@@ -82,6 +82,30 @@ public class Spritesheet {
         return GetRectangleForSprite(x, y, w, h);
     }
 
+    public Rectangle GetFreeSpritePosition() {
+        return GetFreeSpritePosition(SpriteWidth, SpriteHeight);
+    }
+
+    public Rectangle GetFreeSpritePosition(int spriteWidth, int spriteHeight) {
+        for (int x = 0; x < Width; x += spriteWidth) {
+            for (int y = 0; y < Height; y += spriteHeight) {
+
+                Rectangle check = new(x, y, spriteWidth, spriteHeight);
+                foreach (var item in SpriteLookup) {
+                    if (!item.Value.SourceRectangle.Intersects(check)) {
+                        return check;
+                    }
+                }
+
+            }
+        }
+        return new(-1, -1, 0, 0);
+    }
+
+    public bool IsValidPosition(Rectangle rectangle) {
+        return new Rectangle(0, 0, Width, Height).Contains(rectangle);
+    }
+
     #region Draw Helpers
 
     public void Draw(SpriteBatch spriteBatch, Rectangle destination, int i) {
