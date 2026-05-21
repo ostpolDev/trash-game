@@ -14,6 +14,7 @@ public class SpritesheetPacker {
     private static readonly Logger Logger = Logger.Get("Sprites");
 
     public static Spritesheet Pack(IEnumerable<TextureIdentifier> textures, GraphicsDevice graphicsDevice) {
+        System.Diagnostics.Stopwatch sw = new();
         TextureIdentifier[] textureIdentifiers = [.. textures];
         int totalArea = textureIdentifiers.Sum(id => id.Texture.Width * id.Texture.Height);
 
@@ -38,6 +39,9 @@ public class SpritesheetPacker {
         foreach (var item in textureIdentifiers) {
             newSheet.BlitAndAddSprite(item.Texture, new(0, 0, item.Texture.Width, item.Texture.Height), item.Identifier);
         }
+
+        sw.Stop();
+        Logger.Info($"Successfully packed {textureIdentifiers.Length} textures to {newSheet.UID} in {sw.ElapsedMilliseconds}ms");
 
         return newSheet;
     }
