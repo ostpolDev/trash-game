@@ -9,18 +9,21 @@ namespace Engine.Sprites;
 
 public class SpritesheetPacker {
 
-    private const int MAX_SIZE = 512;
-
     private static readonly Logger Logger = Logger.Get("Sprites");
 
-    public static Spritesheet Pack(IEnumerable<TextureIdentifier> textures, GraphicsDevice graphicsDevice) {
+    public static Spritesheet Pack(IEnumerable<TextureIdentifier> textures, GraphicsDevice graphicsDevice, int maxSize = 512) {
+        if (maxSize % 8 != 0) {
+            Logger.Error($"Spritesheet packer max size must be a multiple of 8. {maxSize} / 8 = {maxSize / 8}");
+            return null;
+        }
+
         System.Diagnostics.Stopwatch sw = new();
         TextureIdentifier[] textureIdentifiers = [.. textures];
         int totalArea = textureIdentifiers.Sum(id => id.Texture.Width * id.Texture.Height);
 
         int size = 16;
         int finalSize = 0;
-        while (size < MAX_SIZE) {
+        while (size < maxSize) {
             if (size * size >= totalArea) {
                 finalSize = size;
                 break;
@@ -29,7 +32,7 @@ public class SpritesheetPacker {
         }
 
         if (finalSize == 0) {
-            Logger.Error($"Failed to pack spritesheet. {textures.Count()} texture's area too big! {totalArea} > {MAX_SIZE * MAX_SIZE} ({MAX_SIZE} * {MAX_SIZE})");
+            Logger.Error($"Failed to pack spritesheet. {textures.Count()} texture's area too big! {totalArea} > {maxSize * maxSize} ({maxSize} * {maxSize})");
             return null;
         }
 
