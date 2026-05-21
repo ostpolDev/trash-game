@@ -12,7 +12,17 @@ public class Spritesheet {
 
     public readonly string UID;
 
-    public Texture2D Texture { get; private set; }
+    private Texture2D _texture;
+    public Texture2D Texture { 
+        get { 
+            return _texture;
+        } 
+        private set {
+            _texture = value;
+            Bounds = new(0, 0, _texture.Width, _texture.Height);
+        } 
+    }
+
     public int Width { get { return Texture.Width; } }
     public int Height { get { return Texture.Height; } }
     public bool CanDraw { get { return Texture != null; } }
@@ -32,7 +42,6 @@ public class Spritesheet {
         SpriteWidth = spriteWidth;
         SpriteHeight = spriteHeight;
         UID = uid ?? Guid.NewGuid().ToString();
-        Bounds = new(0, 0, texture.Width, texture.Height);
     }
 
     public Spritesheet(string path, string uid = null, int spriteWidth = 0, int spriteHeight = 0) {
@@ -42,10 +51,16 @@ public class Spritesheet {
         UID = uid ?? Guid.NewGuid().ToString();
         if (BaseGame.HasLoadedContent) {
             Texture = BaseGame.Instance.Content.Load<Texture2D>(path);
-            Bounds = new(0, 0, Texture.Width, Texture.Height);
         } else {
             BaseGame.Instance.OnLoadContent += Instance_OnLoadContent;
         }
+    }
+
+    public Spritesheet(GraphicsDevice graphicsDevice, int width, int height, string uid = null, int spriteWidth = 0, int spriteHeight = 0) {
+        Texture = new(graphicsDevice, width, height);
+        SpriteWidth = spriteWidth;
+        SpriteHeight = spriteHeight;
+        UID = uid ?? Guid.NewGuid().ToString();
     }
 
     public static Spritesheet FromFile(string filePath, GraphicsDevice graphicsDevice) {
@@ -59,7 +74,6 @@ public class Spritesheet {
     private void Instance_OnLoadContent(object sender, Events.LoadContentEventArgs e) {
         Texture = e.ContentManager.Load<Texture2D>(TexturePath);
         BaseGame.Instance.OnLoadContent -= Instance_OnLoadContent;
-        Bounds = new(0, 0, Texture.Width, Texture.Height);
     }
 
     public (int, int) ConvertCoordinates(int i) {
