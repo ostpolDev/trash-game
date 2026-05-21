@@ -68,6 +68,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)sprites\SpriteManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\Spritesheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\SpritesheetExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)sprites\SpritesheetPacker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\AbstractUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\BaseRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\SimpleRenderer.cs" />
