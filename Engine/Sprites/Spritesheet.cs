@@ -108,8 +108,8 @@ public class Spritesheet {
 
     public Rectangle GetFreeSpritePosition(Rectangle target) {
 
-        for (int x = 0; x < Width - target.Width; x++) {
-            for (int y = 0; y < Height - target.Height; y++) {
+        for (int y = 0; y < Height - target.Height; y++) {
+            for (int x = 0; x < Width - target.Width; x++) {
 
                 Rectangle check = new(x, y, target.Width, target.Height);
                 if (!IsValidPosition(check))
@@ -118,6 +118,9 @@ public class Spritesheet {
                 foreach (var item in SpriteLookup) {
                     if (!item.Value.SourceRectangle.Intersects(check)) {
                         return check;
+                    } else {
+                        x += item.Value.SourceRectangle.Width;
+                        break;
                     }
                 }
 
