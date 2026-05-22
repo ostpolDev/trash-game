@@ -1,4 +1,5 @@
 using Engine.Debugging;
+using Engine.Editors.Windows;
 using Engine.Sprites;
 using Engine.UI;
 using ImGuiNET;
@@ -21,6 +22,8 @@ internal class UIEditor : EditorScene {
     private AbstractUIComponent selectedComponent;
 
     public Spritesheet UI_TEXTURE { get; private set; }
+
+    private FilePickerWindow FilePickerWindow;
 
     private readonly Dictionary<string, Func<UIEditor, AbstractUIComponent>> UI_REGISTRY = new() {
         { "Simple", (scene) => {
@@ -52,6 +55,10 @@ internal class UIEditor : EditorScene {
         }
 
         DrawInspectorWindow();
+
+        if (FilePickerWindow != null && FilePickerWindow.Draw()) {
+            
+        }
     }
 
     private void DrawComponentsWindow() {
