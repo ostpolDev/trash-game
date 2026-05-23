@@ -33,9 +33,8 @@ internal class SerializationEditor : EditorScene {
     private AbstractEntry ToEditTarget;
     private AbstractEntry ToEditParent;
 
-    private bool showMessage = false;
-    private string messageTitle = null;
-    private string messageContent = null;
+    private ConfirmationWindow ConfirmationWindow;
+
     private bool compressedExport = true;
 
     private FilePickerWindow FilePickerWindow;
@@ -91,21 +90,7 @@ internal class SerializationEditor : EditorScene {
             FilePickerWindow = null;
         }
 
-        if (showMessage) {
-            ImGui.SetNextWindowPos(new(ImGui.GetIO().DisplaySize.X / 2, ImGui.GetIO().DisplaySize.Y / 2), ImGuiCond.Appearing, new(0.5f, 0.5f));
-            ImGui.Begin(messageTitle ?? "Message", ImGuiWindowFlags.AlwaysAutoResize);
-
-            if (messageContent != null)
-                ImGui.Text(messageContent);
-
-            if (ImGui.Button("Close")) {
-                showMessage = false;
-                messageContent = null;
-                messageTitle = null;
-            }
-            ImGui.End();
-
-        }
+        ConfirmationWindow?.Draw();
 
     }
 
@@ -228,9 +213,7 @@ internal class SerializationEditor : EditorScene {
     }
 
     private void ShowMessage(string msg, string title = null) {
-        messageContent = msg;
-        messageTitle = title;
-        showMessage = true;
+        ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, msg, title, ConfirmationWindow.Buttons.OK);
     }
 
     private void HandleSelectFile() {

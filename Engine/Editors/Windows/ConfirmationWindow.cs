@@ -24,7 +24,8 @@ internal class ConfirmationWindow : EditorWindow {
     }
 
     public override bool Draw() {
-        ImGui.Begin(Title, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoDocking);
+        ImGui.SetNextWindowPos(new(ImGui.GetIO().DisplaySize.X / 2, ImGui.GetIO().DisplaySize.Y / 2), ImGuiCond.Appearing, new(0.5f, 0.5f));
+        ImGui.Begin(Title, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.AlwaysAutoResize);
 
         if (Message != null)
             ImGui.Text(Message);

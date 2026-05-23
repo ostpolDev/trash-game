@@ -24,6 +24,7 @@ internal class UIEditor : EditorScene {
     public Spritesheet UI_TEXTURE { get; private set; }
 
     private FilePickerWindow FilePickerWindow;
+    private ConfirmationWindow ConfirmationWindow;
 
     private readonly Dictionary<string, Func<UIEditor, AbstractUIComponent>> UI_REGISTRY = new() {
         { "Simple", (scene) => {
@@ -60,6 +61,8 @@ internal class UIEditor : EditorScene {
             HandleFilePicker();
             FilePickerWindow = null;
         }
+
+        ConfirmationWindow?.Draw();
 
     }
 
@@ -201,7 +204,11 @@ internal class UIEditor : EditorScene {
             ImGui.Separator();
 
             if (ImGui.MenuItem("Delete all")) {
-                
+                ConfirmationWindow = new((action) => {
+                    if (action == ConfirmationWindow.Buttons.OK) {
+                        BaseGame.Instance.UIManager.ClearAll();
+                    }
+                }, "This will delete all existing components and cannot be undone!", "Are you sure?", ConfirmationWindow.Buttons.OK | ConfirmationWindow.Buttons.CANCEL);
             }
 
             ImGui.EndMenu();
