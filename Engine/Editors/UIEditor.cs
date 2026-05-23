@@ -61,7 +61,8 @@ internal class UIEditor : EditorScene {
         DrawInspectorWindow();
 
         if (FilePickerWindow != null && FilePickerWindow.Draw()) {
-            HandleFilePicker();
+            if (!FilePickerWindow.WasCancelled)
+                HandleFilePicker();
             FilePickerWindow = null;
         }
 
@@ -179,7 +180,7 @@ internal class UIEditor : EditorScene {
                     return;
                 }
 
-                filePath = Path.ChangeExtension(filePath, PathHelper.COMPRESSED_DATA_FILE_EXTENSION);
+                filePath = PathHelper.EnsureValidSaveFileExtension(filePath);
             }
             SerializableDictionary dict = new();
             BaseGame.Instance.UIManager.WriteData(dict);

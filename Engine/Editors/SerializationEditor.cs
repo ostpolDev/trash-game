@@ -2,6 +2,7 @@ using Engine.Editors.Windows;
 using Engine.Interaction;
 using Engine.Serialization;
 using Engine.Serialization.Entries;
+using Engine.Utility;
 using Engine.Utility.Exceptions;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
@@ -229,8 +230,8 @@ internal class SerializationEditor : EditorScene {
                 return;
             }
             string ext = Path.GetExtension(fileName);
-            if (ext != ".dat" && ext != ".gz" && ext != ".dat.gz") {
-                ShowMessage($"The following file name is invalid:\n{Path.GetFileName(fileName)}\nThe following extensions are supported: .gz, .dat");
+            if (ext != PathHelper.DATA_FILE_EXTENSION && ext != PathHelper.COMPRESSED_DATA_FILE_EXTENSION) {
+                ShowMessage($"The following file name is invalid:\n{Path.GetFileName(fileName)}\nThe following extensions are supported: {PathHelper.DATA_FILE_EXTENSION}, {PathHelper.COMPRESSED_DATA_FILE_EXTENSION}");
                 return;
             }
 
@@ -252,13 +253,7 @@ internal class SerializationEditor : EditorScene {
 
             try {
 
-                string ext = Path.GetExtension(fileName);
-                if (ext != ".dat" && ext != ".gz" && ext != ".dat.gz") {
-                    fileName = $"{fileName}.dat";
-                    if (compressedExport) {
-                        fileName = $"{fileName}.gz";
-                    }
-                }
+                fileName = PathHelper.EnsureValidSaveFileExtension(fileName, compressedExport);
 
                 SerializableDictionary.WriteToFile(fileName, Data, compressedExport);
 

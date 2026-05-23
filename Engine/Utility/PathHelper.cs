@@ -5,8 +5,8 @@ namespace Engine.Utility;
 
 public class PathHelper {
 
-    public const string DATA_FILE_EXTENSION = ".dat";
-    public const string COMPRESSED_DATA_FILE_EXTENSION = ".gz";
+    public const string DATA_FILE_EXTENSION = ".save";
+    public const string COMPRESSED_DATA_FILE_EXTENSION = ".csave";
 
     public static string GetAuthorDirectory() {
         string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Configuration.DEVELOPER_NAME);
@@ -40,6 +40,18 @@ public class PathHelper {
         foreach (char c in Path.GetInvalidFileNameChars())
             str = str.Replace(c, replacement);
         return str;
+    }
+
+    public static string EnsureValidSaveFileExtension(string filename, bool compress = true) {
+        string ext = Path.GetExtension(filename);
+        if (ext != DATA_FILE_EXTENSION && ext != COMPRESSED_DATA_FILE_EXTENSION) {
+            if (compress) {
+                filename = Path.ChangeExtension(filename, COMPRESSED_DATA_FILE_EXTENSION);
+            } else {
+                filename = Path.ChangeExtension(filename, DATA_FILE_EXTENSION);
+            }
+        }
+        return filename;
     }
 
 }

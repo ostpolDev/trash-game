@@ -1,6 +1,8 @@
+using Engine.Debugging;
 using Engine.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace Engine.UI;
@@ -9,8 +11,10 @@ public class UIManager : Component, ISerializable {
 
     public readonly List<AbstractUIComponent> Components = [];
     private readonly List<ITickableUIComponent> TickableComponents = [];
+    private static readonly Dictionary<string, Type> uiComponentTypeLookup = [];
 
     public int ChildCount { get { return Components.Count; } }
+    public static int RegisteredComponents { get { return uiComponentTypeLookup.Count; } }
     
 
     public static UIManager Singleton { get; private set; }
@@ -84,6 +88,48 @@ public class UIManager : Component, ISerializable {
     public void ClearAll() {
         TickableComponents.Clear();
         Components.Clear();
+    }
+
+    public static AbstractUIComponent CreateComponentFromType(Type type, params object[] args) {
+        if (!type.IsAssignableTo(typeof(AbstractUIComponent))) {
+            Logger.Shared.Error($"Failed to create UI component from type. Type {type.Name} is not assignable to {nameof(AbstractUIComponent)}");
+            return null;
+        }
+        try {
+
+            AbstractUIComponent component = (AbstractUIComponent)Activator.CreateInstance(type, args);
+            return component;
+
+        } catch (Exception e) {
+            Logger.Shared.Exception(e);
+            return null;
+        }
+    }
+
+    public static AbstractUIComponent CreateComponentFromType(string typeName, params object[] args) {
+        if (!uiComponentTypeLookup.TryGetValue(typeName, out Type uiType)) {
+            Logger.Shared.Error($"Failed to create UI component from type name. Type not found: {typeName}");
+            return null;
+        }
+
+        return CreateComponentFromType(uiType);
+    }
+
+    public static void RegisterUIComponent(Type type) {
+        if (type == null) return;
+        if (type.IsAbstract) {
+            Logger.Shared.Error($"Failed to register UI component. Type {type.Name} is abstract and cannot be created.");
+        }
+        if (!type.IsAssignableTo(typeof(AbstractUIComponent))) {
+            Logger.Shared.Error($"Failed to register UI component. Type {type.Name} is not assignable to {nameof(AbstractUIComponent)}");
+            return;
+        }
+
+        uiComponentTypeLookup[type.Name] = type;
+    }
+
+    static UIManager() {
+        RegisterUIComponent(typeof(SimpleUIComponent));
     }
 
 }

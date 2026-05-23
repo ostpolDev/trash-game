@@ -1,3 +1,4 @@
+using Engine.Debugging;
 using Engine.Serialization;
 using Engine.UI.Debugging;
 using Engine.Utility;
@@ -52,7 +53,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
     public AbstractUIComponent() : this(0, 0, 0, 0, UIAnchorPosition.TOP_LEFT) { }
 
-    public abstract void Draw(Microsoft.Xna.Framework.GameTime gameTime, SpriteBatch spriteBatch, float alpha);
+    public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha);
 
     public void SetParent(AbstractUIComponent parent, bool updateScreenPosition = true) {
         Parent?.Children.Remove(this);
@@ -242,6 +243,8 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         PositionRelativeToParent = dictionary.GetBool("relative_position");
         IsEnabled = dictionary.GetBool("enabled");
 
+        ReferenceID = dictionary.GetString("ref", null);
+
         RecalculateScreenPosition();
     }
 
@@ -254,6 +257,8 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         dictionary.Put("z", RelativeZIndex);
         dictionary.Put("relative_position", PositionRelativeToParent);
         dictionary.Put("enabled", IsEnabled);
+        if (ReferenceID != null)
+            dictionary.Put("ref", ReferenceID);
     }
 
 #if DEBUG
