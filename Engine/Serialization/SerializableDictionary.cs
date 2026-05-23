@@ -25,6 +25,12 @@ public class SerializableDictionary : AbstractEntry {
         return DictionaryEntryType.DICTIONARY;
     }
 
+    public DictionaryEntryType GetEntryTypeFor(string key) {
+        if (!Data.TryGetValue(key, out AbstractEntry entry))
+            return DictionaryEntryType.INVALID;
+        return entry.GetEntryType();
+    }
+
     public override void Read(BinaryReader reader) {
         Data.Clear();
 
@@ -118,6 +124,10 @@ public class SerializableDictionary : AbstractEntry {
 
     public AbstractEntry[] GetValues() {
         return [.. Data.Values];
+    }
+
+    public string[] GetKeys() {
+        return [.. Data.Keys];
     }
 
     #region Put Helpers

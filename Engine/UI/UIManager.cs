@@ -9,6 +9,8 @@ namespace Engine.UI;
 
 public class UIManager : Component, ISerializable {
 
+    private static readonly Logger Logger = Logger.Get("UI");
+
     public readonly List<AbstractUIComponent> Components = [];
     private readonly List<ITickableUIComponent> TickableComponents = [];
     private static readonly Dictionary<string, Type> uiComponentTypeLookup = [];
@@ -74,7 +76,23 @@ public class UIManager : Component, ISerializable {
     }
 
     public void LoadData(SerializableDictionary dictionary) {
-        throw new System.NotImplementedException();
+        foreach (string key in dictionary.GetKeys()) {
+            if (dictionary.GetEntryTypeFor(key) == DictionaryEntryType.DICTIONARY) {
+                SerializableDictionary dict = dictionary.GetSerializableDictionary(key);
+                string type = dict.GetString("type");
+                if (type == null) {
+                    Logger.Error($"Failed to load UI component. Type is null for entry {key}");
+                    continue;
+                }
+
+                AbstractUIComponent component = CreateComponentFromType(type);
+                if (component == null) {
+                    Logger.Error($"Failed to load UI component. Could not create");
+                    continue;
+                }
+                component.LoadData(dict);
+            }
+        }
     }
 
     public void WriteData(SerializableDictionary dictionary) {
@@ -92,7 +110,7 @@ public class UIManager : Component, ISerializable {
 
     public static AbstractUIComponent CreateComponentFromType(Type type, params object[] args) {
         if (!type.IsAssignableTo(typeof(AbstractUIComponent))) {
-            Logger.Shared.Error($"Failed to create UI component from type. Type {type.Name} is not assignable to {nameof(AbstractUIComponent)}");
+            Logger.Error($"Failed to create UI component from type. Type {type.Name} is not assignable to {nameof(AbstractUIComponent)}");
             return null;
         }
         try {
@@ -101,14 +119,14 @@ public class UIManager : Component, ISerializable {
             return component;
 
         } catch (Exception e) {
-            Logger.Shared.Exception(e);
+            Logger.Exception(e);
             return null;
         }
     }
 
     public static AbstractUIComponent CreateComponentFromType(string typeName, params object[] args) {
         if (!uiComponentTypeLookup.TryGetValue(typeName, out Type uiType)) {
-            Logger.Shared.Error($"Failed to create UI component from type name. Type not found: {typeName}");
+            Logger.Error($"Failed to create UI component from type name. Type not found: {typeName}");
             return null;
         }
 
@@ -118,10 +136,10 @@ public class UIManager : Component, ISerializable {
     public static void RegisterUIComponent(Type type) {
         if (type == null) return;
         if (type.IsAbstract) {
-            Logger.Shared.Error($"Failed to register UI component. Type {type.Name} is abstract and cannot be created.");
+            Logger.Error($"Failed to register UI component. Type {type.Name} is abstract and cannot be created.");
         }
         if (!type.IsAssignableTo(typeof(AbstractUIComponent))) {
-            Logger.Shared.Error($"Failed to register UI component. Type {type.Name} is not assignable to {nameof(AbstractUIComponent)}");
+            Logger.Error($"Failed to register UI component. Type {type.Name} is not assignable to {nameof(AbstractUIComponent)}");
             return;
         }
 
