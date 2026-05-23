@@ -77,4 +77,9 @@ public class UIManager : Component, ISerializable {
         throw new System.NotImplementedException();
     }
 
+    public void ClearAll() {
+        TickableComponents.Clear();
+        Components.Clear();
+    }
+
 }

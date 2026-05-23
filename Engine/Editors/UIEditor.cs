@@ -57,8 +57,10 @@ internal class UIEditor : EditorScene {
         DrawInspectorWindow();
 
         if (FilePickerWindow != null && FilePickerWindow.Draw()) {
-            
+            HandleFilePicker();
+            FilePickerWindow = null;
         }
+
     }
 
     private void DrawComponentsWindow() {
@@ -160,13 +162,17 @@ internal class UIEditor : EditorScene {
         } catch (Exception e) { Logger.Exception(e); }
     }
 
+    private void HandleFilePicker() {
+
+    }
+
     protected override void DrawMenu() {
         if (ImGui.BeginMenu("File")) {
             if (ImGui.MenuItem("Import", "Ctrl + I")) {
-
+                FilePickerWindow = new(FilePickerWindow.TargetType.FILE, FilePickerWindow.SelectionMode.IMPORT);
             }
             if (ImGui.MenuItem("Export", "Ctrl + E")) {
-
+                FilePickerWindow = new(FilePickerWindow.TargetType.FILE, FilePickerWindow.SelectionMode.EXPORT);
             }
 
             ImGui.EndMenu();
@@ -195,7 +201,7 @@ internal class UIEditor : EditorScene {
             ImGui.Separator();
 
             if (ImGui.MenuItem("Delete all")) {
-
+                
             }
 
             ImGui.EndMenu();

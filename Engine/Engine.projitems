@@ -36,6 +36,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)editors\EditorScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\SerializationEditor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\UIEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)editors\windows\ConfirmationWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\windows\EditorWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\windows\FilePickerWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\LoadContentEventArgs.cs" />
