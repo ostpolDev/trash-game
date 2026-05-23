@@ -1,13 +1,16 @@
 using Engine.Debugging;
 using Engine.Editors.Windows;
+using Engine.Serialization;
 using Engine.Sprites;
 using Engine.UI;
+using Engine.Utility;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Engine.Editors;
 
@@ -166,7 +169,24 @@ internal class UIEditor : EditorScene {
     }
 
     private void HandleFilePicker() {
+        if (FilePickerWindow.SelectMode == FilePickerWindow.SelectionMode.EXPORT) {
+            string filePath = FilePickerWindow.ResultPath;
+            string ext = Path.GetExtension(filePath);
 
+            if (ext != PathHelper.COMPRESSED_DATA_FILE_EXTENSION && ext != PathHelper.DATA_FILE_EXTENSION) {
+                if (File.Exists(filePath)) {
+                    ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, "Cannot override this file as it is not in the correct format", "Error", ConfirmationWindow.Buttons.OK);
+                    return;
+                }
+
+                filePath = Path.ChangeExtension(filePath, PathHelper.COMPRESSED_DATA_FILE_EXTENSION);
+            }
+            SerializableDictionary dict = new();
+            BaseGame.Instance.UIManager.WriteData(dict);
+            SerializableDictionary.WriteToFile(filePath, dict);
+
+            ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"Successfully saved to file:\n{filePath}", "Success");
+        }
     }
 
     protected override void DrawMenu() {

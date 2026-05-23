@@ -74,7 +74,11 @@ public class UIManager : Component, ISerializable {
     }
 
     public void WriteData(SerializableDictionary dictionary) {
-        throw new System.NotImplementedException();
+        foreach (AbstractUIComponent component in Components) {
+            SerializableDictionary dict = new();
+            component.WriteData(dict);
+            dictionary.Put(component.UID, dict);
+        }
     }
 
     public void ClearAll() {

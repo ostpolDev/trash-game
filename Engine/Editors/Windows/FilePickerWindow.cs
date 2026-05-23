@@ -31,6 +31,7 @@ internal class FilePickerWindow : EditorWindow {
     private readonly string FallbackDir = PathHelper.GetAppDirectory();
     private long ms = 0;
     private readonly Stopwatch sw = new();
+    public string ctx = null;
 
     public FilePickerWindow(TargetType pickerMode, SelectionMode selectionMode) {
         PickerMode = pickerMode;
