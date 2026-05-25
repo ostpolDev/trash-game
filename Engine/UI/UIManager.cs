@@ -86,7 +86,7 @@ public class UIManager : Component, ISerializable {
         spriteBatch.Begin(rasterizerState: RasterizerState);
         foreach (AbstractUIComponent component in Components) {
             if (component.ShouldDraw) {
-                if (component.Depth <= ScissorDepth) {
+                if (component.Depth == ScissorDepth) {
                     ScissorDepth = -1;
                     spriteBatch.GraphicsDevice.ScissorRectangle = ViewportRectangle;
                 }
