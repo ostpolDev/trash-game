@@ -79,6 +79,8 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         else
             ZIndex = RelativeZIndex;
 
+        ZIndex += Depth;
+
         foreach (AbstractUIComponent child in Children)
             child.UpdateZIndex();
     }

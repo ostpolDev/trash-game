@@ -57,11 +57,11 @@ public class UIManager : Component, ISerializable {
             foreach (AbstractUIComponent child in component.Children)
                 AddComponent(child, true);
 
-        SortComponentZ();
-
         foreach (AbstractUIComponent comp in Components) {
             comp.UpdateDepth();
         }
+
+        SortComponentZ();
     }
 
     public void RemoveComponent(AbstractUIComponent component, bool withChildren = true) {
@@ -72,11 +72,11 @@ public class UIManager : Component, ISerializable {
             Components.Remove(item);
         }
 
-        SortComponentZ();
-
         foreach (AbstractUIComponent comp in Components) {
             comp.UpdateDepth();
         }
+
+        SortComponentZ();
     }
 
     public void SortComponentZ() {
