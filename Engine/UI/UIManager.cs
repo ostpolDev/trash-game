@@ -1,5 +1,6 @@
 using Engine.Debugging;
 using Engine.Serialization;
+using Engine.Utility.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -23,7 +24,11 @@ public class UIManager : Component, ISerializable {
     public static int RegisteredComponents { get { return uiComponentTypeLookup.Count; } }
 
     private int ScissorDepth = -1;
-    
+
+#if DEBUG
+    public bool Debug_DrawScissorTest = false;
+#endif
+
 
     public static UIManager Singleton { get; private set; }
 
@@ -95,6 +100,11 @@ public class UIManager : Component, ISerializable {
                     spriteBatch.GraphicsDevice.ScissorRectangle = component.ScissorScreenRectangle;
                     ScissorDepth = component.Depth;
                 }
+#if DEBUG
+                if (ScissorDepth != -1) {
+                    spriteBatch.DrawRectangle(component.ScissorScreenRectangle, Color.Red);
+                }
+#endif
             }
         }
         ScissorDepth = -1;
