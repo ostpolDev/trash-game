@@ -97,6 +97,8 @@ public class UIManager : Component, ISerializable {
                 }
             }
         }
+        ScissorDepth = -1;
+        spriteBatch.GraphicsDevice.ScissorRectangle = ViewportRectangle;
         spriteBatch.End();
     }
 
