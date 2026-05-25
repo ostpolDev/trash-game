@@ -1,4 +1,5 @@
 using ImGuiNET;
+using Microsoft.Xna.Framework;
 using System;
 using System.Linq;
 
@@ -21,6 +22,10 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
     private int MinHeight = (int)component.Constraints[1].X;
     private int MaxHeight = (int)component.Constraints[1].Y;
 
+    private readonly int[] ScissorPosition = [component.ScissorRectangle.X, component.ScissorRectangle.Y];
+    private readonly int[] ScissorSize = [component.ScissorRectangle.Width, component.ScissorRectangle.Height];
+    private bool EnableScissor = component.EnableScissor;
+
     public override void Render() {
         if (ImGui.CollapsingHeader("Properties", ImGuiTreeNodeFlags.DefaultOpen)) {
             if (ImGui.InputText("ID", ref ReferenceID, 128)) {
@@ -29,6 +34,7 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
             ImGui.Text($"Screen: ({Component.ScreenArea.X} | {Component.ScreenArea.Y})");
             ImGui.Text($"Global Z: {Component.ZIndex}");
             ImGui.Text($"Children: {Component.ChildCount}");
+            ImGui.Text($"Depth: {Component.Depth}");
         }
         ImGui.Spacing();
 
@@ -110,6 +116,21 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
                 }
             }
             ImGui.Spacing();
+        }
+        ImGui.Spacing();
+
+        if (ImGui.CollapsingHeader("Masking")) {
+            if (ImGui.Checkbox("Enable Scissor Mask", ref EnableScissor)) {
+                Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor);
+            }
+            if (EnableScissor) {
+                if (ImGui.InputInt2("Mask Position", ref ScissorPosition[0])) {
+                    Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor);
+                }
+                if (ImGui.InputInt2("Mask Size", ref ScissorSize[0])) {
+                    Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor);
+                }
+            }
         }
         ImGui.Spacing();
     }
