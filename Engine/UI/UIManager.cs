@@ -66,7 +66,8 @@ public class UIManager : Component, ISerializable {
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
         spriteBatch.Begin();
         foreach (AbstractUIComponent component in Components)
-            component.Draw(gameTime, spriteBatch, alpha);
+            if (component.ShouldDraw)
+                component.Draw(gameTime, spriteBatch, alpha);
         spriteBatch.End();
     }
 

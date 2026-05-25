@@ -29,7 +29,10 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
     private bool PositionRelativeToParent = true;
 
-    public bool IsEnabled = true;
+    public bool IsEnabled { get; private set; } = true;
+    public bool IsParentDisabled { get; private set; } = false;
+
+    public bool ShouldDraw { get { return IsEnabled && !IsParentDisabled; } }
 
 #if DEBUG
     protected UIDebugRenderer DebugRenderer;
@@ -259,6 +262,31 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         dictionary.Put("enabled", IsEnabled);
         if (ReferenceID != null)
             dictionary.Put("ref", ReferenceID);
+    }
+
+    public void SetEnabled(bool isEnabled = true) {
+        IsEnabled = isEnabled;
+        foreach (AbstractUIComponent child in Children) {
+            if (child.IsEnabled)
+                child.UpdateParentDisabled(!IsEnabled);
+        }
+    }
+
+    protected void UpdateParentDisabled(bool isDisabled) {
+        IsParentDisabled = isDisabled;
+        if (IsEnabled) {
+            foreach (AbstractUIComponent child in Children) {
+                child.UpdateParentDisabled(IsParentDisabled);
+            }
+        }
+    }
+
+    public void SetAllChildrenEnabled(bool recursive) {
+        foreach (AbstractUIComponent child in Children) {
+            child.SetEnabled(true);
+            if (recursive)
+                child.SetAllChildrenEnabled(recursive);
+        }
     }
 
 #if DEBUG
