@@ -32,7 +32,14 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     public bool IsEnabled { get; private set; } = true;
     public bool IsParentDisabled { get; private set; } = false;
 
+    public int Depth = 0;
+
     public bool ShouldDraw { get { return IsEnabled && !IsParentDisabled; } }
+
+    public bool EnableScissor { get; protected set; }
+    public Rectangle ScissorRectangle { get; protected set; }
+
+    public Rectangle ScissorScreenRectangle { get; private set; }
 
 #if DEBUG
     protected UIDebugRenderer DebugRenderer;
@@ -96,14 +103,10 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     public void SetZIndex(int index) {
         RelativeZIndex = index;
         UpdateZIndex();
-        UIManager.Singleton?.SortComponentDepth();
+        UIManager.Singleton?.SortComponentZ();
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="deep">If children should be updated too</param>
-    public void RecalculateScreenPosition(bool deep = true) {
+    protected Rectangle GetBounds() {
         Rectangle bounds = new();
         if (HasParent) {
             bounds = Parent.LocalArea;
@@ -111,6 +114,15 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
             bounds.Width = BaseGame.Instance.GraphicsDevice.Viewport.Width;
             bounds.Height = BaseGame.Instance.GraphicsDevice.Viewport.Height;
         }
+        return bounds;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="recursive">If children should be updated too</param>
+    public void RecalculateScreenPosition(bool recursive = true) {
+        Rectangle bounds = GetBounds();
 
         Rectangle localArea = LocalArea;
 
@@ -124,8 +136,9 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         }
 
         ScreenArea = newScreenArea;
+        ScissorScreenRectangle = GetAnchorRelativeRectangle(ScissorRectangle, GetBounds(), AnchorPosition);
 
-        if (deep)
+        if (recursive)
             foreach (AbstractUIComponent component in Children)
                 component.RecalculateScreenPosition();
     }
@@ -286,6 +299,21 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
             child.SetEnabled(true);
             if (recursive)
                 child.SetAllChildrenEnabled(recursive);
+        }
+    }
+
+    public void SetScissor(Rectangle rectangle, bool enabled = true) {
+        EnableScissor = enabled;
+        ScissorRectangle = rectangle;
+        ScissorScreenRectangle = GetAnchorRelativeRectangle(ScissorRectangle, GetBounds(), AnchorPosition);
+    }
+
+    public void UpdateDepth(int i = 0, bool recursive = true) {
+        Depth = i;
+        if (recursive) {
+            foreach (AbstractUIComponent child in Children) {
+                child.UpdateDepth(i + 1);
+            }
         }
     }
 

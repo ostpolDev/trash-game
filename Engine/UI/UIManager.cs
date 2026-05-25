@@ -15,8 +15,14 @@ public class UIManager : Component, ISerializable {
     private readonly List<ITickableUIComponent> TickableComponents = [];
     private static readonly Dictionary<string, Type> uiComponentTypeLookup = [];
 
+    private readonly RasterizerState RasterizerState;
+
+    public Rectangle ViewportRectangle { get; private set; }
+
     public int ChildCount { get { return Components.Count; } }
     public static int RegisteredComponents { get { return uiComponentTypeLookup.Count; } }
+
+    private int ScissorDepth = -1;
     
 
     public static UIManager Singleton { get; private set; }
@@ -24,9 +30,14 @@ public class UIManager : Component, ISerializable {
     public UIManager() {
         Singleton = this;
         BaseGame.Instance.OnWindowResize += Instance_OnWindowResize;
+        RasterizerState = new() {
+            ScissorTestEnable = true,
+            DepthBias = 0
+        };
     }
 
     private void Instance_OnWindowResize(object sender, Events.WindowResizeEventArgs e) {
+        ViewportRectangle = new(0, 0, e.Viewport.Width, e.Viewport.Height);
         foreach (AbstractUIComponent component in Components) {
             component.RecalculateScreenPosition();
         }
@@ -41,7 +52,11 @@ public class UIManager : Component, ISerializable {
             foreach (AbstractUIComponent child in component.Children)
                 AddComponent(child, true);
 
-        SortComponentDepth();
+        SortComponentZ();
+
+        foreach (AbstractUIComponent comp in Components) {
+            comp.UpdateDepth();
+        }
     }
 
     public void RemoveComponent(AbstractUIComponent component, bool withChildren = true) {
@@ -52,10 +67,14 @@ public class UIManager : Component, ISerializable {
             Components.Remove(item);
         }
 
-        SortComponentDepth();
+        SortComponentZ();
+
+        foreach (AbstractUIComponent comp in Components) {
+            comp.UpdateDepth();
+        }
     }
 
-    public void SortComponentDepth() {
+    public void SortComponentZ() {
         Components.Sort();
     }
 
@@ -64,10 +83,20 @@ public class UIManager : Component, ISerializable {
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
-        spriteBatch.Begin();
-        foreach (AbstractUIComponent component in Components)
-            if (component.ShouldDraw)
+        spriteBatch.Begin(rasterizerState: RasterizerState);
+        foreach (AbstractUIComponent component in Components) {
+            if (component.ShouldDraw) {
+                if (component.Depth == ScissorDepth) {
+                    ScissorDepth = -1;
+                    spriteBatch.GraphicsDevice.ScissorRectangle = ViewportRectangle;
+                }
                 component.Draw(gameTime, spriteBatch, alpha);
+                if (component.EnableScissor) {
+                    spriteBatch.GraphicsDevice.ScissorRectangle = component.ScissorScreenRectangle;
+                    ScissorDepth = component.Depth;
+                }
+            }
+        }
         spriteBatch.End();
     }
 
