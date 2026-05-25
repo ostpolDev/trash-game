@@ -136,11 +136,15 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         }
 
         ScreenArea = newScreenArea;
-        ScissorScreenRectangle = GetAnchorRelativeRectangle(ScissorRectangle, GetBounds(), AnchorPosition);
+        RecalculateScissorScreenPosition();
 
         if (recursive)
             foreach (AbstractUIComponent component in Children)
                 component.RecalculateScreenPosition();
+    }
+
+    protected void RecalculateScissorScreenPosition() {
+        ScissorScreenRectangle = GetAnchorRelativeRectangle(ScissorRectangle, GetBounds(), AnchorPosition);
     }
 
     protected Rectangle RecalculateStretching(Rectangle area, Rectangle bounds) {
@@ -305,7 +309,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     public void SetScissor(Rectangle rectangle, bool enabled = true) {
         EnableScissor = enabled;
         ScissorRectangle = rectangle;
-        ScissorScreenRectangle = GetAnchorRelativeRectangle(ScissorRectangle, GetBounds(), AnchorPosition);
+        RecalculateScissorScreenPosition();
     }
 
     public void UpdateDepth(int i = 0, bool recursive = true) {
