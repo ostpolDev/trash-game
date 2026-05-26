@@ -72,6 +72,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         Depth = Parent?.Depth ?? 0;
         UpdateZIndex();
         RecalculateScreenPosition();
+        UIManager.Singleton?.SortComponentZ();
     }
 
     private void UpdateZIndex() {
