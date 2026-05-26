@@ -57,11 +57,7 @@ public class UIManager : Component, ISerializable {
             foreach (AbstractUIComponent child in component.Children)
                 AddComponent(child, true);
 
-        foreach (AbstractUIComponent comp in Components) {
-            comp.UpdateDepth();
-        }
-
-        SortComponentZ();
+        RecalculateAllDepth();
     }
 
     public void RemoveComponent(AbstractUIComponent component, bool withChildren = true) {
@@ -72,6 +68,10 @@ public class UIManager : Component, ISerializable {
             Components.Remove(item);
         }
 
+        RecalculateAllDepth();
+    }
+
+    public void RecalculateAllDepth() {
         foreach (AbstractUIComponent comp in Components) {
             comp.UpdateDepth();
         }

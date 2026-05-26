@@ -69,6 +69,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         Parent?.Children.Remove(this);
         Parent = parent;
         PositionRelativeToParent = updateScreenPosition;
+        Depth = Parent?.Depth ?? 0;
         UpdateZIndex();
         RecalculateScreenPosition();
     }
