@@ -38,7 +38,6 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
     public bool EnableScissor { get; protected set; }
     public Rectangle ScissorRectangle { get; protected set; }
-
     public Rectangle ScissorScreenRectangle { get; private set; }
 
 #if DEBUG
@@ -69,7 +68,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         Parent?.Children.Remove(this);
         Parent = parent;
         PositionRelativeToParent = updateScreenPosition;
-        Depth = Parent?.Depth ?? 0;
+        Depth = Parent?.Depth + 1 ?? 0;
         UpdateZIndex();
         RecalculateScreenPosition();
         UIManager.Singleton?.SortComponentZ();
@@ -267,6 +266,9 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         PositionRelativeToParent = dictionary.GetBool("relative_position");
         IsEnabled = dictionary.GetBool("enabled");
 
+        EnableScissor = dictionary.GetBool("has_mask");
+        ScissorRectangle = dictionary.GetRectangle("mask");
+
         ReferenceID = dictionary.GetString("ref", null);
 
         RecalculateScreenPosition();
@@ -283,6 +285,9 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         dictionary.Put("enabled", IsEnabled);
         if (ReferenceID != null)
             dictionary.Put("ref", ReferenceID);
+
+        dictionary.Put("has_mask", EnableScissor);
+        dictionary.Put("mask", ScissorRectangle);
     }
 
     public void SetEnabled(bool isEnabled = true) {

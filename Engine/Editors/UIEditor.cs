@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 
 namespace Engine.Editors;
@@ -75,7 +76,11 @@ internal class UIEditor : EditorScene {
         ImGui.SetNextWindowSize(new(150, DebugMenuManager.WindowViewport.Height), ImGuiCond.Once);
         ImGui.Begin("Components");
 
-        if (ImGui.TreeNodeEx("Root", ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.OpenOnDoubleClick)) {
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.DefaultOpen;
+        if (manager.ChildCount == 0)
+            flags |= ImGuiTreeNodeFlags.Leaf;
+
+        if (ImGui.TreeNodeEx("Root", flags)) {
             if (ImGui.IsItemClicked()) {
                 selectedComponent = null;
             }
@@ -95,7 +100,12 @@ internal class UIEditor : EditorScene {
 
     private void DrawComponentTree(AbstractUIComponent component, int i) {
         string name = string.IsNullOrEmpty(component.ReferenceID) ? component.GetType().Name : component.ReferenceID;
-        if (ImGui.TreeNodeEx($"{name}##{component.UID}", ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.OpenOnDoubleClick)) {
+
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow;
+        if (component.ChildCount == 0)
+            flags |= ImGuiTreeNodeFlags.Leaf;
+
+        if (ImGui.TreeNodeEx($"{name}##{component.UID}", flags)) {
             if (ImGui.IsItemClicked()) {
                 selectedComponent = component;
             }
@@ -220,6 +230,20 @@ internal class UIEditor : EditorScene {
         if (ImGui.BeginMenu("Edit")) {
             if (ImGui.MenuItem("Find", "Ctrl + F")) {
 
+            }
+
+            ImGui.Separator();
+
+            if (ImGui.BeginMenu("UI Manager")) {
+                if (ImGui.MenuItem("Recalculate Depth")) {
+                    manager.RecalculateAllDepth();
+                }
+                if (ImGui.MenuItem("Sort components")) {
+                    manager.SortComponentZ();
+                }
+                ImGui.Separator();
+                ImGui.Checkbox("Draw Scissor test", ref manager.Debug_DrawScissorTest);
+                ImGui.EndMenu();
             }
 
             ImGui.Separator();

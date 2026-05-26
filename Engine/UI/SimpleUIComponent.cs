@@ -34,7 +34,7 @@ public class SimpleUIComponent : AbstractUIComponent {
 
         if (Sprite == null) {
             Logger.Shared.Error($"Failed to load sprite {spriteId} for UI component. Disabling component {UID} / {GetType().Name}.");
-            IsEnabled = false;
+            SetEnabled(false);
         }
     }
 

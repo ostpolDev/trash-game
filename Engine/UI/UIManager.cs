@@ -73,7 +73,8 @@ public class UIManager : Component, ISerializable {
 
     public void RecalculateAllDepth() {
         foreach (AbstractUIComponent comp in Components) {
-            comp.UpdateDepth();
+            if (comp.Parent == null)
+                comp.UpdateDepth(0, true);
         }
 
         SortComponentZ();
@@ -88,7 +89,7 @@ public class UIManager : Component, ISerializable {
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
-        spriteBatch.Begin(rasterizerState: RasterizerState);
+        spriteBatch.Begin(rasterizerState: RasterizerState, sortMode: SpriteSortMode.Immediate);
         foreach (AbstractUIComponent component in Components) {
             if (component.ShouldDraw) {
                 if (component.Depth <= ScissorDepth) {
@@ -101,7 +102,7 @@ public class UIManager : Component, ISerializable {
                     ScissorDepth = component.Depth;
                 }
 #if DEBUG
-                if (ScissorDepth != -1) {
+                if (Debug_DrawScissorTest && ScissorDepth != -1) {
                     spriteBatch.DrawRectangle(component.ScissorScreenRectangle, Color.Red);
                 }
 #endif
