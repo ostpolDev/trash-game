@@ -72,9 +72,14 @@ public class UIManager : Component, ISerializable {
     }
 
     public void RecalculateAllDepth() {
+        int i = 0;
         foreach (AbstractUIComponent comp in Components) {
-            if (comp.Parent == null)
+            if (comp.Parent == null) {
+                comp.Index = i;
+                comp.UpdateZIndex();
                 comp.UpdateDepth(0, true);
+                i++;
+            }
         }
 
         SortComponentZ();

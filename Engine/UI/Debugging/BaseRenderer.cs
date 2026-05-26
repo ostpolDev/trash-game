@@ -25,6 +25,7 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
     private readonly int[] ScissorPosition = [component.ScissorRectangle.X, component.ScissorRectangle.Y];
     private readonly int[] ScissorSize = [component.ScissorRectangle.Width, component.ScissorRectangle.Height];
     private bool EnableScissor = component.EnableScissor;
+    private int ScissorAnchorPosition = (int)component.ScissorAnchor;
 
     public override void Render() {
         if (ImGui.CollapsingHeader("Properties", ImGuiTreeNodeFlags.DefaultOpen)) {
@@ -35,6 +36,7 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
             ImGui.Text($"Global Z: {Component.ZIndex}");
             ImGui.Text($"Children: {Component.ChildCount}");
             ImGui.Text($"Depth: {Component.Depth}");
+            ImGui.Text($"Index: {Component.Index}");
         }
         ImGui.Spacing();
 
@@ -121,14 +123,24 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
 
         if (ImGui.CollapsingHeader("Masking")) {
             if (ImGui.Checkbox("Enable Scissor Mask", ref EnableScissor)) {
-                Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor);
+                Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor, (UIAnchorPosition)ScissorAnchorPosition);
             }
             if (EnableScissor) {
+                if (ImGui.Combo("Anchor##Scissor", ref ScissorAnchorPosition, AnchorPositions, AnchorPositions.Length)) {
+                    Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor, (UIAnchorPosition)ScissorAnchorPosition);
+                }
                 if (ImGui.InputInt2("Mask Position", ref ScissorPosition[0])) {
-                    Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor);
+                    Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor, (UIAnchorPosition)ScissorAnchorPosition);
                 }
                 if (ImGui.InputInt2("Mask Size", ref ScissorSize[0])) {
-                    Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor);
+                    Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor, (UIAnchorPosition)ScissorAnchorPosition);
+                }
+                if (ImGui.Button("Auto Mask")) {
+                    ScissorPosition[0] = 0;
+                    ScissorPosition[1] = 0;
+                    ScissorSize[0] = Component.LocalArea.Width;
+                    ScissorSize[1] = Component.LocalArea.Height;
+                    Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor, (UIAnchorPosition)ScissorAnchorPosition);
                 }
             }
         }

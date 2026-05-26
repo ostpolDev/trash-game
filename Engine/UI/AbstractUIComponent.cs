@@ -33,12 +33,14 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     public bool IsParentDisabled { get; private set; } = false;
 
     public int Depth = 0;
+    public int Index = 0;
 
     public bool ShouldDraw { get { return IsEnabled && !IsParentDisabled; } }
 
     public bool EnableScissor { get; protected set; }
     public Rectangle ScissorRectangle { get; protected set; }
     public Rectangle ScissorScreenRectangle { get; private set; }
+    public UIAnchorPosition ScissorAnchor { get; private set; } = UIAnchorPosition.TOP_LEFT;
 
 #if DEBUG
     protected UIDebugRenderer DebugRenderer;
@@ -74,13 +76,14 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         UIManager.Singleton?.SortComponentZ();
     }
 
-    private void UpdateZIndex() {
+    public void UpdateZIndex() {
         if (Parent != null)
             ZIndex = RelativeZIndex + Parent.ZIndex;
         else
             ZIndex = RelativeZIndex;
 
         ZIndex += Depth;
+        ZIndex += Index * 100;
 
         foreach (AbstractUIComponent child in Children)
             child.UpdateZIndex();
@@ -147,7 +150,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     }
 
     protected void RecalculateScissorScreenPosition() {
-        ScissorScreenRectangle = GetAnchorRelativeRectangle(ScissorRectangle, GetBounds(), AnchorPosition);
+        ScissorScreenRectangle = GetAnchorRelativeRectangle(ScissorRectangle, ScreenArea, ScissorAnchor);
     }
 
     protected Rectangle RecalculateStretching(Rectangle area, Rectangle bounds) {
@@ -185,14 +188,14 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
     public static Vector2 GetAnchorRelativePosition(Rectangle rectangle, Rectangle bounds, UIAnchorPosition anchorPosition) {
         return anchorPosition switch {
-            UIAnchorPosition.TOP_CENTER => new((bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, rectangle.Y),
-            UIAnchorPosition.TOP_RIGHT => new(bounds.Width - rectangle.Width + rectangle.X, rectangle.Y),
-            UIAnchorPosition.CENTER_LEFT => new(rectangle.X, (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
-            UIAnchorPosition.CENTER_CENTER => new((bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
-            UIAnchorPosition.CENTER_RIGHT => new(bounds.Width - rectangle.Width + rectangle.X, (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
-            UIAnchorPosition.BOTTOM_LEFT => new(rectangle.X, bounds.Height - rectangle.Height + rectangle.Y),
-            UIAnchorPosition.BOTTOM_CENTER => new((bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, bounds.Height - rectangle.Height + rectangle.Y),
-            UIAnchorPosition.BOTTOM_RIGHT => new(bounds.Width - rectangle.Width + rectangle.X, bounds.Height - rectangle.Height + rectangle.Y),
+            UIAnchorPosition.TOP_CENTER => new(bounds.X + (bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, bounds.Y + rectangle.Y),
+            UIAnchorPosition.TOP_RIGHT => new(bounds.X + bounds.Width - rectangle.Width + rectangle.X, bounds.Y + rectangle.Y),
+            UIAnchorPosition.CENTER_LEFT => new(bounds.X + rectangle.X, bounds.Y + (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
+            UIAnchorPosition.CENTER_CENTER => new(bounds.X + (bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, bounds.Y + (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
+            UIAnchorPosition.CENTER_RIGHT => new(bounds.X + bounds.Width - rectangle.Width + rectangle.X, bounds.Y + (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
+            UIAnchorPosition.BOTTOM_LEFT => new(bounds.X + rectangle.X, bounds.Y + bounds.Height - rectangle.Height + rectangle.Y),
+            UIAnchorPosition.BOTTOM_CENTER => new(bounds.X + (bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, bounds.Y + bounds.Height - rectangle.Height + rectangle.Y),
+            UIAnchorPosition.BOTTOM_RIGHT => new(bounds.X + bounds.Width - rectangle.Width + rectangle.X, bounds.Y + bounds.Height - rectangle.Height + rectangle.Y),
             _ => new(rectangle.X, rectangle.Y),
         };
     }
@@ -268,6 +271,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
         EnableScissor = dictionary.GetBool("has_mask");
         ScissorRectangle = dictionary.GetRectangle("mask");
+        ScissorAnchor = (UIAnchorPosition)dictionary.GetByte("mask_anchor");
 
         ReferenceID = dictionary.GetString("ref", null);
 
@@ -288,6 +292,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
         dictionary.Put("has_mask", EnableScissor);
         dictionary.Put("mask", ScissorRectangle);
+        dictionary.Put("mask_anchor", (byte)ScissorAnchor);
     }
 
     public void SetEnabled(bool isEnabled = true) {
@@ -315,9 +320,10 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         }
     }
 
-    public void SetScissor(Rectangle rectangle, bool enabled = true) {
+    public void SetScissor(Rectangle rectangle, bool enabled = true, UIAnchorPosition anchorPosition = UIAnchorPosition.TOP_LEFT) {
         EnableScissor = enabled;
         ScissorRectangle = rectangle;
+        ScissorAnchor = anchorPosition;
         RecalculateScissorScreenPosition();
     }
 
