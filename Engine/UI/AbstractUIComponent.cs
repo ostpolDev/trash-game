@@ -188,16 +188,16 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
     public static Vector2 GetAnchorRelativePosition(Rectangle rectangle, Rectangle bounds, UIAnchorPosition anchorPosition) {
         return anchorPosition switch {
-            UIAnchorPosition.TOP_CENTER => new((bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, rectangle.Y),
-            UIAnchorPosition.TOP_RIGHT => new(bounds.Width - rectangle.Width + rectangle.X, rectangle.Y),
-            UIAnchorPosition.CENTER_LEFT => new(rectangle.X, (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
-            UIAnchorPosition.CENTER_CENTER => new((bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
-            UIAnchorPosition.CENTER_RIGHT => new(bounds.Width - rectangle.Width + rectangle.X, (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
-            UIAnchorPosition.BOTTOM_LEFT => new(rectangle.X, bounds.Height - rectangle.Height + rectangle.Y),
-            UIAnchorPosition.BOTTOM_CENTER => new((bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, bounds.Height - rectangle.Height + rectangle.Y),
-            UIAnchorPosition.BOTTOM_RIGHT => new(bounds.Width - rectangle.Width + rectangle.X, bounds.Height - rectangle.Height + rectangle.Y),
+            UIAnchorPosition.TOP_CENTER => new(bounds.X + (bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, bounds.Y + rectangle.Y),
+            UIAnchorPosition.TOP_RIGHT => new(bounds.X + bounds.Width - rectangle.Width + rectangle.X, bounds.Y + rectangle.Y),
+            UIAnchorPosition.CENTER_LEFT => new(bounds.X + rectangle.X, bounds.Y + (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
+            UIAnchorPosition.CENTER_CENTER => new(bounds.X + (bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, bounds.Y + (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
+            UIAnchorPosition.CENTER_RIGHT => new(bounds.X + bounds.Width - rectangle.Width + rectangle.X, bounds.Y + (bounds.Height / 2) - rectangle.Height / 2 + rectangle.Y),
+            UIAnchorPosition.BOTTOM_LEFT => new(bounds.X + rectangle.X, bounds.Y + bounds.Height - rectangle.Height + rectangle.Y),
+            UIAnchorPosition.BOTTOM_CENTER => new(bounds.X + (bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, bounds.Y + bounds.Height - rectangle.Height + rectangle.Y),
+            UIAnchorPosition.BOTTOM_RIGHT => new(bounds.X + bounds.Width - rectangle.Width + rectangle.X, bounds.Y + bounds.Height - rectangle.Height + rectangle.Y),
             _ => new(rectangle.X, rectangle.Y),
-        } + new Vector2(bounds.X, bounds.Y);
+        };
     }
 
     public void AddChild(AbstractUIComponent component) {
