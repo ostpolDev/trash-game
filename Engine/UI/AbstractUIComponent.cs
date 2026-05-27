@@ -7,13 +7,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata;
+using System.Linq;
 
 namespace Engine.UI;
 
 public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, ISerializable {
 
-    public readonly string UID = Guid.NewGuid().ToString();
+    public string UID { get; private set; } = Guid.NewGuid().ToString();
     public int RelativeZIndex { get; private set; } = 0;
     public int ZIndex { get; private set; } = 0;
 
@@ -276,6 +276,10 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         RecalculateScreenPosition();
     }
 
+    public void SetID(string id) {
+        UID = id;
+    }
+
     public virtual void LoadData(SerializableDictionary dictionary) {
         LocalArea = dictionary.GetRectangle("position");
         AnchorPosition = (UIAnchorPosition)dictionary.GetByte("anchor");
@@ -284,47 +288,62 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         IsEnabled = dictionary.GetBool("enabled");
 
         EnableScissor = dictionary.GetBool("has_mask");
-        ScissorRectangle = dictionary.GetRectangle("mask");
-        ScissorAnchor = (UIAnchorPosition)dictionary.GetByte("mask_anchor");
+        if (EnableScissor) {
+            ScissorRectangle = dictionary.GetRectangle("mask");
+            ScissorAnchor = (UIAnchorPosition)dictionary.GetByte("mask_anchor");
+        }
 
         ReferenceID = dictionary.GetString("ref", null);
+
+        string parentUID = dictionary.GetString("parent");
+        if (!string.IsNullOrEmpty(parentUID)) {
+            UIManager.Singleton.FindByID(parentUID)?.AddChild(this);
+        }
 
         // Responsive
 
         Stretch[0] = dictionary.GetBool("stretch_v");
         Stretch[1] = dictionary.GetBool("stretch_h");
 
-        ListEntry padding = dictionary.GetList("padding");
-        for (int i = 0; i < Math.Min(padding.Data.Count, Padding.Length); i++) {
-            Padding[i] = (int)padding.Data[i];
+        if (Stretch[0] || Stretch[1]) {
+            ListEntry padding = dictionary.GetList("padding");
+            for (int i = 0; i < Math.Min(padding.Data.Count, Padding.Length); i++) {
+                Padding[i] = (int)padding.Data[i];
+            }
         }
 
-        ListEntry constraints_enabled = dictionary.GetList("constraints_enabled");
-        for (int i = 0; i < Math.Min(constraints_enabled.Data.Count, ConstraintsEnabled.Length); i++) {
-            ConstraintsEnabled[i] = (bool)constraints_enabled[i];
+        if (dictionary.ContainsKey("constraints_enabled")) {
+            ListEntry constraints_enabled = dictionary.GetList("constraints_enabled");
+            for (int i = 0; i < Math.Min(constraints_enabled.Data.Count, ConstraintsEnabled.Length); i++) {
+                ConstraintsEnabled[i] = (bool)constraints_enabled[i];
+            }
         }
 
-        ListEntry constraints = dictionary.GetList("constraints");
-        for (int i = 0; i < Math.Min(constraints.Data.Count, Constraints.Length); i++) {
-            Constraints[i] = (Vector2)constraints[i];
+        if (dictionary.ContainsKey("constraints")) {
+            ListEntry constraints = dictionary.GetList("constraints");
+            for (int i = 0; i < Math.Min(constraints.Data.Count, Constraints.Length); i++) {
+                Constraints[i] = (Vector2)constraints[i];
+            }
         }
 
-        ScissorStretch[0] = dictionary.GetBool("m_stretch_v");
-        ScissorStretch[1] = dictionary.GetBool("m_stretch_h");
+        if (EnableScissor) {
+            ScissorStretch[0] = dictionary.GetBool("m_stretch_v");
+            ScissorStretch[1] = dictionary.GetBool("m_stretch_h");
 
-        ListEntry m_padding = dictionary.GetList("m_padding");
-        for (int i = 0; i < Math.Min(m_padding.Data.Count, ScissorPadding.Length); i++) {
-            ScissorPadding[i] = (int)m_padding[i];
-        }
+            ListEntry m_padding = dictionary.GetList("m_padding");
+            for (int i = 0; i < Math.Min(m_padding.Data.Count, ScissorPadding.Length); i++) {
+                ScissorPadding[i] = (int)m_padding[i];
+            }
 
-        ListEntry m_constraints_enabled = dictionary.GetList("m_constraints_enabled");
-        for (int i = 0; i < Math.Min(m_constraints_enabled.Data.Count, ScissorConstraintsEnabled.Length); i++) {
-            ScissorConstraintsEnabled[i] = (bool)m_constraints_enabled[i];
-        }
+            ListEntry m_constraints_enabled = dictionary.GetList("m_constraints_enabled");
+            for (int i = 0; i < Math.Min(m_constraints_enabled.Data.Count, ScissorConstraintsEnabled.Length); i++) {
+                ScissorConstraintsEnabled[i] = (bool)m_constraints_enabled[i];
+            }
 
-        ListEntry m_constraints = dictionary.GetList("m_constraints");
-        for (int i = 0; i < Math.Min(m_constraints.Data.Count, ScissorConstraints.Length); i++) {
-            ScissorConstraints[i] = (Vector2)m_constraints[i];
+            ListEntry m_constraints = dictionary.GetList("m_constraints");
+            for (int i = 0; i < Math.Min(m_constraints.Data.Count, ScissorConstraints.Length); i++) {
+                ScissorConstraints[i] = (Vector2)m_constraints[i];
+            }
         }
 
         RecalculateScreenPosition();
@@ -343,22 +362,31 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
             dictionary.Put("ref", ReferenceID);
 
         dictionary.Put("has_mask", EnableScissor);
-        dictionary.Put("mask", ScissorRectangle);
-        dictionary.Put("mask_anchor", (byte)ScissorAnchor);
+        if (EnableScissor) {
+            dictionary.Put("mask", ScissorRectangle);
+            dictionary.Put("mask_anchor", (byte)ScissorAnchor);
+        }
 
         // Responsive
 
-        dictionary.Put("stretch_v", Stretch[0]);
-        dictionary.Put("stretch_h", Stretch[1]);
-        dictionary.Put("padding", ListEntry.CreateFromData(DictionaryEntryType.INT, Padding));
-        dictionary.Put("constraints_enabled", ListEntry.CreateFromData(DictionaryEntryType.BOOL, ConstraintsEnabled));
-        dictionary.Put("constraints", ListEntry.CreateFromData(DictionaryEntryType.VECTOR2, Constraints));
+        if (Stretch[0] || Stretch[1]) {
+            dictionary.Put("stretch_v", Stretch[0]);
+            dictionary.Put("stretch_h", Stretch[1]);
+            dictionary.Put("padding", ListEntry.CreateFromData(DictionaryEntryType.INT, Padding));
+        }
 
-        dictionary.Put("m_stretch_v", ScissorStretch[0]);
-        dictionary.Put("m_stretch_h", ScissorStretch[1]);
-        dictionary.Put("m_padding", ListEntry.CreateFromData(DictionaryEntryType.INT, ScissorPadding));
-        dictionary.Put("m_constraints_enabled", ListEntry.CreateFromData(DictionaryEntryType.BOOL, ScissorConstraintsEnabled));
-        dictionary.Put("m_constraints", ListEntry.CreateFromData(DictionaryEntryType.VECTOR2, ScissorConstraints));
+        if (ConstraintsEnabled.Contains(true)) {
+            dictionary.Put("constraints_enabled", ListEntry.CreateFromData(DictionaryEntryType.BOOL, ConstraintsEnabled));
+            dictionary.Put("constraints", ListEntry.CreateFromData(DictionaryEntryType.VECTOR2, Constraints));
+        }
+
+        if (EnableScissor) {
+            dictionary.Put("m_stretch_v", ScissorStretch[0]);
+            dictionary.Put("m_stretch_h", ScissorStretch[1]);
+            dictionary.Put("m_padding", ListEntry.CreateFromData(DictionaryEntryType.INT, ScissorPadding));
+            dictionary.Put("m_constraints_enabled", ListEntry.CreateFromData(DictionaryEntryType.BOOL, ScissorConstraintsEnabled));
+            dictionary.Put("m_constraints", ListEntry.CreateFromData(DictionaryEntryType.VECTOR2, ScissorConstraints));
+        }
     }
 
     public void SetEnabled(bool isEnabled = true) {

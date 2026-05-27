@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Engine.UI;
 
@@ -42,7 +43,11 @@ public class UIManager : Component, ISerializable {
     }
 
     private void Instance_OnWindowResize(object sender, Events.WindowResizeEventArgs e) {
-        ViewportRectangle = new(0, 0, e.Viewport.Width, e.Viewport.Height);
+        TriggerResize(e.Viewport);
+    }
+
+    private void TriggerResize(Viewport viewport) {
+        ViewportRectangle = new(0, 0, viewport.Width, viewport.Height);
         foreach (AbstractUIComponent component in Components) {
             component.RecalculateScreenPosition();
         }
@@ -142,8 +147,11 @@ public class UIManager : Component, ISerializable {
                     continue;
                 }
                 component.LoadData(dict);
+                component.SetID(key);
+                AddComponent(component);
             }
         }
+        TriggerResize(BaseGame.Instance.GraphicsDevice.Viewport);
     }
 
     public void WriteData(SerializableDictionary dictionary) {
@@ -195,6 +203,10 @@ public class UIManager : Component, ISerializable {
         }
 
         uiComponentTypeLookup[type.Name] = type;
+    }
+
+    public AbstractUIComponent FindByID(string id) {
+        return Components.FirstOrDefault(x => x.UID == id);
     }
 
     static UIManager() {
