@@ -64,6 +64,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\Vector3Entry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\ISerializable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\SerializableDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)serialization\SerializationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\SpritesheetSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\Sprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\SpriteManager.cs" />

@@ -27,6 +27,13 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
     private bool EnableScissor = component.EnableScissor;
     private int ScissorAnchorPosition = (int)component.ScissorAnchor;
 
+    private bool IsEnabled = component.IsEnabled;
+
+    private int MinScissorWidth = (int)component.ScissorConstraints[0].X;
+    private int MaxScissorWidth = (int)component.ScissorConstraints[0].Y;
+    private int MinScissorHeight = (int)component.ScissorConstraints[1].X;
+    private int MaxScissorHeight = (int)component.ScissorConstraints[1].Y;
+
     public override void Render() {
         if (ImGui.CollapsingHeader("Properties", ImGuiTreeNodeFlags.DefaultOpen)) {
             if (ImGui.InputText("ID", ref ReferenceID, 128)) {
@@ -37,6 +44,13 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
             ImGui.Text($"Children: {Component.ChildCount}");
             ImGui.Text($"Depth: {Component.Depth}");
             ImGui.Text($"Index: {Component.Index}");
+            ImGui.Text($"Drawing: {Component.ShouldDraw}");
+
+            ImGui.Spacing();
+            if (ImGui.Checkbox("Enabled", ref IsEnabled)) {
+                Component.SetEnabled(IsEnabled);
+            }
+            ImGui.Spacing();
         }
         ImGui.Spacing();
 
@@ -142,6 +156,76 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
                     ScissorSize[1] = Component.LocalArea.Height;
                     Component.SetScissor(new Rectangle(ScissorPosition[0], ScissorPosition[1], ScissorSize[0], ScissorSize[1]), EnableScissor, (UIAnchorPosition)ScissorAnchorPosition);
                 }
+
+                ImGui.Spacing();
+
+                ImGui.SeparatorText("Scaling");
+
+                ImGui.Spacing();
+                if (ImGui.CollapsingHeader("Constraints##scissor")) {
+
+                    if (ImGui.Checkbox("Min. Width##scissor", ref Component.ScissorConstraintsEnabled[0])) {
+                        Component.RecalculateScreenPosition();
+                    }
+                    if (Component.ScissorConstraintsEnabled[0]) {
+                        if (ImGui.InputInt("Amount##minwidthscissor", ref MinScissorWidth)) {
+                            Component.ScissorConstraints[0].X = MinScissorWidth;
+                            Component.RecalculateScreenPosition();
+                        }
+                    }
+                    ImGui.Spacing();
+
+                    if (ImGui.Checkbox("Max. Width##scissor", ref Component.ScissorConstraintsEnabled[1])) {
+                        Component.RecalculateScreenPosition();
+                    }
+                    if (Component.ScissorConstraintsEnabled[1]) {
+                        if (ImGui.InputInt("Amount##maxwidthscissor", ref MaxScissorWidth)) {
+                            Component.ScissorConstraints[0].Y = MaxScissorWidth;
+                            Component.RecalculateScreenPosition();
+                        }
+                    }
+                    ImGui.Spacing();
+
+                    if (ImGui.Checkbox("Min. Height##scissor", ref Component.ScissorConstraintsEnabled[2])) {
+                        Component.RecalculateScreenPosition();
+                    }
+                    if (Component.ScissorConstraintsEnabled[2]) {
+                        if (ImGui.InputInt("Amount##minheightscissor", ref MinScissorHeight)) {
+                            Component.ScissorConstraints[1].X = MinScissorHeight;
+                            Component.RecalculateScreenPosition();
+                        }
+                    }
+                    ImGui.Spacing();
+
+                    if (ImGui.Checkbox("Max. Height##scissor", ref Component.ScissorConstraintsEnabled[3])) {
+                        Component.RecalculateScreenPosition();
+                    }
+                    if (Component.ScissorConstraintsEnabled[3]) {
+                        if (ImGui.InputInt("Amount##maxheightscissor", ref MaxScissorHeight)) {
+                            Component.ScissorConstraints[1].Y = MaxScissorHeight;
+                            Component.RecalculateScreenPosition();
+                        }
+                    }
+                    ImGui.Spacing();
+
+                }
+                ImGui.Spacing();
+
+                if (ImGui.CollapsingHeader("Responsive##scissor")) {
+                    ImGui.SeparatorText("Stretching##scissor");
+                    if (ImGui.Checkbox("Vertical##stretchscissor", ref Component.ScissorStretch[1])) {
+                        Component.RecalculateScreenPosition();
+                    }
+                    if (ImGui.Checkbox("Horizontal##stretchscissor", ref Component.ScissorStretch[0])) {
+                        Component.RecalculateScreenPosition();
+                    }
+                    ImGui.Spacing();
+                    if (ImGui.InputInt4("Padding##scissor", ref Component.ScissorPadding[0])) {
+                        Component.RecalculateScreenPosition();
+                    }
+                }
+                ImGui.Spacing();
+            
             }
         }
         ImGui.Spacing();

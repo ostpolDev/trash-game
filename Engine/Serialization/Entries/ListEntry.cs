@@ -5,10 +5,22 @@ namespace Engine.Serialization.Entries;
 
 public class ListEntry : AbstractEntry {
 
-    public List<AbstractEntry> Data = [];
+    public List<object> Data = [];
     private DictionaryEntryType ListType = DictionaryEntryType.INVALID;
 
     public int Count { get { return Data.Count; } }
+
+    public ListEntry() { }
+
+    public ListEntry(DictionaryEntryType type, IEnumerable<object> data) {
+        ListType = type;
+        Data = [.. data];
+    }
+
+    public ListEntry(DictionaryEntryType type, params object[] data) {
+        ListType = type;
+        Data = [.. data];
+    }
 
     public override DictionaryEntryType GetEntryType() {
         return DictionaryEntryType.LIST;
@@ -19,25 +31,21 @@ public class ListEntry : AbstractEntry {
         uint length = reader.ReadUInt32();
 
         for (int i = 0; i < length; i++) {
-            AbstractEntry entry = GetEntryFromType(ListType) ?? throw new System.NullReferenceException();
-            entry.Read(reader);
-            Data.Add(entry);
+            Data[i] = ListType.ReadBinary(reader);
         }
     }
 
     public override void Write(BinaryWriter writer) {
-        ListType = Count > 0 ? Data[0].GetEntryType() : DictionaryEntryType.BYTE;
-
         writer.Write((byte)ListType);
         writer.Write((uint)Count);
 
         for (int i = 0; i < Count; i++) {
-            Data[i].Write(writer);
+            ListType.WriteBinary(writer, Data[i]);
         }
 
     }
 
-    public AbstractEntry this[int i] {
+    public object this[int i] {
         get {
             return Data[i];
         }

@@ -1,11 +1,13 @@
 using Engine.Debugging;
 using Engine.Serialization;
+using Engine.Serialization.Entries;
 using Engine.UI.Debugging;
 using Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 
 namespace Engine.UI;
 
@@ -41,6 +43,12 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     public Rectangle ScissorRectangle { get; protected set; }
     public Rectangle ScissorScreenRectangle { get; private set; }
     public UIAnchorPosition ScissorAnchor { get; private set; } = UIAnchorPosition.TOP_LEFT;
+
+    public readonly bool[] ScissorStretch = new bool[2];
+    public readonly int[] ScissorPadding = new int[4];
+
+    public readonly bool[] ScissorConstraintsEnabled = new bool[4];
+    public readonly Vector2[] ScissorConstraints = new Vector2[2];
 
 #if DEBUG
     protected UIDebugRenderer DebugRenderer;
@@ -132,8 +140,8 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
         Rectangle localArea = LocalArea;
 
-        localArea = RecalculateStretching(localArea, bounds);
-        localArea = RecalculateConstraints(localArea);
+        localArea = RecalculateStretching(localArea, bounds, Padding);
+        localArea = RecalculateConstraints(localArea, ConstraintsEnabled, Constraints);
 
         Rectangle newScreenArea = GetAnchorRelativeRectangle(localArea, bounds, AnchorPosition);
         if (PositionRelativeToParent && HasParent) {
@@ -142,6 +150,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         }
 
         ScreenArea = newScreenArea;
+
         RecalculateScissorScreenPosition();
 
         if (recursive)
@@ -150,33 +159,38 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     }
 
     protected void RecalculateScissorScreenPosition() {
-        ScissorScreenRectangle = GetAnchorRelativeRectangle(ScissorRectangle, ScreenArea, ScissorAnchor);
+        Rectangle localArea = ScissorRectangle;
+
+        localArea = RecalculateStretching(localArea, ScreenArea, ScissorPadding);
+        localArea = RecalculateConstraints(localArea, ScissorConstraintsEnabled, ScissorConstraints);
+
+        ScissorScreenRectangle = GetAnchorRelativeRectangle(localArea, ScreenArea, ScissorAnchor);
     }
 
-    protected Rectangle RecalculateStretching(Rectangle area, Rectangle bounds) {
+    protected Rectangle RecalculateStretching(Rectangle area, Rectangle bounds, int[] padding) {
         if (Stretch[(int)Utility.Plane.VERTICAL]) {
-            area.Height = bounds.Bottom - Padding[0] - Padding[1];
-            area.Y = bounds.Top + Padding[0];
+            area.Height = bounds.Bottom - padding[0] - padding[1];
+            area.Y = bounds.Top + padding[0];
         }
         if (Stretch[(int)Utility.Plane.HORIZONTAL]) {
-            area.Width = bounds.Right - Padding[2] - Padding[3];
-            area.X = bounds.Left + Padding[2];
+            area.Width = bounds.Right - padding[2] - padding[3];
+            area.X = bounds.Left + padding[2];
         }
         return area;
     }
 
-    protected Rectangle RecalculateConstraints(Rectangle area) {
-        if (ConstraintsEnabled[0]) {
-            area.Width = (int)Math.Max(area.Width, Constraints[0].X);
+    protected Rectangle RecalculateConstraints(Rectangle area, bool[] constraintsEnabled, Vector2[] constraints) {
+        if (constraintsEnabled[0]) {
+            area.Width = (int)Math.Max(area.Width, constraints[0].X);
         }
-        if (ConstraintsEnabled[1]) {
-            area.Width = (int)Math.Min(area.Width, Constraints[0].Y);
+        if (constraintsEnabled[1]) {
+            area.Width = (int)Math.Min(area.Width, constraints[0].Y);
         }
-        if (ConstraintsEnabled[2]) {
-            area.Height = (int)Math.Max(area.Height, Constraints[1].X);
+        if (constraintsEnabled[2]) {
+            area.Height = (int)Math.Max(area.Height, constraints[1].X);
         }
-        if (ConstraintsEnabled[3]) {
-            area.Height = (int)Math.Min(area.Height, Constraints[1].Y);
+        if (constraintsEnabled[3]) {
+            area.Height = (int)Math.Min(area.Height, constraints[1].Y);
         }
         return area;
     }
@@ -275,6 +289,44 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
         ReferenceID = dictionary.GetString("ref", null);
 
+        // Responsive
+
+        Stretch[0] = dictionary.GetBool("stretch_v");
+        Stretch[1] = dictionary.GetBool("stretch_h");
+
+        ListEntry padding = dictionary.GetList("padding");
+        for (int i = 0; i < Math.Min(padding.Data.Count, Padding.Length); i++) {
+            Padding[i] = (int)padding.Data[i];
+        }
+
+        ListEntry constraints_enabled = dictionary.GetList("constraints_enabled");
+        for (int i = 0; i < Math.Min(constraints_enabled.Data.Count, ConstraintsEnabled.Length); i++) {
+            ConstraintsEnabled[i] = (bool)constraints_enabled[i];
+        }
+
+        ListEntry constraints = dictionary.GetList("constraints");
+        for (int i = 0; i < Math.Min(constraints.Data.Count, Constraints.Length); i++) {
+            Constraints[i] = (Vector2)constraints[i];
+        }
+
+        ScissorStretch[0] = dictionary.GetBool("m_stretch_v");
+        ScissorStretch[1] = dictionary.GetBool("m_stretch_h");
+
+        ListEntry m_padding = dictionary.GetList("m_padding");
+        for (int i = 0; i < Math.Min(m_padding.Data.Count, ScissorPadding.Length); i++) {
+            ScissorPadding[i] = (int)m_padding[i];
+        }
+
+        ListEntry m_constraints_enabled = dictionary.GetList("m_constraints_enabled");
+        for (int i = 0; i < Math.Min(m_constraints_enabled.Data.Count, ScissorConstraintsEnabled.Length); i++) {
+            ScissorConstraintsEnabled[i] = (bool)m_constraints_enabled[i];
+        }
+
+        ListEntry m_constraints = dictionary.GetList("m_constraints");
+        for (int i = 0; i < Math.Min(m_constraints.Data.Count, ScissorConstraints.Length); i++) {
+            ScissorConstraints[i] = (Vector2)m_constraints[i];
+        }
+
         RecalculateScreenPosition();
     }
 
@@ -293,6 +345,20 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         dictionary.Put("has_mask", EnableScissor);
         dictionary.Put("mask", ScissorRectangle);
         dictionary.Put("mask_anchor", (byte)ScissorAnchor);
+
+        // Responsive
+
+        dictionary.Put("stretch_v", Stretch[0]);
+        dictionary.Put("stretch_h", Stretch[1]);
+        dictionary.Put("padding", new ListEntry(DictionaryEntryType.INT, Padding));
+        dictionary.Put("constraints_enabled", new ListEntry(DictionaryEntryType.BYTE, ConstraintsEnabled));
+        dictionary.Put("constraints", new ListEntry(DictionaryEntryType.VECTOR2, Constraints));
+
+        dictionary.Put("m_stretch_v", ScissorStretch[0]);
+        dictionary.Put("m_stretch_h", ScissorStretch[1]);
+        dictionary.Put("m_padding", new ListEntry(DictionaryEntryType.INT, ScissorPadding));
+        dictionary.Put("m_constraints_enabled", new ListEntry(DictionaryEntryType.BYTE, ScissorConstraintsEnabled));
+        dictionary.Put("m_constraints", new ListEntry(DictionaryEntryType.VECTOR2, ScissorConstraints));
     }
 
     public void SetEnabled(bool isEnabled = true) {
