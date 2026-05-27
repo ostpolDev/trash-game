@@ -23,8 +23,8 @@ public class IdentifierEntry : AbstractEntry {
     }
 
     public override void Write(BinaryWriter writer) {
-        writer.Write(Data.Key);
         writer.Write(Data.Namespace);
+        writer.Write(Data.Key);
     }
 
     public override void RenderDebugEditor() {

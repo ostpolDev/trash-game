@@ -31,8 +31,7 @@ internal class UIEditor : EditorScene {
 
     private readonly Dictionary<string, Func<UIEditor, AbstractUIComponent>> UI_REGISTRY = new() {
         { "Simple", (scene) => {
-            // TODO: Fix Sprite loading
-            return new SimpleUIComponent(scene.UI_TEXTURE.CreateSprite(0, 0, 64, 64, Utility.Identifier.EMPTY), 0, 0, 64, 64);
+            return new SimpleUIComponent(scene.UI_TEXTURE.Get(Identifier.EMPTY), 0, 0, 64, 64);
         } }
     };
 
@@ -43,6 +42,12 @@ internal class UIEditor : EditorScene {
         manager = BaseGame.Instance.UIManager;
         UI_TEXTURE = new Spritesheet("UI/panel");
         UI_TYPE_KEYS = [.. UI_REGISTRY.Keys];
+
+#if DEBUG
+        UI_TEXTURE.With(Identifier.EMPTY, 0, 0, 64, 64);
+
+        BaseGame.Instance?.SpriteManager.RegisterSpritesheet(UI_TEXTURE);
+#endif
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {

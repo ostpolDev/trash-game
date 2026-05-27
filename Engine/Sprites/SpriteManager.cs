@@ -74,4 +74,11 @@ public class SpriteManager {
         return SpriteToSheetLookup.ContainsKey(identifier);
     }
 
+    public void RegisterSpritesheet(Spritesheet sheet) {
+        Sheets.Add(sheet);
+        foreach (var item in sheet.SpriteLookup) {
+            SpriteToSheetLookup[item.Key] = sheet;
+        }
+    }
+
 }
