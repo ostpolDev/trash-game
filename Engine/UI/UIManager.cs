@@ -108,7 +108,10 @@ public class UIManager : Component, ISerializable {
                 }
 #if DEBUG
                 if (Debug_DrawScissorTest && ScissorDepth != -1) {
+                    Rectangle rect = spriteBatch.GraphicsDevice.ScissorRectangle;
+                    spriteBatch.GraphicsDevice.ScissorRectangle = ViewportRectangle;
                     spriteBatch.DrawRectangle(component.ScissorScreenRectangle, Color.Red);
+                    spriteBatch.GraphicsDevice.ScissorRectangle = rect;
                 }
 #endif
             }

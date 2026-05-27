@@ -242,7 +242,7 @@ internal class UIEditor : EditorScene {
                     manager.SortComponentZ();
                 }
                 ImGui.Separator();
-                ImGui.Checkbox("Draw Scissor test", ref manager.Debug_DrawScissorTest);
+                ImGui.Checkbox("Draw Scissor Mask", ref manager.Debug_DrawScissorTest);
                 ImGui.EndMenu();
             }
 

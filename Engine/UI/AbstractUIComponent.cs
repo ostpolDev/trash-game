@@ -196,7 +196,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
             UIAnchorPosition.BOTTOM_LEFT => new(bounds.X + rectangle.X, bounds.Y + bounds.Height - rectangle.Height + rectangle.Y),
             UIAnchorPosition.BOTTOM_CENTER => new(bounds.X + (bounds.Width / 2) - rectangle.Width / 2 + rectangle.X, bounds.Y + bounds.Height - rectangle.Height + rectangle.Y),
             UIAnchorPosition.BOTTOM_RIGHT => new(bounds.X + bounds.Width - rectangle.Width + rectangle.X, bounds.Y + bounds.Height - rectangle.Height + rectangle.Y),
-            _ => new(rectangle.X, rectangle.Y),
+            _ => new(bounds.X + rectangle.X, bounds.Y + rectangle.Y),
         };
     }
 
