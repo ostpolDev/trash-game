@@ -140,7 +140,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
         Rectangle localArea = LocalArea;
 
-        localArea = RecalculateStretching(localArea, bounds, Padding);
+        localArea = RecalculateStretching(localArea, bounds, Stretch, Padding);
         localArea = RecalculateConstraints(localArea, ConstraintsEnabled, Constraints);
 
         Rectangle newScreenArea = GetAnchorRelativeRectangle(localArea, bounds, AnchorPosition);
@@ -161,25 +161,25 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     protected void RecalculateScissorScreenPosition() {
         Rectangle localArea = ScissorRectangle;
 
-        localArea = RecalculateStretching(localArea, ScreenArea, ScissorPadding);
+        localArea = RecalculateStretching(localArea, ScreenArea, ScissorStretch, ScissorPadding);
         localArea = RecalculateConstraints(localArea, ScissorConstraintsEnabled, ScissorConstraints);
 
         ScissorScreenRectangle = GetAnchorRelativeRectangle(localArea, ScreenArea, ScissorAnchor);
     }
 
-    protected Rectangle RecalculateStretching(Rectangle area, Rectangle bounds, int[] padding) {
-        if (Stretch[(int)Utility.Plane.VERTICAL]) {
+    protected static Rectangle RecalculateStretching(Rectangle area, Rectangle bounds, bool[] stretching, int[] padding) {
+        if (stretching[(int)Utility.Plane.VERTICAL]) {
             area.Height = bounds.Bottom - padding[0] - padding[1];
             area.Y = bounds.Top + padding[0];
         }
-        if (Stretch[(int)Utility.Plane.HORIZONTAL]) {
+        if (stretching[(int)Utility.Plane.HORIZONTAL]) {
             area.Width = bounds.Right - padding[2] - padding[3];
             area.X = bounds.Left + padding[2];
         }
         return area;
     }
 
-    protected Rectangle RecalculateConstraints(Rectangle area, bool[] constraintsEnabled, Vector2[] constraints) {
+    protected static Rectangle RecalculateConstraints(Rectangle area, bool[] constraintsEnabled, Vector2[] constraints) {
         if (constraintsEnabled[0]) {
             area.Width = (int)Math.Max(area.Width, constraints[0].X);
         }
@@ -350,15 +350,15 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
         dictionary.Put("stretch_v", Stretch[0]);
         dictionary.Put("stretch_h", Stretch[1]);
-        dictionary.Put("padding", new ListEntry(DictionaryEntryType.INT, Padding));
-        dictionary.Put("constraints_enabled", new ListEntry(DictionaryEntryType.BYTE, ConstraintsEnabled));
-        dictionary.Put("constraints", new ListEntry(DictionaryEntryType.VECTOR2, Constraints));
+        dictionary.Put("padding", ListEntry.CreateFromData(DictionaryEntryType.INT, Padding));
+        dictionary.Put("constraints_enabled", ListEntry.CreateFromData(DictionaryEntryType.BOOL, ConstraintsEnabled));
+        dictionary.Put("constraints", ListEntry.CreateFromData(DictionaryEntryType.VECTOR2, Constraints));
 
         dictionary.Put("m_stretch_v", ScissorStretch[0]);
         dictionary.Put("m_stretch_h", ScissorStretch[1]);
-        dictionary.Put("m_padding", new ListEntry(DictionaryEntryType.INT, ScissorPadding));
-        dictionary.Put("m_constraints_enabled", new ListEntry(DictionaryEntryType.BYTE, ScissorConstraintsEnabled));
-        dictionary.Put("m_constraints", new ListEntry(DictionaryEntryType.VECTOR2, ScissorConstraints));
+        dictionary.Put("m_padding", ListEntry.CreateFromData(DictionaryEntryType.INT, ScissorPadding));
+        dictionary.Put("m_constraints_enabled", ListEntry.CreateFromData(DictionaryEntryType.BOOL, ScissorConstraintsEnabled));
+        dictionary.Put("m_constraints", ListEntry.CreateFromData(DictionaryEntryType.VECTOR2, ScissorConstraints));
     }
 
     public void SetEnabled(bool isEnabled = true) {

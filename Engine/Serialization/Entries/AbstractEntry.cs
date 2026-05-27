@@ -35,6 +35,7 @@ public abstract class AbstractEntry {
             DictionaryEntryType.DICTIONARY => new SerializableDictionary(),
             DictionaryEntryType.INVALID => new InvalidEntry(),
             DictionaryEntryType.IDENTIFIER => new IdentifierEntry(),
+            DictionaryEntryType.BOOL => new BoolEntry(),
             _ => null,
         };
     }

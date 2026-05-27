@@ -45,6 +45,9 @@ public static class SerializationExtensions {
             case DictionaryEntryType.IDENTIFIER:
                 new IdentifierEntry((Identifier)data).Write(writer);
                 break;
+            case DictionaryEntryType.BOOL:
+                new BoolEntry((bool)data).Write(writer);
+                break;
             default:
                 throw new System.ArgumentException($"Cannot write binary value for entry type: {type}", nameof(type));
         }
@@ -86,6 +89,10 @@ public static class SerializationExtensions {
                 IdentifierEntry identifierEntry = new();
                 identifierEntry.Read(reader);
                 return identifierEntry.Data;
+            case DictionaryEntryType.BOOL:
+                BoolEntry boolEntry = new();
+                boolEntry.Read(reader);
+                return boolEntry.Data;
             default:
                 throw new System.ArgumentException($"Cannot read binary value for entry type: {type}", nameof(type));
         }

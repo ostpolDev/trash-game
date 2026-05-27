@@ -196,6 +196,17 @@ internal class UIEditor : EditorScene {
             SerializableDictionary.WriteToFile(filePath, dict);
 
             ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"Successfully saved to file:\n{filePath}", "Success");
+        } else if (FilePickerWindow.SelectMode == FilePickerWindow.SelectionMode.IMPORT) {
+            string filePath = FilePickerWindow.ResultPath;
+            string ext = Path.GetExtension(filePath);
+
+            if (ext != PathHelper.COMPRESSED_DATA_FILE_EXTENSION && ext != PathHelper.DATA_FILE_EXTENSION) {
+                ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"File extension is invalid:\n{filePath}", "Error");
+                return;
+            }
+
+            SerializableDictionary dict = SerializableDictionary.ReadFromFile(filePath);
+            BaseGame.Instance.UIManager.LoadData(dict);
         }
     }
 
@@ -252,6 +263,7 @@ internal class UIEditor : EditorScene {
                     if (action == ConfirmationWindow.Buttons.OK) {
                         BaseGame.Instance.UIManager.ClearAll();
                     }
+                    ConfirmationWindow = null;
                 }, "This will delete all existing components and cannot be undone!", "Are you sure?", ConfirmationWindow.Buttons.OK | ConfirmationWindow.Buttons.CANCEL);
             }
 

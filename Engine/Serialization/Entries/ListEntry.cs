@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -12,14 +13,22 @@ public class ListEntry : AbstractEntry {
 
     public ListEntry() { }
 
+    public ListEntry(DictionaryEntryType type) {
+        ListType = type;
+    }
+
     public ListEntry(DictionaryEntryType type, IEnumerable<object> data) {
         ListType = type;
         Data = [.. data];
     }
 
-    public ListEntry(DictionaryEntryType type, params object[] data) {
+    public ListEntry(DictionaryEntryType type, object[] data) {
         ListType = type;
         Data = [.. data];
+    }
+
+    public static ListEntry CreateFromData<T>(DictionaryEntryType type, T[] data) {
+        return new(type, Array.ConvertAll<T, object>(data, x => x));
     }
 
     public override DictionaryEntryType GetEntryType() {
@@ -30,8 +39,11 @@ public class ListEntry : AbstractEntry {
         ListType = (DictionaryEntryType)reader.ReadByte();
         uint length = reader.ReadUInt32();
 
+        Data.Clear();
+        Data.EnsureCapacity((int)length);
+
         for (int i = 0; i < length; i++) {
-            Data[i] = ListType.ReadBinary(reader);
+            Data.Add(ListType.ReadBinary(reader));
         }
     }
 

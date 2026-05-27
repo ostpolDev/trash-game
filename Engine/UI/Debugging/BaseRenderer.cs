@@ -225,6 +225,10 @@ public class BaseRenderer(AbstractUIComponent component) : UIDebugRenderer(compo
                     }
                 }
                 ImGui.Spacing();
+
+                ImGui.Separator();
+
+                ImGui.Spacing();
             
             }
         }
