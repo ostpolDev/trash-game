@@ -28,6 +28,7 @@ internal class SerializationEditor : EditorScene {
     private int ToChangeType = (int)DictionaryEntryType.INVALID;
     private string ToAddKey = "";
     private string ToEditKey = "";
+    private int ToEditIndex = -1;
 
     private bool popupOpen = false;
 
@@ -114,7 +115,7 @@ internal class SerializationEditor : EditorScene {
 
     private void TreeNode(AbstractEntry entry, AbstractEntry parent, int i = 0) {
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.DefaultOpen;
-        if (entry is not SerializableDictionary) {
+        if (entry is not SerializableDictionary && entry is not ListEntry) {
             flags |= ImGuiTreeNodeFlags.Leaf;
         }
 
@@ -125,6 +126,7 @@ internal class SerializationEditor : EditorScene {
                 ToEditParent = parent;
                 ToChangeType = (int)entry.GetEntryType();
                 ToEditKey = entry.Key;
+                ToEditIndex = -1;
             }
 
             if (entry is SerializableDictionary serializableDictionary) {
@@ -136,9 +138,27 @@ internal class SerializationEditor : EditorScene {
                 foreach (var item in serializableDictionary.GetValues()) {
                     TreeNode(item, entry, i + 1);
                 }
+            } else if (entry is ListEntry list) {
+                DrawList(list, parent);
             }
 
             ImGui.TreePop();
+        }
+    }
+
+    private void DrawList(ListEntry entry, AbstractEntry parent) {
+        for (int i = 0; i < entry.Count; i++) {
+            if (ImGui.TreeNodeEx($"{i}: {entry[i]}", ImGuiTreeNodeFlags.Leaf)) {
+                if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsItemClicked(ImGuiMouseButton.Left)) {
+                    // EDIT
+                    ToEditTarget = entry;
+                    ToEditParent = parent;
+                    ToChangeType = (int)entry.GetEntryType();
+                    ToEditKey = entry.Key;
+                    ToEditIndex = i;
+                }
+                ImGui.TreePop();
+            }
         }
     }
 

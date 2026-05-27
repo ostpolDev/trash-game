@@ -7,7 +7,7 @@ namespace Engine.Serialization.Entries;
 public class ListEntry : AbstractEntry {
 
     public List<object> Data = [];
-    private DictionaryEntryType ListType = DictionaryEntryType.INVALID;
+    public DictionaryEntryType ListType { get; private set; } = DictionaryEntryType.INVALID;
 
     public int Count { get { return Data.Count; } }
 
