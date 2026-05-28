@@ -16,8 +16,10 @@ public class EndEntry : AbstractEntry {
         return "END";
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         ImGui.Text("This element has no properties");
     }
+#endif
 
 }

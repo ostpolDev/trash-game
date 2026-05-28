@@ -29,8 +29,10 @@ public class IntEntry : AbstractEntry {
         return Data.ToString();
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         ImGui.InputInt("Value##int", ref Data);
     }
+#endif
 
 }

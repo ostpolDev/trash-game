@@ -36,6 +36,7 @@ public class Vector3Entry : AbstractEntry {
         return Data.ToString();
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         System.Numerics.Vector3 vec = Data.ToNumerics();
         if (ImGui.InputFloat3("Value##vec3", ref vec)) {
@@ -44,5 +45,6 @@ public class Vector3Entry : AbstractEntry {
             Data.Z = vec.Z;
         }
     }
+#endif
 
 }

@@ -29,9 +29,11 @@ public class StringEntry : AbstractEntry {
         return Data.ReplaceLineEndings(" ");
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         ImGui.InputTextMultiline("Value##text", ref Data, 2048, new());
         ImGui.Text($"{Data.Length} / 2048");
     }
+#endif
 
 }

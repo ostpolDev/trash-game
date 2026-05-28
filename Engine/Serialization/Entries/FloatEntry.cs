@@ -29,8 +29,10 @@ public class FloatEntry : AbstractEntry {
         return Data.ToString();
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         ImGui.InputFloat("Value##float", ref Data);
     }
+#endif
 
 }

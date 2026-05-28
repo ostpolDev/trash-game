@@ -30,6 +30,7 @@ public class LongEntry : AbstractEntry {
         return Data.ToString();
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         double val = Convert.ToDouble(Data);
         if (ImGui.InputDouble("Value##long", ref val)) {
@@ -37,5 +38,6 @@ public class LongEntry : AbstractEntry {
             Data = Convert.ToInt64(val);
         }
     }
+#endif
 
 }

@@ -34,6 +34,7 @@ public class Vector2Entry : AbstractEntry {
         return Data.ToString();
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         System.Numerics.Vector2 vec = Data.ToNumerics();
         if (ImGui.InputFloat2("Value##vec2", ref vec)) {
@@ -41,5 +42,6 @@ public class Vector2Entry : AbstractEntry {
             Data.Y = vec.Y;
         }
     }
+#endif
 
 }

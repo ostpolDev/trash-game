@@ -10,7 +10,9 @@ public abstract class AbstractEntry {
     public abstract void Read(BinaryReader reader);
     public abstract DictionaryEntryType GetEntryType();
 
+#if DEBUG
     public abstract void RenderDebugEditor();
+#endif
 
     public AbstractEntry SetKey(string key) {
         Key = key;

@@ -30,6 +30,7 @@ public class ShortEntry : AbstractEntry {
         return Data.ToString();
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         int val = Data;
         if (ImGui.InputInt("Value##short", ref val)) {
@@ -37,5 +38,6 @@ public class ShortEntry : AbstractEntry {
             Data = (short)val;
         }
     }
+#endif
 
 }

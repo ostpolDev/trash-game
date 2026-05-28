@@ -17,8 +17,10 @@ public class InvalidEntry : AbstractEntry {
         return "INVALID";
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         ImGui.Text("This element has no properties");
     }
+#endif
 
 }

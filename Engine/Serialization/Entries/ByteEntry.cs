@@ -30,6 +30,7 @@ public class ByteEntry : AbstractEntry {
         return Data.ToString();
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         int d = Data;
         if (ImGui.InputInt("Value##byte", ref d)) {
@@ -37,5 +38,6 @@ public class ByteEntry : AbstractEntry {
             Data = (byte)d;
         }
     }
+#endif
 
 }

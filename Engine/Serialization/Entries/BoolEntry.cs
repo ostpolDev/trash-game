@@ -29,8 +29,10 @@ public class BoolEntry : AbstractEntry {
         return Data.ToString();
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         ImGui.Checkbox("Value", ref Data);
     }
+#endif
 
 }

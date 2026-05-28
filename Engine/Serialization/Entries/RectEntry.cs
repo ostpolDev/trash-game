@@ -38,6 +38,7 @@ public class RectEntry : AbstractEntry {
         return Data.ToString();
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         int[] Pos = [Data.X, Data.Y];
         int[] Size = [Data.Width, Data.Height];
@@ -50,5 +51,6 @@ public class RectEntry : AbstractEntry {
             Data.Height = Size[1];
         }
     }
+#endif
 
 }

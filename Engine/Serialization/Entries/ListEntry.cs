@@ -70,8 +70,10 @@ public class ListEntry : AbstractEntry {
         return $"{ListType} x{Count}";
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
 
     }
+#endif
 
 }
