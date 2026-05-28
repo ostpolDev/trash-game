@@ -51,10 +51,23 @@ internal class FilePickerWindow : EditorWindow {
         ImGui.Begin($"Select a {PickerMode.ToString().ToLower()}", ImGuiWindowFlags.NoDocking);
 
         if (PRESET_PATHS != null && ImGui.CollapsingHeader("Presets")) {
-            foreach (var item in PRESET_PATHS) {
-                if (ImGui.Button(item.Name)) {
-                    SwitchPath(item.Path);
+            if (ImGui.BeginTable("##presettable", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY, new(0, 100))) {
+                ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed);
+                ImGui.TableSetupColumn("Path", ImGuiTableColumnFlags.WidthStretch, 0.8f);
+                ImGui.TableHeadersRow();
+
+                foreach (var item in PRESET_PATHS) {
+                    ImGui.TableNextRow();
+                    ImGui.TableNextColumn();
+                    ImGui.Selectable(item.Name, false, ImGuiSelectableFlags.SpanAllColumns);
+                    if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left)) {
+                        SwitchPath(item.Path);
+                    }
+                    ImGui.TableNextColumn();
+                    ImGui.Text(item.Path);
                 }
+
+                ImGui.EndTable();
             }
         }
 
@@ -69,11 +82,17 @@ internal class FilePickerWindow : EditorWindow {
         if (ImGui.ArrowButton("##Up", ImGuiDir.Up)) {
             SwitchPath(Directory.GetParent(CurrentPath)?.FullName);
         }
+        if (ImGui.IsItemHovered()) {
+            ImGui.SetTooltip("Back");
+        }
         ImGui.SameLine();
         if (ImGui.Button("+")) {
             NewDirName = "";
             NewDirSafeName = "";
             ShowCreateDir = true;
+        }
+        if (ImGui.IsItemHovered()) {
+            ImGui.SetTooltip("Create directory");
         }
         ImGui.Text($"{PathItems.Count} Item{(PathItems.Count != 1 ? "s" : "")} ({ms} ms)");
 
