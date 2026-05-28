@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)BaseGame.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Component.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)debugging\CrashHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Debugging\DebugMenu.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Debugging\DebugMenuManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Debugging\ImGuiRenderer.cs" />
