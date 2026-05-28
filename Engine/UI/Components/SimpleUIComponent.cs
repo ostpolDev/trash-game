@@ -6,7 +6,7 @@ using Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Engine.UI;
+namespace Engine.UI.Components;
 
 public class SimpleUIComponent : AbstractUIComponent {
 

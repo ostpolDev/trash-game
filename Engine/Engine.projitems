@@ -17,6 +17,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Sprites\" />
     <Folder Include="$(MSBuildThisFileDirectory)SceneManagement\" />
     <Folder Include="$(MSBuildThisFileDirectory)UI\Debugging\" />
+    <Folder Include="$(MSBuildThisFileDirectory)UI\Components\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Exceptions\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Drawing\" />
   </ItemGroup>
@@ -73,13 +74,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)sprites\Spritesheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\SpritesheetExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\SpritesheetPacker.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ui\AbstractUIComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\AbstractUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\BaseRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\SimpleRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\UIDebugRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\FontManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\ITickableUIComponent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ui\SimpleUIComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\SimpleUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIAnchorPosition.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Direction.cs" />

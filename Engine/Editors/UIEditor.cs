@@ -3,6 +3,7 @@ using Engine.Editors.Windows;
 using Engine.Serialization;
 using Engine.Sprites;
 using Engine.UI;
+using Engine.UI.Components;
 using Engine.Utility;
 using ImGuiNET;
 using Microsoft.Xna.Framework;

@@ -1,3 +1,5 @@
+using Engine.UI.Components;
+
 namespace Engine.UI.Debugging;
 
 #if DEBUG

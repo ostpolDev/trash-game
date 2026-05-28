@@ -1,5 +1,6 @@
 using Engine.Debugging;
 using Engine.Serialization;
+using Engine.UI.Components;
 using Engine.Utility.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

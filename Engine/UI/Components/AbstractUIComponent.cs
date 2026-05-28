@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Engine.UI;
+namespace Engine.UI.Components;
 
 public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, ISerializable {
 
