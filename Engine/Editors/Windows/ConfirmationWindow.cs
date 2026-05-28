@@ -35,38 +35,38 @@ internal class ConfirmationWindow : EditorWindow {
         if (confirmationWindowButtons.HasFlag(Buttons.OK)) {
             if (ImGui.Button("Ok##confirmWindowOk")) {
                 confirmationWindowCallback?.Invoke(Buttons.OK);
-                ImGui.SameLine();
             }
+            ImGui.SameLine();
         }
         if (confirmationWindowButtons.HasFlag(Buttons.CANCEL)) {
             if (ImGui.Button("Cancel##confirmWindowCancel")) {
                 confirmationWindowCallback?.Invoke(Buttons.CANCEL);
-                ImGui.SameLine();
             }
+            ImGui.SameLine();
         }
         if (confirmationWindowButtons.HasFlag(Buttons.ACCEPT)) {
             if (ImGui.Button("Accept##confirmWindowAccept")) {
                 confirmationWindowCallback?.Invoke(Buttons.ACCEPT);
-                ImGui.SameLine();
             }
+            ImGui.SameLine();
         }
         if (confirmationWindowButtons.HasFlag(Buttons.ABORT)) {
             if (ImGui.Button("Abort##confirmWindowAbort")) {
                 confirmationWindowCallback?.Invoke(Buttons.ABORT);
-                ImGui.SameLine();
             }
+            ImGui.SameLine();
         }
         if (confirmationWindowButtons.HasFlag(Buttons.YES)) {
             if (ImGui.Button("Yes##confirmWindowYes")) {
                 confirmationWindowCallback?.Invoke(Buttons.YES);
-                ImGui.SameLine();
             }
+            ImGui.SameLine();
         }
         if (confirmationWindowButtons.HasFlag(Buttons.NO)) {
             if (ImGui.Button("No##confirmWindowNo")) {
                 confirmationWindowCallback?.Invoke(Buttons.NO);
-                ImGui.SameLine();
             }
+            ImGui.SameLine();
         }
 
         ImGui.Text("");
