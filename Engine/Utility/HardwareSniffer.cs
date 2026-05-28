@@ -19,11 +19,11 @@ public class HardwareSniffer {
     /// </summary>
     /// <param name="graphicsDevice"></param>
     public static void Initialize(GraphicsDevice graphicsDevice) {
-        List<string> items = new() {
+        List<string> items = [
             $"OS: {RuntimeInformation.OSDescription} / {RuntimeInformation.OSArchitecture}",
             $"Framework: {RuntimeInformation.FrameworkDescription}",
             $"CPU Cores: {Environment.ProcessorCount}"
-        };
+        ];
 
         long memUsage = GC.GetTotalMemory(false) / 1024 / 1024;
         items.Add($"App memory usage: {memUsage} MB");
@@ -41,7 +41,7 @@ public class HardwareSniffer {
             items.Add($"Viewport: {graphicsDevice.Viewport.Width}x{graphicsDevice.Viewport.Height} ({graphicsDevice.Viewport.AspectRatio})");
         }
 
-        Information = items.ToArray();
+        Information = [.. items];
         IsInitialized = true;
     }
 
