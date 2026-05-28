@@ -77,6 +77,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\BaseRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\SimpleRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\UIDebugRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\FontManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\ITickableUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\SimpleUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\UIAnchorPosition.cs" />

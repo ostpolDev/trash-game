@@ -85,6 +85,7 @@ public abstract class BaseGame : Game {
 
     protected override void LoadContent() {
         OnLoadContent?.Invoke(this, new LoadContentEventArgs(Content));
+        FontManager.LoadContent();
         base.LoadContent();
         HasLoadedContent = true;
     }

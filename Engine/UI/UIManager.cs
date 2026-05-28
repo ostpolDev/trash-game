@@ -30,7 +30,6 @@ public class UIManager : Component, ISerializable {
     public bool Debug_DrawScissorTest = false;
 #endif
 
-
     public static UIManager Singleton { get; private set; }
 
     public UIManager() {
