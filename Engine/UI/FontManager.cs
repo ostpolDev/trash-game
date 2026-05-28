@@ -1,9 +1,12 @@
+using Engine.Debugging;
 using FontStashSharp;
 using System.IO;
 
 namespace Engine.UI;
 
 public class FontManager {
+
+    private static readonly Logger Logger = Logger.Get("Fonts");
 
     public static FontSystem FontSystem { get; private set; }
     public static bool IsInitialized { get { return FontSystem != null; } }
@@ -18,6 +21,7 @@ public class FontManager {
         }
 
         FontSystem.AddFont(File.ReadAllBytes(fontPath));
+        Logger.Info($"Loaded font: {Path.GetFileName(fontPath)}");
     }
 
     public static async void RegisterFontAsync(string fontPath) {
@@ -27,6 +31,7 @@ public class FontManager {
 
         byte[] bytes = await File.ReadAllBytesAsync(fontPath);
         FontSystem.AddFont(bytes);
+        Logger.Info($"Loaded font: {Path.GetFileName(fontPath)}");
     }
 
 }
