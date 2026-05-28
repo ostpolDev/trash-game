@@ -42,6 +42,12 @@ public class PathHelper {
         return str;
     }
 
+    public static string MakeDirSafe(string str, char replacement = '-') {
+        foreach (char c in Path.GetInvalidPathChars())
+            str = str.Replace(c, replacement);
+        return str;
+    }
+
     public static string EnsureValidSaveFileExtension(string filename, bool compress = true) {
         string ext = Path.GetExtension(filename);
         if (ext != DATA_FILE_EXTENSION && ext != COMPRESSED_DATA_FILE_EXTENSION) {

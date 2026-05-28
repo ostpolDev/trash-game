@@ -33,6 +33,10 @@ internal class FilePickerWindow : EditorWindow {
     private readonly Stopwatch sw = new();
     public string ctx = null;
 
+    private bool ShowCreateDir = false;
+    private string NewDirName = "";
+    private string NewDirSafeName = "";
+
     public FilePickerWindow(TargetType pickerMode, SelectionMode selectionMode) {
         PickerMode = pickerMode;
         SelectMode = selectionMode;
@@ -40,6 +44,10 @@ internal class FilePickerWindow : EditorWindow {
     }
 
     public override bool Draw() {
+        if (ShowCreateDir) {
+            CreateDirWindow();
+        }
+
         ImGui.Begin($"Select a {PickerMode.ToString().ToLower()}", ImGuiWindowFlags.NoDocking);
 
         if (PRESET_PATHS != null && ImGui.CollapsingHeader("Presets")) {
@@ -60,6 +68,12 @@ internal class FilePickerWindow : EditorWindow {
         ImGui.SameLine();
         if (ImGui.ArrowButton("##Up", ImGuiDir.Up)) {
             SwitchPath(Directory.GetParent(CurrentPath)?.FullName);
+        }
+        ImGui.SameLine();
+        if (ImGui.Button("+")) {
+            NewDirName = "";
+            NewDirSafeName = "";
+            ShowCreateDir = true;
         }
         ImGui.Text($"{PathItems.Count} Item{(PathItems.Count != 1 ? "s" : "")} ({ms} ms)");
 
@@ -136,6 +150,61 @@ internal class FilePickerWindow : EditorWindow {
 
         ImGui.End();
         return false;
+    }
+
+    private void CreateDirWindow() {
+        ImGui.SetNextWindowPos(new(ImGui.GetIO().DisplaySize.X / 2, ImGui.GetIO().DisplaySize.Y / 2), ImGuiCond.Appearing, new(0.5f, 0.5f));
+        ImGui.Begin("Create Directory", ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse);
+
+        ImGui.Text(CurrentPath);
+        if (ImGui.InputText("Dir Name", ref NewDirName, 64)) {
+            NewDirSafeName = PathHelper.MakeFileSafe(NewDirName);
+        }
+
+        if (!NewDirName.Equals(NewDirSafeName)) {
+            ImGui.Text($"Will create as: {NewDirSafeName}");
+        }
+
+        if (ImGui.Button("Create")) {
+            ShowCreateDir = false;
+            CreateDirectory(NewDirName);
+            NewDirName = "";
+            NewDirSafeName = "";
+        }
+
+        ImGui.SameLine();
+
+        if (ImGui.Button("Create and enter")) {
+            ShowCreateDir = false;
+            CreateDirectory(NewDirName, true);
+            NewDirName = "";
+            NewDirSafeName = "";
+        }
+
+        ImGui.SameLine();
+
+        if (ImGui.Button("Cancel##newdir")) {
+            ShowCreateDir = false;
+            NewDirName = "";
+            NewDirSafeName = "";
+        }
+
+        ImGui.End();
+    }
+
+    private void CreateDirectory(string name, bool enter = false) {
+        if (string.IsNullOrEmpty(name)) return;
+
+        string newPath = Path.Combine(CurrentPath, name);
+        if (!Path.Exists(newPath)) {
+            Directory.CreateDirectory(newPath);
+        }
+
+        if (enter) {
+            SwitchPath(newPath);
+        } else {
+            SwitchPath(CurrentPath);
+        }
     }
 
     private void SwitchPath(string path) {
