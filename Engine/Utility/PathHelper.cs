@@ -36,6 +36,14 @@ public class PathHelper {
         return dir;
     }
 
+    public static string GetContentPath() {
+        return Path.Combine(Directory.GetCurrentDirectory(), "Content");
+    }
+
+    public static string GetCurrentDirectory() {
+        return Directory.GetCurrentDirectory();
+    }
+
     public static string MakeFileSafe(string str, char replacement = '-') {
         foreach (char c in Path.GetInvalidFileNameChars())
             str = str.Replace(c, replacement);
