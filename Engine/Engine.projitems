@@ -75,6 +75,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)sprites\SpritesheetExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\SpritesheetPacker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\AbstractUIComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\components\EmptyUIComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\components\TextUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\BaseRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\SimpleRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\debugging\UIDebugRenderer.cs" />
