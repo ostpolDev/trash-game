@@ -29,6 +29,8 @@ public class UIManager : Component, ISerializable {
 
 #if DEBUG
     public bool Debug_DrawScissorTest = false;
+    public bool Debug_DrawBounds = false;
+    public bool Debug_DrawLocalBounds = false;
 #endif
 
     public static UIManager Singleton { get; private set; }
@@ -116,7 +118,19 @@ public class UIManager : Component, ISerializable {
                     Rectangle rect = spriteBatch.GraphicsDevice.ScissorRectangle;
                     spriteBatch.GraphicsDevice.ScissorRectangle = ViewportRectangle;
                     spriteBatch.DrawRectangle(component.ScissorScreenRectangle, Color.Red);
+                    if (Debug_DrawBounds) {
+                        spriteBatch.DrawRectangle(component.ScreenArea, Color.Green);
+                    }
+                    if (Debug_DrawLocalBounds) {
+                        spriteBatch.DrawRectangle(component.LocalArea, Color.Blue);
+                    }
                     spriteBatch.GraphicsDevice.ScissorRectangle = rect;
+                } else if (Debug_DrawBounds || Debug_DrawLocalBounds) {
+                    if (Debug_DrawLocalBounds) {
+                        spriteBatch.DrawRectangle(component.LocalArea, Color.Blue);
+                    } else {
+                        spriteBatch.DrawRectangle(component.ScreenArea, Color.Green);
+                    }
                 }
 #endif
             }
@@ -131,7 +145,7 @@ public class UIManager : Component, ISerializable {
             tickable.Tick();
     }
 
-    public void LoadData(SerializableDictionary dictionary) {
+    public void ReadData(SerializableDictionary dictionary) {
         foreach (string key in dictionary.GetKeys()) {
             if (dictionary.GetEntryTypeFor(key) == DictionaryEntryType.DICTIONARY) {
                 SerializableDictionary dict = dictionary.GetSerializableDictionary(key);
@@ -146,7 +160,7 @@ public class UIManager : Component, ISerializable {
                     Logger.Error($"Failed to load UI component. Could not create");
                     continue;
                 }
-                component.LoadData(dict);
+                component.ReadData(dict);
                 component.SetID(key);
                 AddComponent(component);
             }

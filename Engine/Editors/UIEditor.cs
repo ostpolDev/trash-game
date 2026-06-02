@@ -255,7 +255,7 @@ internal class UIEditor : EditorScene {
             }
 
             SerializableDictionary dict = SerializableDictionary.ReadFromFile(filePath);
-            BaseGame.Instance.UIManager.LoadData(dict);
+            BaseGame.Instance.UIManager.ReadData(dict);
         }
     }
 
@@ -335,6 +335,8 @@ internal class UIEditor : EditorScene {
                 }
                 ImGui.Separator();
                 ImGui.Checkbox("Draw Scissor Mask", ref manager.Debug_DrawScissorTest);
+                ImGui.Spacing();
+                ImGui.Checkbox("Draw UI Bounds", ref manager.Debug_DrawBounds);
                 ImGui.EndMenu();
             }
 

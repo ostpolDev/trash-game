@@ -28,8 +28,8 @@ public class SimpleUIComponent : AbstractUIComponent {
     }
 
 
-    public override void LoadData(SerializableDictionary dictionary) {
-        base.LoadData(dictionary);
+    public override void ReadData(SerializableDictionary dictionary) {
+        base.ReadData(dictionary);
         Color = dictionary.GetColor("color");
         Identifier spriteId = dictionary.GetIdentifier("sprite");
         Sprite = BaseGame.Instance.SpriteManager.GetSprite(spriteId);

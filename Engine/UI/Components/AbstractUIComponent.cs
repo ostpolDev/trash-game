@@ -251,6 +251,10 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         RecalculateScreenPosition();
     }
 
+    public Vector2 GetScreenPosition() {
+        return new(ScreenArea.X, ScreenArea.Y);
+    }
+
     public void SetPositionAndArea(Rectangle rect) {
         LocalArea = rect;
         RecalculateScreenPosition();
@@ -279,7 +283,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         UID = id;
     }
 
-    public virtual void LoadData(SerializableDictionary dictionary) {
+    public virtual void ReadData(SerializableDictionary dictionary) {
         LocalArea = dictionary.GetRectangle("position");
         AnchorPosition = (UIAnchorPosition)dictionary.GetByte("anchor");
         SetZIndex(dictionary.GetInt("z"));

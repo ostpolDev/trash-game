@@ -1,8 +1,7 @@
-using Engine.UI.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Engine.UI;
+namespace Engine.UI.Components;
 
 public class EmptyUIComponent(int x, int y, int w, int h) : AbstractUIComponent(x, y, w, h) {
 
