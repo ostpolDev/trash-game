@@ -55,6 +55,10 @@ public class Logger {
         return Path.Combine(logPath, $"fatal_crash.log");
     }
 
+    public static string GetLogPath() {
+        return logPath;
+    }
+
     static Logger() {
 
         logPath = Path.Combine(PathHelper.GetAppDirectory(), "logs");

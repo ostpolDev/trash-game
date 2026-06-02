@@ -182,6 +182,9 @@ public class CommandMenu : DebugMenu {
                     case "mods":
                         success = PathHelper.OpenDir(PathHelper.GetModsDirectory());
                         break;
+                    case "logs":
+                        success = PathHelper.OpenDir(Logger.GetLogPath());
+                        break;
                     default:
                         return CommandActionResult.INVALID_ARGS;
                 }
@@ -189,7 +192,7 @@ public class CommandMenu : DebugMenu {
                 return success ? CommandActionResult.SUCCESS : CommandActionResult.FAILED;
             },
             ShortDescription = "Open game directories in file explorer",
-            Help = ["Usage: opendir [dir]", "  dir:", "    - author, game, runtime, current, mods"]
+            Help = ["Usage: opendir [dir]", "  dir:", "    - author, game, runtime, current, mods, logs"]
         });
     }
 
