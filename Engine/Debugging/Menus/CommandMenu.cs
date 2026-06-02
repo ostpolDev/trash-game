@@ -194,6 +194,21 @@ public class CommandMenu : DebugMenu {
             ShortDescription = "Open game directories in file explorer",
             Help = ["Usage: opendir [dir]", "  dir:", "    - author, game, runtime, current, mods, logs"]
         });
+        RegisterCommand("winresize", new() {
+            Action = (args) => {
+                if (args == null || args.Length <= 0) {
+                    return CommandActionResult.MISSING_ARGS;
+                }
+
+                string arg = args[0];
+                if (arg != "true" && arg != "false") return CommandActionResult.INVALID_ARGS;
+
+                BaseGame.Instance.SetResizable(arg == "true");
+                return CommandActionResult.SUCCESS;
+            },
+            ShortDescription = "Set window resizability",
+            Help = ["Usage: winresize [resizable]", "  resizable: true/false"]
+        });
     }
 
     public struct CommandActionResult {
