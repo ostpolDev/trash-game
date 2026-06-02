@@ -219,10 +219,14 @@ internal class UIEditor : EditorScene {
     protected override void DrawMenu() {
         if (ImGui.BeginMenu("File")) {
             if (ImGui.MenuItem("Import", "Ctrl + I")) {
-                FilePickerWindow = new(FilePickerWindow.TargetType.FILE, FilePickerWindow.SelectionMode.IMPORT);
+                FilePickerWindow = new(FilePickerWindow.TargetType.FILE, FilePickerWindow.SelectionMode.IMPORT) { 
+                    ctx = "ui"
+                };
             }
             if (ImGui.MenuItem("Export", "Ctrl + E")) {
-                FilePickerWindow = new(FilePickerWindow.TargetType.FILE, FilePickerWindow.SelectionMode.EXPORT);
+                FilePickerWindow = new(FilePickerWindow.TargetType.FILE, FilePickerWindow.SelectionMode.EXPORT) {
+                    ctx = "ui"
+                };
             }
 
             ImGui.EndMenu();
@@ -234,6 +238,17 @@ internal class UIEditor : EditorScene {
             }
             if (ImGui.MenuItem("Load External", "Ctrl + O")) {
 
+            }
+            if (ImGui.BeginMenu("Font Manager")) {
+                if (ImGui.MenuItem("Load Font")) {
+                    FilePickerWindow = new(FilePickerWindow.TargetType.FILE, FilePickerWindow.SelectionMode.IMPORT) {
+                        ctx = "font"
+                    };
+                }
+                if (ImGui.MenuItem("Show Stats")) {
+                    
+                }
+                ImGui.EndMenu();
             }
             ImGui.Separator();
             if (ImGui.MenuItem("Pack resources", "Ctrl + P")) {
