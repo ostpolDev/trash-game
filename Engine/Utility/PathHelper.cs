@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Engine.Utility;
 
@@ -66,6 +67,23 @@ public class PathHelper {
             }
         }
         return filename;
+    }
+
+    public static bool OpenDir(string path) {
+        if (!Path.Exists(path)) return false;
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+            System.Diagnostics.Process.Start("mimeopen", path);
+            return true;
+        } else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+            System.Diagnostics.Process.Start("open", $"-R \"{path}\"");
+            return true;
+        } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+            System.Diagnostics.Process.Start("explorer", path);
+            return true;
+        }
+
+        return false;
     }
 
 }

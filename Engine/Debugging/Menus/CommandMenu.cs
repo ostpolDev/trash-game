@@ -1,3 +1,4 @@
+using Engine.Utility;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
@@ -155,6 +156,40 @@ public class CommandMenu : DebugMenu {
             },
             ShortDescription = "Editor scene management",
             Help = ["Usage: editors [action] <args>", "  action:", "    - load [editor_name]", "    - list"]
+        });
+        RegisterCommand("opendir", new() {
+            Action = (args) => {
+                if (args == null || args.Length <= 0) {
+                    return CommandActionResult.MISSING_ARGS;
+                }
+
+                string targetDir = args[0];
+                bool success = false;
+
+                switch (targetDir) {
+                    case "author":
+                        success = PathHelper.OpenDir(PathHelper.GetAuthorDirectory());
+                        break;
+                    case "game":
+                        success = PathHelper.OpenDir(PathHelper.GetAppDirectory());
+                        break;
+                    case "runtime":
+                        success = PathHelper.OpenDir(PathHelper.GetRuntimeContentDirectory());
+                        break;
+                    case "current":
+                        success = PathHelper.OpenDir(PathHelper.GetCurrentDirectory());
+                        break;
+                    case "mods":
+                        success = PathHelper.OpenDir(PathHelper.GetModsDirectory());
+                        break;
+                    default:
+                        return CommandActionResult.INVALID_ARGS;
+                }
+
+                return success ? CommandActionResult.SUCCESS : CommandActionResult.FAILED;
+            },
+            ShortDescription = "Open game directories in file explorer",
+            Help = ["Usage: opendir [dir]", "  dir:", "    - author, game, runtime, current, mods"]
         });
     }
 
