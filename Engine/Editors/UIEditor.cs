@@ -30,6 +30,8 @@ internal class UIEditor : EditorScene {
     private FilePickerWindow FilePickerWindow;
     private ConfirmationWindow ConfirmationWindow;
 
+    private bool isFontStatsOpen = false;
+
     private readonly Dictionary<string, Func<UIEditor, AbstractUIComponent>> UI_REGISTRY = new() {
         { "Simple", (scene) => {
             return new SimpleUIComponent(scene.UI_TEXTURE.Get(Identifier.EMPTY), 0, 0, 64, 64);
@@ -62,6 +64,10 @@ internal class UIEditor : EditorScene {
         
         if (isChildSelectionOpen) {
             DrawChildSelectionWindow();
+        }
+
+        if (isFontStatsOpen) {
+            DrawFontStats();
         }
 
         DrawInspectorWindow();
@@ -142,6 +148,30 @@ internal class UIEditor : EditorScene {
         ImGui.End();
     }
 
+    private void DrawFontStats() {
+        ImGui.Begin("Font System Stats", ImGuiWindowFlags.NoDocking);
+        ImGui.Text($"Initialized: {FontManager.IsInitialized}");
+        if (!FontManager.IsInitialized) {
+            ImGui.End();
+            return;
+        }
+
+        ImGui.Text($"Font Atlases: {FontManager.FontSystem.Atlases.Count}");
+        ImGui.Text($"Current Atlas: {FontManager.FontSystem.CurrentAtlas?.Texture.Name ?? "--"}");
+
+        ImGui.Text($"Texture: {FontManager.FontSystem.TextureWidth} x {FontManager.FontSystem.TextureHeight}");
+        ImGui.Text($"Kernel: {FontManager.FontSystem.KernelWidth} x {FontManager.FontSystem.KernelHeight}");
+
+        ImGui.Text($"Use text shaping: {FontManager.FontSystem.UseTextShaping}");
+
+        ImGui.Spacing();
+        if (ImGui.Button("Close##font")) {
+            isFontStatsOpen = false;
+        }
+
+        ImGui.End();
+    }
+
     private void DrawInspectorWindow() {
         ImGui.SetNextWindowPos(new(DebugMenuManager.WindowViewport.Width - 250, 0), ImGuiCond.Once);
         ImGui.SetNextWindowSize(new(250, DebugMenuManager.WindowViewport.Height), ImGuiCond.Once);
@@ -185,6 +215,19 @@ internal class UIEditor : EditorScene {
     }
 
     private void HandleFilePicker() {
+        if (FilePickerWindow.ctx == "font") {
+            HandleFontFilePicker();
+            return;
+        }
+
+        if (FilePickerWindow.ctx == "ui") {
+            HandleUIFilePicker();
+            return;
+        }
+        
+    }
+
+    private void HandleUIFilePicker() {
         if (FilePickerWindow.SelectMode == FilePickerWindow.SelectionMode.EXPORT) {
             string filePath = FilePickerWindow.ResultPath;
             string ext = Path.GetExtension(filePath);
@@ -213,6 +256,24 @@ internal class UIEditor : EditorScene {
 
             SerializableDictionary dict = SerializableDictionary.ReadFromFile(filePath);
             BaseGame.Instance.UIManager.LoadData(dict);
+        }
+    }
+
+    private void HandleFontFilePicker() {
+        if (FilePickerWindow.SelectMode == FilePickerWindow.SelectionMode.IMPORT) {
+            string filePath = FilePickerWindow.ResultPath;
+            if (!File.Exists(filePath)) {
+                ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"File not found:\n{filePath}", "Error");
+                return;
+            }
+
+            try {
+                FontManager.RegisterFont(filePath);
+                ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"Successfully loaded font: {Path.GetFileName(filePath)}", "Success");
+            } catch (Exception e) {
+                Logger.Exception(e);
+                ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"Failed to load font: {e.Message ?? "Unknown"}\n{e.StackTrace ?? "--"}", "Error");
+            }
         }
     }
 
@@ -246,7 +307,7 @@ internal class UIEditor : EditorScene {
                     };
                 }
                 if (ImGui.MenuItem("Show Stats")) {
-                    
+                    isFontStatsOpen = !isFontStatsOpen;
                 }
                 ImGui.EndMenu();
             }
