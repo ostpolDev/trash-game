@@ -206,7 +206,7 @@ public class UIManager : Component, ISerializable {
             return null;
         }
 
-        return CreateComponentFromType(uiType);
+        return CreateComponentFromType(uiType, args);
     }
 
     public static void RegisterUIComponent(Type type) {
