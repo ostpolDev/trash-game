@@ -35,6 +35,12 @@ internal class UIEditor : EditorScene {
     private readonly Dictionary<string, Func<UIEditor, AbstractUIComponent>> UI_REGISTRY = new() {
         { "Simple", (scene) => {
             return new SimpleUIComponent(scene.UI_TEXTURE.Get(Identifier.EMPTY), 0, 0, 64, 64);
+        } },
+        { "Text", (_) => {
+            return new TextUIComponent(0, 0, "Text");
+        } },
+        { "Empty", (scene) => {
+            return new EmptyUIComponent(0, 0);
         } }
     };
 
@@ -337,6 +343,8 @@ internal class UIEditor : EditorScene {
                 ImGui.Checkbox("Draw Scissor Mask", ref manager.Debug_DrawScissorTest);
                 ImGui.Spacing();
                 ImGui.Checkbox("Draw UI Bounds", ref manager.Debug_DrawBounds);
+                ImGui.Spacing();
+                ImGui.Checkbox("Draw Local UI Bounds", ref manager.Debug_DrawLocalBounds);
                 ImGui.EndMenu();
             }
 

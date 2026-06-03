@@ -119,17 +119,18 @@ public class UIManager : Component, ISerializable {
                     spriteBatch.GraphicsDevice.ScissorRectangle = ViewportRectangle;
                     spriteBatch.DrawRectangle(component.ScissorScreenRectangle, Color.Red);
                     if (Debug_DrawBounds) {
-                        spriteBatch.DrawRectangle(component.ScreenArea, Color.Green);
+                        spriteBatch.DrawRectangle(component.ScreenArea, Color.Green, 2, 1);
                     }
                     if (Debug_DrawLocalBounds) {
-                        spriteBatch.DrawRectangle(component.LocalArea, Color.Blue);
+                        spriteBatch.DrawRectangle(component.LocalArea, Color.Blue, 2, 1);
                     }
                     spriteBatch.GraphicsDevice.ScissorRectangle = rect;
                 } else if (Debug_DrawBounds || Debug_DrawLocalBounds) {
                     if (Debug_DrawLocalBounds) {
-                        spriteBatch.DrawRectangle(component.LocalArea, Color.Blue);
-                    } else {
-                        spriteBatch.DrawRectangle(component.ScreenArea, Color.Green);
+                        spriteBatch.DrawRectangle(component.LocalArea, Color.Blue, 2, 1);
+                    }
+                    if (Debug_DrawBounds) {
+                        spriteBatch.DrawRectangle(component.ScreenArea, Color.Green, 2, 1);
                     }
                 }
 #endif

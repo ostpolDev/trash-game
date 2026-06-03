@@ -29,7 +29,7 @@ internal class TextRenderer(TextUIComponent component) : BaseRenderer(component)
                 component.UpdateText(Text);
             }
             if (ImGui.InputInt("Font Size", ref FontSize)) {
-                FontSize = Math.Min(0, FontSize);
+                FontSize = Math.Max(0, FontSize);
                 component.UpdateFontSize(FontSize);
             }
             if (ImGui.ColorPicker4("Color##text", ref Color)) {
