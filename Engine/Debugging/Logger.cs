@@ -108,5 +108,11 @@ public class Logger {
         WriteLine(ex.StackTrace);
     }
 
+    public void Exception(Exception ex, string message) {
+        WriteLine($"{DateTime.Now.ToLongTimeString()} [{Name}/EXCEPTION]: {ex.Message} ({ex.GetType().Name})");
+        WriteLine($"    {message}");
+        WriteLine(ex.StackTrace);
+    }
+
 
 }

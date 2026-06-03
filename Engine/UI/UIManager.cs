@@ -191,7 +191,9 @@ public class UIManager : Component, ISerializable {
 
             AbstractUIComponent component = (AbstractUIComponent)Activator.CreateInstance(type, args);
             return component;
-
+        } catch (MissingMethodException e) {
+            Logger.Exception(e, $"Empty constructor for type {type.Name} is probably missing!");
+            return null;
         } catch (Exception e) {
             Logger.Exception(e);
             return null;

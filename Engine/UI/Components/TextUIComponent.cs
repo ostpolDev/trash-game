@@ -17,6 +17,8 @@ public class TextUIComponent : AbstractUIComponent {
     public float LineSpacing = 0f;
     public TextStyle TextStyle = TextStyle.None;
 
+    public TextUIComponent() : base(0, 0) { }
+
     public TextUIComponent(int x, int y, string text = "", int fontSize = 18) : base(x, y) {
         UpdateText(text, fontSize);
     }
