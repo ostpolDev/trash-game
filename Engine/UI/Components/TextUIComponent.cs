@@ -16,6 +16,10 @@ public class TextUIComponent : AbstractUIComponent {
     public float CharacterSpacing = 0f;
     public float LineSpacing = 0f;
     public TextStyle TextStyle = TextStyle.None;
+    public TextAlignment Alignment { get; protected set; } = TextAlignment.LEFT;
+
+    public bool WrapText = false;
+    public bool RTL = false;
 
     public TextUIComponent() : base(0, 0) { }
 
@@ -61,8 +65,12 @@ public class TextUIComponent : AbstractUIComponent {
         CharacterSpacing = dictionary.GetFloat("char_s");
         LineSpacing = dictionary.GetFloat("line_s");
         TextStyle = (TextStyle)dictionary.GetInt("style", (int)TextStyle.None);
+        RTL = dictionary.GetBool("rtl");
+        WrapText = dictionary.GetBool("wrap");
+        Alignment = (TextAlignment)dictionary.GetByte("align");
 
         UpdateText();
+        SetAlignment(Alignment);
     }
 
     public override void WriteData(SerializableDictionary dictionary) {
@@ -73,6 +81,13 @@ public class TextUIComponent : AbstractUIComponent {
         dictionary.Put("char_s", CharacterSpacing);
         dictionary.Put("line_s", LineSpacing);
         dictionary.Put("style", (int)TextStyle);
+        dictionary.Put("rtl", RTL);
+        dictionary.Put("wrap", WrapText);
+        dictionary.Put("align", (byte)Alignment);
+    }
+
+    public void SetAlignment(TextAlignment alignment) {
+        Alignment = alignment;
     }
 
 #if DEBUG
@@ -80,5 +95,9 @@ public class TextUIComponent : AbstractUIComponent {
         DebugRenderer = new TextRenderer(this);
     }
 #endif
+
+    public enum TextAlignment {
+        LEFT, CENTER, RIGHT
+    }
 
 } 

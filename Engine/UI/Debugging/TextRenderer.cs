@@ -10,6 +10,7 @@ namespace Engine.UI.Debugging;
 internal class TextRenderer(TextUIComponent component) : BaseRenderer(component) {
 
     private static readonly string[] TextStyles = [.. Enum.GetValues<TextStyle>().Select(m => m.ToString())];
+    private static readonly string[] TextAlignments = [.. Enum.GetValues<TextUIComponent.TextAlignment>().Select(m => m.ToString())];
 
     private string Text = component.Text;
     private int FontSize = component.FontSize;
@@ -17,7 +18,8 @@ internal class TextRenderer(TextUIComponent component) : BaseRenderer(component)
     private Vector2 Scale = component.Scale.ToNumerics();
 
     private int TextStyle = (int)component.TextStyle;
-    
+    private int Alignment = (int)component.Alignment;
+
 
     public override void Render() {
         base.Render();
@@ -27,6 +29,9 @@ internal class TextRenderer(TextUIComponent component) : BaseRenderer(component)
         if (ImGui.CollapsingHeader("Text")) {
             if (ImGui.InputTextMultiline("Text##input", ref Text, 2048, new())) {
                 component.UpdateText(Text);
+            }
+            if (ImGui.Combo("Alignment", ref Alignment, TextAlignments, TextAlignments.Length)) {
+                component.SetAlignment((TextUIComponent.TextAlignment)Alignment);
             }
             if (ImGui.InputInt("Font Size", ref FontSize)) {
                 FontSize = Math.Max(0, FontSize);
@@ -44,6 +49,11 @@ internal class TextRenderer(TextUIComponent component) : BaseRenderer(component)
             if (ImGui.Combo("Style", ref TextStyle, TextStyles, TextStyles.Length)) {
                 component.TextStyle = (TextStyle)TextStyle;
             }
+
+            ImGui.Spacing();
+
+            ImGui.Checkbox("Wrap", ref component.WrapText);
+            ImGui.Checkbox("RTL", ref component.RTL);
         }
     }
 
