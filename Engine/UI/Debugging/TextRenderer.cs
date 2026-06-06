@@ -44,16 +44,25 @@ internal class TextRenderer(TextUIComponent component) : BaseRenderer(component)
             if (ImGui.InputFloat2("Scale##text", ref Scale)) {
                 component.Scale = new(Scale.X, Scale.Y);
             }
-            ImGui.InputFloat("Character Spacing", ref component.CharacterSpacing);
-            ImGui.InputFloat("Line Spacing", ref component.LineSpacing);
+            if (ImGui.InputFloat("Character Spacing", ref component.CharacterSpacing)) {
+                component.UpdateTextRendering();
+            }
+            if (ImGui.InputFloat("Line Spacing", ref component.LineSpacing)) {
+                component.UpdateTextRendering();
+            }
             if (ImGui.Combo("Style", ref TextStyle, TextStyles, TextStyles.Length)) {
                 component.TextStyle = (TextStyle)TextStyle;
             }
 
             ImGui.Spacing();
 
-            ImGui.Checkbox("Wrap", ref component.WrapText);
-            ImGui.Checkbox("RTL", ref component.RTL);
+            if (ImGui.Checkbox("Wrap", ref component.WrapText)) {
+                component.UpdateTextRendering();
+            }
+            
+            if (ImGui.Checkbox("RTL", ref component.RTL)) {
+                component.UpdateTextRendering();
+            }
         }
     }
 

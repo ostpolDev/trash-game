@@ -9,6 +9,7 @@ namespace Engine.UI.Components;
 public class TextUIComponent : AbstractUIComponent {
 
     public string Text { get; private set; }
+    public string TextToRender { get; private set; }
     public int FontSize { get; private set; } = 18;
     public Color Color = Color.White;
     private SpriteFontBase DynamicSpriteFont;
@@ -33,6 +34,7 @@ public class TextUIComponent : AbstractUIComponent {
 
     public void UpdateText(string text) {
         Text = text ?? "";
+        UpdateTextRendering();
     }
 
     public void UpdateText(string text, int fontSize) {
@@ -43,6 +45,7 @@ public class TextUIComponent : AbstractUIComponent {
     public void UpdateFontSize(int size) {
         FontSize = size;
         DynamicSpriteFont = FontManager.FontSystem.GetFont(FontSize);
+        UpdateTextRendering();
     }
 
     public Vector2 Measure() {
@@ -54,7 +57,7 @@ public class TextUIComponent : AbstractUIComponent {
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
-        spriteBatch.DrawString(DynamicSpriteFont, Text, GetScreenPosition(), Color, 0f, default, Scale, 0, CharacterSpacing, LineSpacing, TextStyle);
+        spriteBatch.DrawString(DynamicSpriteFont, TextToRender, GetScreenPosition(), Color, 0f, default, Scale, 0, CharacterSpacing, LineSpacing, TextStyle);
     }
 
     public override void ReadData(SerializableDictionary dictionary) {
@@ -88,6 +91,11 @@ public class TextUIComponent : AbstractUIComponent {
 
     public void SetAlignment(TextAlignment alignment) {
         Alignment = alignment;
+        UpdateTextRendering();
+    }
+
+    public void UpdateTextRendering() {
+        TextToRender = Text;
     }
 
 #if DEBUG
