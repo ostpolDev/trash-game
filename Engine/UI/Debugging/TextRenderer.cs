@@ -7,10 +7,13 @@ using System.Numerics;
 
 namespace Engine.UI.Debugging;
 
+#if DEBUG
+
 internal class TextRenderer(TextUIComponent component) : BaseRenderer(component) {
 
     private static readonly string[] TextStyles = [.. Enum.GetValues<TextStyle>().Select(m => m.ToString())];
     private static readonly string[] TextAlignments = [.. Enum.GetValues<TextUIComponent.TextAlignment>().Select(m => m.ToString())];
+    private static readonly string[] TextWraps = [.. Enum.GetValues<TextUIComponent.TextWrapMode>().Select(m => m.ToString())];
 
     private string Text = component.Text;
     private int FontSize = component.FontSize;
@@ -19,6 +22,7 @@ internal class TextRenderer(TextUIComponent component) : BaseRenderer(component)
 
     private int TextStyle = (int)component.TextStyle;
     private int Alignment = (int)component.Alignment;
+    private int WrapMode = (int)component.WrapMode;
 
 
     public override void Render() {
@@ -56,8 +60,8 @@ internal class TextRenderer(TextUIComponent component) : BaseRenderer(component)
 
             ImGui.Spacing();
 
-            if (ImGui.Checkbox("Wrap", ref component.WrapText)) {
-                component.UpdateTextRendering();
+            if (ImGui.Combo("Wrap", ref WrapMode, TextWraps, TextWraps.Length)) {
+                component.SetWrapMode((TextUIComponent.TextWrapMode)WrapMode);
             }
             
             if (ImGui.Checkbox("RTL", ref component.RTL)) {
@@ -67,3 +71,5 @@ internal class TextRenderer(TextUIComponent component) : BaseRenderer(component)
     }
 
 }
+
+#endif

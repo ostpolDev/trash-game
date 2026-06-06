@@ -130,6 +130,17 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         return bounds;
     }
 
+    protected Rectangle GetScreenBounds() {
+        Rectangle bounds = new();
+        if (HasParent) {
+            bounds = Parent.ScreenArea;
+        } else if (BaseGame.Instance != null) {
+            bounds.Width = BaseGame.Instance.GraphicsDevice.Viewport.Width;
+            bounds.Height = BaseGame.Instance.GraphicsDevice.Viewport.Height;
+        }
+        return bounds;
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -243,12 +254,23 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         RecalculateScreenPosition();
     }
 
-    public void SetArea(int w, int h) {
+    public void SetArea(int w, int h, bool updateChildren = true) {
         Rectangle rect = LocalArea;
         rect.Width = w;
         rect.Height = h;
         LocalArea = rect;
         RecalculateScreenPosition();
+        foreach (AbstractUIComponent item in Children) {
+            item.OnParentSizeUpdate();
+        }
+    }
+
+    protected virtual void OnParentSizeUpdate(bool recrusive = true) {
+        if (recrusive) {
+            foreach (AbstractUIComponent item in Children) {
+                item.OnParentSizeUpdate(recrusive);
+            }
+        }
     }
 
     public Vector2 GetScreenPosition() {

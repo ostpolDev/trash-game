@@ -3,6 +3,7 @@ using Engine.UI.Debugging;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Text;
 
 namespace Engine.UI.Components;
 
@@ -11,7 +12,7 @@ public class TextUIComponent : AbstractUIComponent {
     public string Text { get; private set; }
     public string TextToRender { get; private set; }
     public int FontSize { get; private set; } = 18;
-    public Color Color = Color.White;
+    public Color Color = Color.Black;
     private SpriteFontBase DynamicSpriteFont;
     public Vector2 Scale = Vector2.One;
     public float CharacterSpacing = 0f;
@@ -19,7 +20,7 @@ public class TextUIComponent : AbstractUIComponent {
     public TextStyle TextStyle = TextStyle.None;
     public TextAlignment Alignment { get; protected set; } = TextAlignment.LEFT;
 
-    public bool WrapText = false;
+    public TextWrapMode WrapMode { get; protected set; } = TextWrapMode.NONE;
     public bool RTL = false;
 
     public TextUIComponent() : base(0, 0) { }
@@ -49,7 +50,7 @@ public class TextUIComponent : AbstractUIComponent {
     }
 
     public Vector2 Measure() {
-        return Measure(Text);
+        return Measure(TextToRender);
     }
 
     public Vector2 Measure(string text) {
@@ -69,7 +70,7 @@ public class TextUIComponent : AbstractUIComponent {
         LineSpacing = dictionary.GetFloat("line_s");
         TextStyle = (TextStyle)dictionary.GetInt("style", (int)TextStyle.None);
         RTL = dictionary.GetBool("rtl");
-        WrapText = dictionary.GetBool("wrap");
+        WrapMode = (TextWrapMode)dictionary.GetByte("wrap");
         Alignment = (TextAlignment)dictionary.GetByte("align");
 
         UpdateText();
@@ -85,7 +86,7 @@ public class TextUIComponent : AbstractUIComponent {
         dictionary.Put("line_s", LineSpacing);
         dictionary.Put("style", (int)TextStyle);
         dictionary.Put("rtl", RTL);
-        dictionary.Put("wrap", WrapText);
+        dictionary.Put("wrap", (byte)WrapMode);
         dictionary.Put("align", (byte)Alignment);
     }
 
@@ -94,8 +95,73 @@ public class TextUIComponent : AbstractUIComponent {
         UpdateTextRendering();
     }
 
+    public void SetWrapMode(TextWrapMode mode) {
+        WrapMode = mode;
+        UpdateTextRendering();
+    }
+
     public void UpdateTextRendering() {
-        TextToRender = Text;
+        TextToRender = WrapMode == TextWrapMode.NONE ? Text : WrapText(Text);
+        Vector2 size = Measure();
+        LocalArea = new(LocalArea.X, LocalArea.Y, (int)size.X, (int)size.Y);
+        RecalculateScreenPosition();
+    }
+
+    protected override void OnParentSizeUpdate(bool recrusive = true) {
+        base.OnParentSizeUpdate(recrusive);
+        UpdateTextRendering();
+    }
+    
+    protected string WrapText(string text) {
+        StringBuilder builder = new();
+
+        switch (WrapMode) {
+            case TextWrapMode.NONE:
+                return text;
+            case TextWrapMode.WORDS:
+                WrapWords(builder, text);
+                break;
+            case TextWrapMode.CHARACTERS:
+                WrapCharacters(builder, text);
+                break;
+            default:
+                break;
+        }
+
+        return builder.ToString();
+    }
+
+    private int GetMaxTextX() {
+        Rectangle bounds = GetScreenBounds();
+        int xDiff = ScreenArea.X - bounds.X;
+        return bounds.Width - xDiff;
+    }
+
+    private void WrapWords(StringBuilder builder, string text) {
+        int maxWidth = GetMaxTextX();
+        string[] words = text.Split(' ');
+
+        for (int i = 0; i < words.Length; i++) {
+            builder.Append(words[i]);
+            builder.Append(' ');
+
+            if (i > 0 && DynamicSpriteFont.MeasureString(builder).X > maxWidth) {
+                builder.Remove(builder.Length - words[i].Length - 1, words[i].Length);
+                builder.Append('\n').Append(words[i]).Append(' ');
+            }
+        }
+    }
+
+    private void WrapCharacters(StringBuilder builder, string text) {
+        int maxWidth = GetMaxTextX();
+
+        for (int i = 0; i < text.Length; i++) {
+            builder.Append(text[i]);
+            if (DynamicSpriteFont.MeasureString(builder).X > maxWidth) {
+                builder.Remove(i, 1);
+                builder.Append('\n').Append(text[i]);
+            }
+        }
     }
 
 #if DEBUG
@@ -106,6 +172,10 @@ public class TextUIComponent : AbstractUIComponent {
 
     public enum TextAlignment {
         LEFT, CENTER, RIGHT
+    }
+
+    public enum TextWrapMode {
+        NONE, WORDS, CHARACTERS
     }
 
 } 
