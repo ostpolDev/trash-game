@@ -100,6 +100,16 @@ public class TextUIComponent : AbstractUIComponent {
         UpdateTextRendering();
     }
 
+    public override void SetArea(int w, int h, bool updateChildren = true) {
+        base.SetArea(w, h, updateChildren);
+        UpdateTextRendering();
+    }
+
+    public override void SetPosition(int x, int y) {
+        base.SetPosition(x, y);
+        UpdateTextRendering();
+    }
+
     public void UpdateTextRendering() {
         TextToRender = WrapMode == TextWrapMode.NONE ? Text : WrapText(Text);
         Vector2 size = Measure();

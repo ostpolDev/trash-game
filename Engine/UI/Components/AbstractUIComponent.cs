@@ -246,7 +246,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         return ZIndex - other.ZIndex;
     }
 
-    public void SetPosition(int x, int y) {
+    public virtual void SetPosition(int x, int y) {
         Rectangle rect = LocalArea;
         rect.X = x;
         rect.Y = y;
@@ -254,7 +254,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         RecalculateScreenPosition();
     }
 
-    public void SetArea(int w, int h, bool updateChildren = true) {
+    public virtual void SetArea(int w, int h, bool updateChildren = true) {
         Rectangle rect = LocalArea;
         rect.Width = w;
         rect.Height = h;
