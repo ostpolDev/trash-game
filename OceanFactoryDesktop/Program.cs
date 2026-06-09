@@ -13,7 +13,7 @@ public class Program {
 
         bool isDevelopment = args.Contains("--dev");
 
-        using var game = new OceanFactoryGame(isDevelopment);
+        using var game = new OceanFactoryGame(isDevelopment, args);
         game.Run();
 
     }

@@ -40,7 +40,7 @@ public abstract class BaseGame : Game {
 
     public static bool HasLoadedContent { get; private set; } = false;
 
-    public BaseGame(bool isDevelopmentMode) {
+    public BaseGame(bool isDevelopmentMode, string[] args) {
         Instance = this;
         GraphicsDeviceManager = new GraphicsDeviceManager(this);
         SceneManager = new(this);
@@ -51,6 +51,8 @@ public abstract class BaseGame : Game {
 
         Window.ClientSizeChanged += Window_ClientSizeChanged;
 
+        ParseArgs(args);
+
         if (isDevelopmentMode) {
             RegisterEngineWindows();
 #if DEBUG
@@ -60,6 +62,8 @@ public abstract class BaseGame : Game {
             DebugMenuManager.CreateMenu("command").IsOpened = false;
         }
     }
+
+    protected virtual void ParseArgs(string[] args) { }
 
     private void RegisterEngineWindows() {
         DebugMenuManager.RegisterMenu("command", typeof(CommandMenu));
