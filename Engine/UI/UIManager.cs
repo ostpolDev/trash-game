@@ -51,7 +51,7 @@ public class UIManager : Component, ISerializable {
     private void TriggerResize(Viewport viewport) {
         ViewportRectangle = new(0, 0, viewport.Width, viewport.Height);
         foreach (AbstractUIComponent component in Components) {
-            component.RecalculateScreenPosition();
+            component.RecalculateScreenPosition(false);
         }
     }
 
