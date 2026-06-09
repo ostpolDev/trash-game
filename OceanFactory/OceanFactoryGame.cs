@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace OceanFactory {
 
-    public class OceanFactoryGame(bool isDevelopment, string[] args) : BaseGame(isDevelopment, args) {
+    public class OceanFactoryGame(string[] args) : BaseGame(args) {
 
         public override void OnDraw(GameTime gameTime, float alpha) {
             

@@ -1,7 +1,5 @@
 ﻿using Engine.Debugging;
 using OceanFactory;
-using System;
-using System.Linq;
 
 namespace OceanFactoryDesktop;
 
@@ -11,9 +9,7 @@ public class Program {
 
         CrashHandler.Initialize();
 
-        bool isDevelopment = args.Contains("--dev");
-
-        using var game = new OceanFactoryGame(isDevelopment, args);
+        using var game = new OceanFactoryGame(args);
         game.Run();
 
     }

@@ -9,6 +9,7 @@ using Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 
 namespace Engine;
 
@@ -40,20 +41,19 @@ public abstract class BaseGame : Game {
 
     public static bool HasLoadedContent { get; private set; } = false;
 
-    public BaseGame(bool isDevelopmentMode, string[] args) {
+    public BaseGame(string[] args) {
         Instance = this;
         GraphicsDeviceManager = new GraphicsDeviceManager(this);
         SceneManager = new(this);
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        IsDevelopmentMode = isDevelopmentMode;
 
         Window.ClientSizeChanged += Window_ClientSizeChanged;
 
         ParseArgs(args);
 
-        if (isDevelopmentMode) {
+        if (IsDevelopmentMode) {
             RegisterEngineWindows();
 #if DEBUG
             RegisterDebugMenus();
@@ -63,7 +63,11 @@ public abstract class BaseGame : Game {
         }
     }
 
-    protected virtual void ParseArgs(string[] args) { }
+    protected virtual void ParseArgs(string[] args) {
+        if (args == null || args.Length == 0) return;
+
+        IsDevelopmentMode = Configuration.ALLOW_DEVELOPMENT_MODE && args.Contains("--dev");
+    }
 
     private void RegisterEngineWindows() {
         DebugMenuManager.RegisterMenu("command", typeof(CommandMenu));
