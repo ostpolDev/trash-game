@@ -20,9 +20,10 @@ public class TextUIComponent : AbstractUIComponent {
     public float LineSpacing = 0f;
     public TextStyle TextStyle = TextStyle.None;
     public TextAlignment Alignment { get; protected set; } = TextAlignment.LEFT;
-
     public TextWrapMode WrapMode { get; protected set; } = TextWrapMode.NONE;
     public bool RTL = false;
+
+    protected Vector2 Origin = Vector2.Zero;
 
     public TextUIComponent() : base(0, 0) { }
 
@@ -59,7 +60,7 @@ public class TextUIComponent : AbstractUIComponent {
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
-        spriteBatch.DrawString(DynamicSpriteFont, TextToRender, GetScreenPosition(), Color, 0f, default, Scale, 0, CharacterSpacing, LineSpacing, TextStyle);
+        spriteBatch.DrawString(DynamicSpriteFont, TextToRender, GetScreenPosition(), Color, 0f, Origin, Scale, 0, CharacterSpacing, LineSpacing, TextStyle);
     }
 
     public override void ReadData(SerializableDictionary dictionary) {
@@ -93,6 +94,11 @@ public class TextUIComponent : AbstractUIComponent {
 
     public void SetAlignment(TextAlignment alignment) {
         Alignment = alignment;
+        Origin = Alignment switch {
+            TextAlignment.CENTER => new Vector2(0.5f, 0f),
+            TextAlignment.RIGHT => new Vector2(1f, 0f),
+            _ => Vector2.Zero,
+        };
         UpdateTextRendering();
     }
 
@@ -147,9 +153,9 @@ public class TextUIComponent : AbstractUIComponent {
 
         Rectangle bounds = GetScreenBounds();
         int xDiff = ScreenArea.X - bounds.X;
-        if (ConstraintsEnabled[0]) {
+        if (ConstraintsEnabled[1]) {
             int xCons = (int)Constraints[0].Y;
-            return Math.Min(bounds.Width - xDiff, ScreenArea.X + xCons);
+            return Math.Min(bounds.Width - xDiff, xCons);
         }
 
         return bounds.Width - xDiff;
