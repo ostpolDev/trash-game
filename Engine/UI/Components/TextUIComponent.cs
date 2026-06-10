@@ -3,6 +3,7 @@ using Engine.UI.Debugging;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Text;
 
 namespace Engine.UI.Components;
@@ -142,8 +143,15 @@ public class TextUIComponent : AbstractUIComponent {
     }
 
     private int GetMaxTextX() {
+        // TODO: Padding
+
         Rectangle bounds = GetScreenBounds();
         int xDiff = ScreenArea.X - bounds.X;
+        if (ConstraintsEnabled[0]) {
+            int xCons = (int)Constraints[0].Y;
+            return Math.Min(bounds.Width - xDiff, ScreenArea.X + xCons);
+        }
+
         return bounds.Width - xDiff;
     }
 
