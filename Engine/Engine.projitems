@@ -20,6 +20,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)UI\Components\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Exceptions\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Drawing\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utility\Randomization\" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
@@ -96,5 +97,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)utility\Identifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\PathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Plane.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\randomization\IWeighted.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\randomization\RandomWeightedPicker.cs" />
   </ItemGroup>
 </Project>

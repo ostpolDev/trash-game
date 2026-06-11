@@ -1,7 +1,6 @@
 using Engine.Editors.Windows;
 using Engine.SceneManagement;
 using ImGuiNET;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Editors;
 
