@@ -5,7 +5,7 @@ namespace Engine.Editors.Windows;
 
 #if DEBUG
 
-internal class ConfirmationWindow : EditorWindow {
+public class ConfirmationWindow : EditorWindow {
 
     public delegate void ConfirmationWindowCallback(Buttons button);
 

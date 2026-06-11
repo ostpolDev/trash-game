@@ -28,7 +28,6 @@ internal class UIEditor : EditorScene {
     public Spritesheet UI_TEXTURE { get; private set; }
 
     private FilePickerWindow FilePickerWindow;
-    private ConfirmationWindow ConfirmationWindow;
 
     private bool isFontStatsOpen = false;
 
@@ -83,8 +82,6 @@ internal class UIEditor : EditorScene {
                 HandleFilePicker();
             FilePickerWindow = null;
         }
-
-        ConfirmationWindow?.Draw();
 
     }
 
@@ -241,7 +238,7 @@ internal class UIEditor : EditorScene {
 
             if (ext != PathHelper.COMPRESSED_DATA_FILE_EXTENSION && ext != PathHelper.DATA_FILE_EXTENSION) {
                 if (File.Exists(filePath)) {
-                    ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, "Cannot override this file as it is not in the correct format", "Error", ConfirmationWindow.Buttons.OK);
+                    ShowConfirmationWindow("Cannot override this file as it is not in the correct format", "Error", ConfirmationWindow.Buttons.OK);
                     return;
                 }
 
@@ -251,13 +248,13 @@ internal class UIEditor : EditorScene {
             BaseGame.Instance.UIManager.WriteData(dict);
             SerializableDictionary.WriteToFile(filePath, dict);
 
-            ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"Successfully saved to file:\n{filePath}", "Success");
+            ShowConfirmationWindow($"Successfully saved to file:\n{filePath}", "Success");
         } else if (FilePickerWindow.SelectMode == FilePickerWindow.SelectionMode.IMPORT) {
             string filePath = FilePickerWindow.ResultPath;
             string ext = Path.GetExtension(filePath);
 
             if (ext != PathHelper.COMPRESSED_DATA_FILE_EXTENSION && ext != PathHelper.DATA_FILE_EXTENSION) {
-                ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"File extension is invalid:\n{filePath}", "Error");
+                ShowConfirmationWindow($"File extension is invalid:\n{filePath}", "Error");
                 return;
             }
 
@@ -270,16 +267,16 @@ internal class UIEditor : EditorScene {
         if (FilePickerWindow.SelectMode == FilePickerWindow.SelectionMode.IMPORT) {
             string filePath = FilePickerWindow.ResultPath;
             if (!File.Exists(filePath)) {
-                ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"File not found:\n{filePath}", "Error");
+                ShowConfirmationWindow($"File not found:\n{filePath}", "Error");
                 return;
             }
 
             try {
                 FontManager.RegisterFont(filePath);
-                ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"Successfully loaded font: {Path.GetFileName(filePath)}", "Success");
+                ShowConfirmationWindow($"Successfully loaded font: {Path.GetFileName(filePath)}", "Success");
             } catch (Exception e) {
                 Logger.Exception(e);
-                ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, $"Failed to load font: {e.Message ?? "Unknown"}\n{e.StackTrace ?? "--"}", "Error");
+                ShowConfirmationWindow($"Failed to load font: {e.Message ?? "Unknown"}\n{e.StackTrace ?? "--"}", "Error");
             }
         }
     }
@@ -363,11 +360,10 @@ internal class UIEditor : EditorScene {
             ImGui.Separator();
 
             if (ImGui.MenuItem("Delete all")) {
-                ConfirmationWindow = new((action) => {
+                ShowConfirmationWindow((action) => {
                     if (action == ConfirmationWindow.Buttons.OK) {
                         BaseGame.Instance.UIManager.ClearAll();
                     }
-                    ConfirmationWindow = null;
                 }, "This will delete all existing components and cannot be undone!", "Are you sure?", ConfirmationWindow.Buttons.OK | ConfirmationWindow.Buttons.CANCEL);
             }
 

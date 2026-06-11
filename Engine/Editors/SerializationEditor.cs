@@ -35,8 +35,6 @@ internal class SerializationEditor : EditorScene {
     private AbstractEntry ToEditTarget;
     private AbstractEntry ToEditParent;
 
-    private ConfirmationWindow ConfirmationWindow;
-
     private bool compressedExport = true;
 
     private FilePickerWindow FilePickerWindow;
@@ -233,25 +231,21 @@ internal class SerializationEditor : EditorScene {
         ImGui.End();
     }
 
-    private void ShowMessage(string msg, string title = null) {
-        ConfirmationWindow = new((_) => { ConfirmationWindow = null; }, msg, title, ConfirmationWindow.Buttons.OK);
-    }
-
     private void HandleSelectFile() {
         if (FilePickerWindow.WasCancelled) return;
         string fileName = FilePickerWindow.ResultPath;
         if (string.IsNullOrEmpty(fileName)) {
-            ShowMessage("No file was selected", "No File");
+            ShowConfirmationWindow("No file was selected", "No File");
             return;
         }
         if (FilePickerWindow.SelectMode == FilePickerWindow.SelectionMode.IMPORT) {
             if (!File.Exists(fileName)) {
-                ShowMessage($"The following file was not found or does not exist:\n{fileName}", "File not found");
+                ShowConfirmationWindow($"The following file was not found or does not exist:\n{fileName}", "File not found");
                 return;
             }
             string ext = Path.GetExtension(fileName);
             if (ext != PathHelper.DATA_FILE_EXTENSION && ext != PathHelper.COMPRESSED_DATA_FILE_EXTENSION) {
-                ShowMessage($"The following file name is invalid:\n{Path.GetFileName(fileName)}\nThe following extensions are supported: {PathHelper.DATA_FILE_EXTENSION}, {PathHelper.COMPRESSED_DATA_FILE_EXTENSION}");
+                ShowConfirmationWindow($"The following file name is invalid:\n{Path.GetFileName(fileName)}\nThe following extensions are supported: {PathHelper.DATA_FILE_EXTENSION}, {PathHelper.COMPRESSED_DATA_FILE_EXTENSION}");
                 return;
             }
 
@@ -261,11 +255,11 @@ internal class SerializationEditor : EditorScene {
 
             } catch (FileHeaderMissingException headerException) {
                 Logger.Exception(headerException);
-                ShowMessage("The file does not seem to be in the correct format", "File header missing");
+                ShowConfirmationWindow("The file does not seem to be in the correct format", "File header missing");
                 return;
             } catch (Exception ex) {
                 Logger.Exception(ex);
-                ShowMessage(ex.StackTrace ?? "Something went wrong", ex.Message ?? "Error");
+                ShowConfirmationWindow(ex.StackTrace ?? "Something went wrong", ex.Message ?? "Error");
                 return;
             }
 
@@ -277,11 +271,11 @@ internal class SerializationEditor : EditorScene {
 
                 SerializableDictionary.WriteToFile(fileName, Data, compressedExport);
 
-                ShowMessage($"Successfully saved to:\n{fileName}", "Success!");
+                ShowConfirmationWindow($"Successfully saved to:\n{fileName}", "Success!");
 
             } catch (Exception ex) {
                 Logger.Exception(ex);
-                ShowMessage(ex.StackTrace ?? "Something went wrong", ex.Message ?? "Error");
+                ShowConfirmationWindow(ex.StackTrace ?? "Something went wrong", ex.Message ?? "Error");
             }
 
         }
@@ -289,7 +283,7 @@ internal class SerializationEditor : EditorScene {
 
     private void Export(bool compressed = true) {
         if (Data == null) {
-            ShowMessage("No data to export");
+            ShowConfirmationWindow("No data to export");
             return;
         }
 
