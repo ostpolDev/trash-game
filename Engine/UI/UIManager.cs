@@ -42,6 +42,15 @@ public class UIManager : Component, ISerializable {
             ScissorTestEnable = true,
             DepthBias = 0
         };
+
+        if (BaseGame.Instance.GraphicsDevice != null) {
+            ViewportRectangle = new() {
+                X = 0,
+                Y = 0,
+                Width = BaseGame.Instance.GraphicsDevice.Viewport.Width,
+                Height = BaseGame.Instance.GraphicsDevice.Viewport.Height
+            };
+        }
     }
 
     private void Instance_OnWindowResize(object sender, Events.WindowResizeEventArgs e) {
@@ -224,6 +233,10 @@ public class UIManager : Component, ISerializable {
 
     public AbstractUIComponent FindByID(string id) {
         return Components.FirstOrDefault(x => x.UID == id);
+    }
+
+    public Rectangle GetUIRectangle() {
+        return ViewportRectangle;
     }
 
     static UIManager() {

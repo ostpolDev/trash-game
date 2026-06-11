@@ -133,9 +133,10 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         Rectangle bounds = new();
         if (HasParent) {
             bounds = Parent.LocalArea;
-        } else if (BaseGame.Instance != null) {
-            bounds.Width = BaseGame.Instance.GraphicsDevice.Viewport.Width;
-            bounds.Height = BaseGame.Instance.GraphicsDevice.Viewport.Height;
+        } else if (UIManager.Singleton != null) {
+            Rectangle rect = UIManager.Singleton.GetUIRectangle();
+            bounds.Width = rect.Width;
+            bounds.Height = rect.Height;
         }
         return bounds;
     }
@@ -144,9 +145,10 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         Rectangle bounds = new();
         if (HasParent) {
             bounds = Parent.ScreenArea;
-        } else if (BaseGame.Instance != null) {
-            bounds.Width = BaseGame.Instance.GraphicsDevice.Viewport.Width;
-            bounds.Height = BaseGame.Instance.GraphicsDevice.Viewport.Height;
+        } else if (UIManager.Singleton != null) {
+            Rectangle rect = UIManager.Singleton.GetUIRectangle();
+            bounds.Width = rect.Width;
+            bounds.Height = rect.Height;
         }
         return bounds;
     }
