@@ -19,7 +19,14 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     public Rectangle LocalArea { get; protected set; }
     public Rectangle ScreenArea { get; protected set; }
 
+    /// <summary>
+    /// Additional offset that gets applied before the screen position is re-calculated
+    /// </summary>
     protected Point LocalAreaOffset = Point.Zero;
+
+    /// <summary>
+    /// Additional offset that gets applied after the screen position is re-calculated
+    /// </summary>
     protected Point ScreenAreaOffset = Point.Zero;
 
     public UIAnchorPosition AnchorPosition { get; protected set; }
