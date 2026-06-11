@@ -20,6 +20,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)UI\Components\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Exceptions\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Drawing\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utility\Enums\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Randomization\" />
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +93,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)utility\drawing\Polygon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\drawing\SpriteBatchExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\drawing\TextureExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\enums\EnumExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\enums\Rotation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\exceptions\FileHeaderMissingException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Identifier.cs" />
