@@ -19,6 +19,9 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     public Rectangle LocalArea { get; protected set; }
     public Rectangle ScreenArea { get; protected set; }
 
+    protected Point LocalAreaOffset = Point.Zero;
+    protected Point ScreenAreaOffset = Point.Zero;
+
     public UIAnchorPosition AnchorPosition { get; protected set; }
 
     public AbstractUIComponent Parent { get; protected set; }
@@ -149,6 +152,8 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         Rectangle bounds = GetBounds();
 
         Rectangle localArea = LocalArea;
+        localArea.X += LocalAreaOffset.X;
+        localArea.Y += LocalAreaOffset.Y;
 
         localArea = RecalculateStretching(localArea, bounds, Stretch, Padding);
         localArea = RecalculateConstraints(localArea, ConstraintsEnabled, Constraints);
@@ -158,6 +163,9 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
             newScreenArea.X += Parent.ScreenArea.X;
             newScreenArea.Y += Parent.ScreenArea.Y;
         }
+
+        newScreenArea.X += ScreenAreaOffset.X;
+        newScreenArea.Y += ScreenAreaOffset.Y;
 
         ScreenArea = newScreenArea;
 
