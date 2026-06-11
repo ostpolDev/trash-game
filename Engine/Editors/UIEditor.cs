@@ -207,17 +207,18 @@ internal class UIEditor : EditorScene {
         ImGui.End();
     }
 
-    private void AddChild(string key) {
+    private AbstractUIComponent AddChild(string key) {
         if (!UI_REGISTRY.TryGetValue(key, out Func<UIEditor, AbstractUIComponent> value)) {
             Logger.Error($"Could not create UI component of type {key}. Key not found");
-            return;
+            return null;
         }
 
         try {
             AbstractUIComponent component = value.Invoke(this);
             childSelectionTarget?.AddChild(component);
             manager.AddComponent(component);
-        } catch (Exception e) { Logger.Exception(e); }
+            return component;
+        } catch (Exception e) { Logger.Exception(e); return null; }
     }
 
     private void HandleFilePicker() {
@@ -345,6 +346,17 @@ internal class UIEditor : EditorScene {
                 ImGui.Checkbox("Draw UI Bounds", ref manager.Debug_DrawBounds);
                 ImGui.Spacing();
                 ImGui.Checkbox("Draw Local UI Bounds", ref manager.Debug_DrawLocalBounds);
+                ImGui.EndMenu();
+            }
+
+            if (ImGui.BeginMenu("Debug")) {
+                if (ImGui.MenuItem("Create 3x3")) {
+                    for (int i = 0; i < 9; i++) {
+                        AbstractUIComponent component = AddChild("Simple");
+                        component.SetAnchorPosition((UIAnchorPosition)i);
+                        component.SetReferenceID($"{component.AnchorPosition} - Simple");
+                    }
+                }
                 ImGui.EndMenu();
             }
 
