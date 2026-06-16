@@ -37,6 +37,7 @@ public class UIManager : Component, ISerializable {
     public bool Debug_DrawScissorTest = false;
     public bool Debug_DrawBounds = false;
     public bool Debug_DrawLocalBounds = false;
+    public bool Debug_DisableMouseEventListeners = false;
 #endif
 
     public static UIManager Singleton { get; private set; }
@@ -122,6 +123,9 @@ public class UIManager : Component, ISerializable {
 
     public override void Update(GameTime gameTime, float delta) {
         if (MouseEventListeners.Count <= 0) return;
+#if DEBUG
+        if (Debug_DisableMouseEventListeners) return;
+#endif
 
         CurrentMouseState = Mouse.GetState();
 
