@@ -134,6 +134,17 @@ public class UIManager : Component, ISerializable {
         PreviousMouseState = CurrentMouseState;
     }
 
+    public bool IsMouseOverUI(Point mousePosition) {
+        foreach (AbstractUIComponent component in Components) {
+            if (component.Contains(mousePosition)) return true;
+        }
+        return false;
+    }
+
+    public bool IsMouseOverUI() {
+        return IsMouseOverUI(CurrentMouseState.Position);
+    }
+
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
         spriteBatch.Begin(rasterizerState: RasterizerState, sortMode: SpriteSortMode.Immediate);
         foreach (AbstractUIComponent component in Components) {
