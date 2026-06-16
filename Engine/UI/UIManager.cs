@@ -134,7 +134,7 @@ public class UIManager : Component, ISerializable {
         PreviousMouseState = CurrentMouseState;
     }
 
-    public bool IsMouseOverUI(Point mousePosition) {
+    public bool IsPointOverUI(Point mousePosition) {
         foreach (AbstractUIComponent component in Components) {
             if (component.Contains(mousePosition)) return true;
         }
@@ -142,7 +142,7 @@ public class UIManager : Component, ISerializable {
     }
 
     public bool IsMouseOverUI() {
-        return IsMouseOverUI(CurrentMouseState.Position);
+        return IsPointOverUI(CurrentMouseState.Position);
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
