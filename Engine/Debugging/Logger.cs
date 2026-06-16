@@ -1,3 +1,4 @@
+using Engine.Events;
 using Engine.Utility;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ public class Logger {
     private static readonly string logPath;
 
     public static readonly Logger Shared = Get("Generic");
+    internal static EventHandler<LoggerEventArgs> OnLog;
 
     public static Logger Get(string name) {
         if (loggerLookup.TryGetValue(name, out Logger value))
@@ -31,6 +33,7 @@ public class Logger {
             return;
 
         System.Diagnostics.Debug.WriteLine(str);
+        OnLog?.Invoke(null, new LoggerEventArgs(str));
 
         byte[] chars = Encoding.UTF8.GetBytes($"{str}\n");
         stream?.Write(chars);

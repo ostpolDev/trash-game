@@ -1,3 +1,4 @@
+using Engine.Events;
 using Engine.Utility;
 using ImGuiNET;
 using System;
@@ -70,7 +71,6 @@ public class CommandMenu : DebugMenu {
     }
 
     public static void WriteToOutput(string msg) {
-        Logger.Info(msg);
         resultBuffer.Insert(0, msg);
         if (resultBuffer.Count > MAX_BUFFER_SIZE) {
             resultBuffer.RemoveRange(MAX_BUFFER_SIZE - 1, resultBuffer.Count - MAX_BUFFER_SIZE);
@@ -92,7 +92,13 @@ public class CommandMenu : DebugMenu {
         ImGui.SetNextWindowSizeConstraints(new(DebugMenuManager.WindowViewport.Width, 0), new(DebugMenuManager.WindowViewport.Width, 200));
     }
 
+    private static void OnLog(object sender, LoggerEventArgs e) {
+        WriteToOutput(e.Content);
+    }
+
     static CommandMenu() {
+        Logger.OnLog += OnLog;
+
         RegisterCommand("help", new() {
             Action = (args) => {
                 if (args != null && args.Length >= 1) {
