@@ -228,6 +228,7 @@ public class UIManager : Component, ISerializable {
 
     public void ClearAll() {
         TickableComponents.Clear();
+        MouseEventListeners.Clear();
         Components.Clear();
     }
 

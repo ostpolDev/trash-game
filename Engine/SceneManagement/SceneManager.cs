@@ -29,26 +29,32 @@ public class SceneManager(BaseGame game) : Component {
         sceneTypeLookup.Remove(name);
     }
 
-    public T LoadScene<T>(string name) where T : Scene {
+    public T LoadScene<T>(string name, bool preserveUI = false) where T : Scene {
         if (!sceneTypeLookup.TryGetValue(name, out Type type)) {
             Logger.Error($"Scene with key \"{name}\" is not registered!");
             return default;
         }
 
         ActiveScene?.Unload();
+        if (!preserveUI) {
+            BaseGame.Instance?.UIManager?.ClearAll();
+        }
         T scene = (T) Activator.CreateInstance(type);
         ActiveScene = scene;
         ActiveScene.LoadContent(Game.Content);
         return scene;
     }
 
-    public async Task<T> LoadSceneAsyncWithTask<T>(string name, Task loadingScreenTask) where T : Scene {
+    public async Task<T> LoadSceneAsyncWithTask<T>(string name, Task loadingScreenTask, bool preserveUI = false) where T : Scene {
         if (!sceneTypeLookup.TryGetValue(name, out Type type)) {
             Logger.Error($"Scene with key \"{name}\" is not registered!");
             return default;
         }
 
         ActiveScene?.Unload();
+        if (!preserveUI) {
+            BaseGame.Instance?.UIManager?.ClearAll();
+        }
         await loadingScreenTask;
         T scene = (T)Activator.CreateInstance(type);
         ActiveScene = scene;
@@ -56,11 +62,13 @@ public class SceneManager(BaseGame game) : Component {
         return scene;
     }
 
-    public void SetScene(Scene scene) {
+    public void SetScene(Scene scene, bool preserveUI = false) {
         ActiveScene?.Unload();
+        if (!preserveUI) {
+            BaseGame.Instance?.UIManager?.ClearAll();
+        }
         ActiveScene = scene;
     }
-
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
         ActiveScene?.Draw(gameTime, spriteBatch, alpha);
