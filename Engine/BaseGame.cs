@@ -128,6 +128,7 @@ public abstract class BaseGame : Game {
         alpha = accumulator / FIXED_UPDATE_DELTA;
         deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+        UIManager.Update(gameTime, deltaTime);
         SceneManager.Update(gameTime, deltaTime);
         OnUpdate(gameTime, deltaTime);
 

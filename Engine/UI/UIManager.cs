@@ -1,9 +1,11 @@
 using Engine.Debugging;
 using Engine.Serialization;
 using Engine.UI.Components;
+using Engine.UI.Interaction;
 using Engine.Utility.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +18,7 @@ public class UIManager : Component, ISerializable {
 
     public readonly List<AbstractUIComponent> Components = [];
     private readonly List<ITickableUIComponent> TickableComponents = [];
-    private readonly List<IMouseEventListener> MouseEventListeners = [];
+    private readonly List<MouseEventWrapper> MouseEventListeners = [];
     private static readonly Dictionary<string, Type> uiComponentTypeLookup = [];
 
     private readonly RasterizerState RasterizerState;
@@ -27,6 +29,9 @@ public class UIManager : Component, ISerializable {
     public static int RegisteredComponents { get { return uiComponentTypeLookup.Count; } }
 
     private int ScissorDepth = -1;
+
+    public MouseState CurrentMouseState { get; private set; }
+    public MouseState PreviousMouseState { get; private set; }
 
 #if DEBUG
     public bool Debug_DrawScissorTest = false;
@@ -71,7 +76,7 @@ public class UIManager : Component, ISerializable {
             TickableComponents.Add(tickable);
 
         if (component is IMouseEventListener mouseEventListener)
-            MouseEventListeners.Add(mouseEventListener);
+            MouseEventListeners.Add(new MouseEventWrapper(component, mouseEventListener));
 
         if (withChildren)
             foreach (AbstractUIComponent child in component.Children)
@@ -85,8 +90,12 @@ public class UIManager : Component, ISerializable {
         foreach (AbstractUIComponent item in toDelete) {
             if (item is ITickableUIComponent tickable)
                 TickableComponents.Remove(tickable);
-            if (item is IMouseEventListener mouseEventListener)
-                MouseEventListeners.Remove(mouseEventListener);
+            if (item is IMouseEventListener mouseEventListener) {
+                MouseEventWrapper wrapper = MouseEventListeners.FirstOrDefault(x => x.Component.UID == component.UID);
+                if (wrapper != null) {
+                    MouseEventListeners.Remove(wrapper);
+                }
+            }
             Components.Remove(item);
         }
 
@@ -112,7 +121,17 @@ public class UIManager : Component, ISerializable {
     }
 
     public override void Update(GameTime gameTime, float delta) {
-        
+        if (MouseEventListeners.Count <= 0) return;
+
+        CurrentMouseState = Mouse.GetState();
+
+        if (CurrentMouseState != PreviousMouseState) {
+            foreach (var item in MouseEventListeners) {
+                item.Update(CurrentMouseState, PreviousMouseState);
+            }
+        }
+
+        PreviousMouseState = CurrentMouseState;
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {

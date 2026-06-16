@@ -259,6 +259,14 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         return ScreenArea.Intersects(other);
     }
 
+    public bool Contains(Point position) {
+        return ScreenArea.Contains(position);
+    }
+
+    public bool Contains(int x, int y) {
+        return ScreenArea.Contains(x, y);
+    }
+
     public int CompareTo(AbstractUIComponent other) {
         return ZIndex - other.ZIndex;
     }
