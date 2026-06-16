@@ -16,6 +16,7 @@ public class UIManager : Component, ISerializable {
 
     public readonly List<AbstractUIComponent> Components = [];
     private readonly List<ITickableUIComponent> TickableComponents = [];
+    private readonly List<IMouseEventListener> MouseEventListeners = [];
     private static readonly Dictionary<string, Type> uiComponentTypeLookup = [];
 
     private readonly RasterizerState RasterizerState;
@@ -69,6 +70,9 @@ public class UIManager : Component, ISerializable {
         if (component is ITickableUIComponent tickable)
             TickableComponents.Add(tickable);
 
+        if (component is IMouseEventListener mouseEventListener)
+            MouseEventListeners.Add(mouseEventListener);
+
         if (withChildren)
             foreach (AbstractUIComponent child in component.Children)
                 AddComponent(child, true);
@@ -81,6 +85,8 @@ public class UIManager : Component, ISerializable {
         foreach (AbstractUIComponent item in toDelete) {
             if (item is ITickableUIComponent tickable)
                 TickableComponents.Remove(tickable);
+            if (item is IMouseEventListener mouseEventListener)
+                MouseEventListeners.Remove(mouseEventListener);
             Components.Remove(item);
         }
 
