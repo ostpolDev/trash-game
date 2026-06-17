@@ -22,6 +22,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Exceptions\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Drawing\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Enums\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utility\Math\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utility\Randomization\" />
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +104,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)utility\exceptions\FileHeaderMissingException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Identifier.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\math\BigIntegerSerializationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\PathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Plane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\randomization\IWeighted.cs" />
