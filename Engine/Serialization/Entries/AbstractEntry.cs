@@ -38,6 +38,7 @@ public abstract class AbstractEntry {
             DictionaryEntryType.INVALID => new InvalidEntry(),
             DictionaryEntryType.IDENTIFIER => new IdentifierEntry(),
             DictionaryEntryType.BOOL => new BoolEntry(),
+            DictionaryEntryType.BYTE_ARRAY => new ByteArrayEntry(),
             _ => null,
         };
     }

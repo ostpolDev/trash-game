@@ -192,6 +192,10 @@ public class SerializableDictionary : AbstractEntry {
         Data[key] = new IdentifierEntry(identifier).SetKey(key);
     }
 
+    public void Put(string key, byte[] bytes) {
+        Data[key] = new ByteArrayEntry(bytes).SetKey(key);
+    }
+
     public void Delete(string key) {
         Data.Remove(key);
     }
@@ -258,6 +262,10 @@ public class SerializableDictionary : AbstractEntry {
 
     public Identifier GetIdentifier(string key) {
         return !ContainsKey(key) ? Identifier.EMPTY : ((IdentifierEntry)Data[key]).Data;
+    }
+
+    public byte[] GetBytes(string key) {
+        return !ContainsKey(key) ? null : ((ByteArrayEntry)Data[key]).Data;
     }
 
     #endregion

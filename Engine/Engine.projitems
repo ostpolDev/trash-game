@@ -55,6 +55,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)serialization\DictionaryEntryType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\AbstractEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\BoolEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\ByteArrayEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\ByteEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\ColorEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)serialization\entries\DoubleEntry.cs" />
