@@ -14,6 +14,7 @@ public class LocalizationManager {
     public static event EventHandler<LocaleChangeEventArgs> OnLocaleChanged;
 
     public static string CurrentLocale { get; private set; } = "en";
+    public static string CurrentFallbackLocale { get; private set; } = "en";
     private static string LocalePath = null;
 
     private static readonly Dictionary<string, string> LocaleLookup = [];
@@ -44,7 +45,7 @@ public class LocalizationManager {
             if (string.IsNullOrEmpty(line) || line.StartsWith('#')) continue;
             string[] parts = line.Split('=');
             if (parts.Length != 2) continue;
-            LocaleLookup[parts[0]] = parts[1];
+            LocaleLookup[parts[0].Trim()] = parts[1].Trim();
         }
 
         if (loadAsFallback) {
@@ -52,9 +53,11 @@ public class LocalizationManager {
             foreach (var item in LocaleLookup) {
                 FallbackLocaleLookup[item.Key] = item.Value;
             }
+            CurrentFallbackLocale = locale;
         }
+        CurrentLocale = locale;
 
-        OnLocaleChanged?.Invoke(null, new(locale));
+        OnLocaleChanged?.Invoke(null, new(CurrentLocale, loadAsFallback));
     }
 
     private static void FindLocales() {
@@ -64,7 +67,7 @@ public class LocalizationManager {
             if (Path.GetExtension(file) != LOCALE_EXTENSION) continue;
 
             string languageName = File.ReadLines(Path.Join(LocalePath, file)).First();
-            locales.Add(new() { Code = Path.GetFileNameWithoutExtension(file), DisplayName = languageName });
+            locales.Add(new() { Code = Path.GetFileNameWithoutExtension(file), DisplayName = languageName[1..].Trim() });
         }
         AvailableLocales = [.. locales];
     }
