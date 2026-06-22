@@ -41,6 +41,13 @@ public class PathHelper {
         return Path.Combine(Directory.GetCurrentDirectory(), "Content");
     }
 
+    public static string GetLocaleDirectory() {
+        string dir = Path.Combine(GetContentPath(), "locale");
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+        return dir;
+    }
+
     public static string GetCurrentDirectory() {
         return Directory.GetCurrentDirectory();
     }

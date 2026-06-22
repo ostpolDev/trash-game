@@ -2,6 +2,7 @@ using Engine.Debugging;
 using Engine.Debugging.Menus;
 using Engine.Events;
 using Engine.Interaction;
+using Engine.Localization;
 using Engine.SceneManagement;
 using Engine.Sprites;
 using Engine.UI;
@@ -94,6 +95,7 @@ public abstract class BaseGame : Game {
     protected override void LoadContent() {
         OnLoadContent?.Invoke(this, new LoadContentEventArgs(Content));
         FontManager.LoadContent();
+        LocalizationManager.Initialize();
         base.LoadContent();
         HasLoadedContent = true;
     }
