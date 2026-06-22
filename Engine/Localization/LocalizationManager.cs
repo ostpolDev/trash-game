@@ -86,6 +86,10 @@ public class LocalizationManager {
         return key;
     }
 
+    public static string Get(string key, params object[] objects) {
+        return string.Format(Get(key), objects);
+    }
+
     public struct Locale {
         public string DisplayName;
         public string Code;
