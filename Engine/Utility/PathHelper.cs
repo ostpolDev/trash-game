@@ -42,7 +42,7 @@ public class PathHelper {
     }
 
     public static string GetLocaleDirectory() {
-        string dir = Path.Combine(GetContentPath(), "locale");
+        string dir = Path.Combine(GetContentPath(), "Locale");
         if (!Directory.Exists(dir))
             Directory.CreateDirectory(dir);
         return dir;
