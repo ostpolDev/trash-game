@@ -121,6 +121,7 @@ public class TextUIComponent : AbstractUIComponent {
         TextToRender = WrapMode == TextWrapMode.NONE ? Text : WrapText(Text);
         Vector2 size = Measure();
         LocalArea = new(LocalArea.X, LocalArea.Y, (int)size.X, (int)size.Y);
+        ApplyAlignment();
         RecalculateScreenPosition();
     }
 
@@ -185,6 +186,22 @@ public class TextUIComponent : AbstractUIComponent {
                 builder.Remove(i, 1);
                 builder.Append('\n').Append(text[i]);
             }
+        }
+    }
+
+    private void ApplyAlignment() {
+        switch (Alignment) {
+            case TextAlignment.LEFT:
+                LocalAreaOffset.X = 0;
+                break;
+            case TextAlignment.CENTER:
+                LocalAreaOffset.X = -(ScreenArea.Width / 2);
+                break;
+            case TextAlignment.RIGHT:
+                LocalAreaOffset.X = -ScreenArea.Width;
+                break;
+            default:
+                break;
         }
     }
 

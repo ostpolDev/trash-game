@@ -2,7 +2,7 @@ using Engine.Serialization;
 using System.IO;
 using System.Numerics;
 
-namespace Engine.Utility.Math;
+namespace Engine.Utility.Maths;
 
 public static class BigIntegerSerializationExtensions {
 

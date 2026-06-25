@@ -66,7 +66,7 @@ public class LocalizationManager {
         foreach (string file in files) {
             if (Path.GetExtension(file) != LOCALE_EXTENSION) continue;
 
-            string languageName = File.ReadLines(Path.Join(LocalePath, file)).First();
+            string languageName = File.ReadLines(file).First();
             locales.Add(new() { Code = Path.GetFileNameWithoutExtension(file), DisplayName = languageName[1..].Trim() });
         }
         AvailableLocales = [.. locales];
