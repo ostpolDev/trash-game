@@ -82,6 +82,7 @@ public class UIManager : Component, ISerializable {
         TriggerResize(BaseGame.Instance.GraphicsDevice.Viewport);
     }
 
+    // https://community.monogame.net/t/solved-right-way-to-use-matrices-to-scale-a-gui-across-different-display-configs/10590/7
     public void UpdateScaleMatrix() {
         float scaleX = (float)ViewportRectangle.Width / VIRTUAL_WIDTH * UIScale;
         float scaleY = (float)ViewportRectangle.Height / VIRTUAL_HEIGHT * UIScale;

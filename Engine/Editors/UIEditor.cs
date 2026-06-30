@@ -30,6 +30,9 @@ internal class UIEditor : EditorScene {
     private FilePickerWindow FilePickerWindow;
 
     private bool isFontStatsOpen = false;
+    private bool isUIInfoOpen = false;
+
+    private float uiScale = 0f;
 
     private readonly Dictionary<string, Func<UIEditor, AbstractUIComponent>> UI_REGISTRY = new() {
         { "Simple", (scene) => {
@@ -50,6 +53,7 @@ internal class UIEditor : EditorScene {
         manager = BaseGame.Instance.UIManager;
         UI_TEXTURE = new Spritesheet("UI/panel");
         UI_TYPE_KEYS = [.. UI_REGISTRY.Keys];
+        uiScale = manager.UIScale;
 
 #if DEBUG
         UI_TEXTURE.With(Identifier.EMPTY, 0, 0, 64, 64);
@@ -73,6 +77,10 @@ internal class UIEditor : EditorScene {
 
         if (isFontStatsOpen) {
             DrawFontStats();
+        }
+
+        if (isUIInfoOpen) {
+            DrawUIInfo();
         }
 
         DrawInspectorWindow();
@@ -170,6 +178,26 @@ internal class UIEditor : EditorScene {
         ImGui.Spacing();
         if (ImGui.Button("Close##font")) {
             isFontStatsOpen = false;
+        }
+
+        ImGui.End();
+    }
+
+    private void DrawUIInfo() {
+        ImGui.Begin("UI Information", ImGuiWindowFlags.NoDocking);
+        ImGui.Text($"Elements: {manager.ChildCount}");
+        ImGui.Text($"Scale: {manager.UIScale} (${manager.UIScaleFactor})");
+        ImGui.Text($"Matrix: {manager.UIScaleMatrix}");
+        ImGui.Spacing();
+        ImGui.SeparatorText("Settings");
+        ImGui.Spacing();
+
+        if (ImGui.SliderFloat("UI Scale", ref uiScale, 0.01f, 10f)) {
+            manager.SetUIScale(uiScale);
+        }
+
+        if (ImGui.Button("Recalculate Matrix")) {
+            manager.UpdateScaleMatrix();
         }
 
         ImGui.End();
@@ -336,6 +364,9 @@ internal class UIEditor : EditorScene {
                 }
                 if (ImGui.MenuItem("Sort components")) {
                     manager.SortComponentZ();
+                }
+                if (ImGui.MenuItem("Settings")) {
+                    isUIInfoOpen = !isUIInfoOpen;
                 }
                 ImGui.Separator();
                 ImGui.Checkbox("Draw Scissor Mask", ref manager.Debug_DrawScissorTest);
