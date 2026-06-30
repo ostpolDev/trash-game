@@ -186,7 +186,7 @@ internal class UIEditor : EditorScene {
     private void DrawUIInfo() {
         ImGui.Begin("UI Information", ImGuiWindowFlags.NoDocking);
         ImGui.Text($"Elements: {manager.ChildCount}");
-        ImGui.Text($"Scale: {manager.UIScale} (${manager.UIScaleFactor})");
+        ImGui.Text($"Scale: {manager.UIScale} ({manager.UIScaleFactor})");
         ImGui.Text($"Matrix: {manager.UIScaleMatrix}");
         ImGui.Spacing();
         ImGui.SeparatorText("Settings");
@@ -195,9 +195,16 @@ internal class UIEditor : EditorScene {
         if (ImGui.SliderFloat("UI Scale", ref uiScale, 0.01f, 10f)) {
             manager.SetUIScale(uiScale);
         }
+        if (ImGui.InputFloat("##uiScale", ref uiScale)) {
+            manager.SetUIScale(uiScale);
+        }
 
         if (ImGui.Button("Recalculate Matrix")) {
             manager.UpdateScaleMatrix();
+        }
+
+        if (ImGui.Button("Close##uisettings")) {
+            isUIInfoOpen = false;
         }
 
         ImGui.End();
