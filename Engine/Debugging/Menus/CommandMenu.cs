@@ -200,20 +200,39 @@ public class CommandMenu : DebugMenu {
             ShortDescription = "Open game directories in file explorer",
             Help = ["Usage: opendir [dir]", "  dir:", "    - author, game, runtime, current, mods, logs"]
         });
-        RegisterCommand("winresize", new() {
+        RegisterCommand("window", new() {
             Action = (args) => {
-                if (args == null || args.Length <= 0) {
+                if (args == null || args.Length < 2) {
                     return CommandActionResult.MISSING_ARGS;
                 }
 
-                string arg = args[0];
-                if (arg != "true" && arg != "false") return CommandActionResult.INVALID_ARGS;
+                string param = args[0];
+                string value = args[1];
 
-                BaseGame.Instance.SetResizable(arg == "true");
+                switch (param) {
+                    case "resizable":
+                        if (value != "true" && value != "false") return CommandActionResult.INVALID_ARGS;
+                        BaseGame.Instance.SetResizable(value == "true");
+                        break;
+                    case "size":
+                        string[] parts = value.Split('x');
+                        if (parts.Length != 2) return CommandActionResult.INVALID_ARGS;
+
+                        if (!int.TryParse(parts[0], out int w) || !int.TryParse(parts[1], out int h)) {
+                            return CommandActionResult.INVALID_ARGS;
+                        }
+
+                        BaseGame.Instance.GraphicsDeviceManager.PreferredBackBufferWidth = w;
+                        BaseGame.Instance.GraphicsDeviceManager.PreferredBackBufferHeight = h;
+                        BaseGame.Instance.GraphicsDeviceManager.ApplyChanges();
+                        break;
+                    default:
+                        return CommandActionResult.INVALID_ARGS;
+                }
                 return CommandActionResult.SUCCESS;
             },
             ShortDescription = "Set window resizability",
-            Help = ["Usage: winresize [resizable]", "  resizable: true/false"]
+            Help = ["Usage: window <param> <value>", "Params:", "  resizable [true/false]", "  size [width x height] e.g. 800x600"]
         });
     }
 
