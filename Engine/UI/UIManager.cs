@@ -86,7 +86,7 @@ public class UIManager : Component, ISerializable {
         float scaleX = (float)ViewportRectangle.Width / VIRTUAL_WIDTH * UIScale;
         float scaleY = (float)ViewportRectangle.Height / VIRTUAL_HEIGHT * UIScale;
 
-        UIScaleFactor = (float)ViewportRectangle.Width / VIRTUAL_WIDTH;
+        UIScaleFactor = (float)ViewportRectangle.Width / VIRTUAL_WIDTH * UIScale;
         UIScaleMatrix = Matrix.CreateScale(scaleX, scaleY, 1f);
     }
 
