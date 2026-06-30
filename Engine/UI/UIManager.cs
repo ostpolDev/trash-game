@@ -14,12 +14,21 @@ namespace Engine.UI;
 
 public class UIManager : Component, ISerializable {
 
+    public Matrix UIScaleMatrix { get; private set; }
+
+    const int VIRTUAL_WIDTH = 1280;
+    const int VIRTUAL_HEIGHT = 720;
+
+    public float UIScaleFactor { get; private set; } = 1f;
+
     private static readonly Logger Logger = Logger.Get("UI");
 
     public readonly List<AbstractUIComponent> Components = [];
     private readonly List<ITickableUIComponent> TickableComponents = [];
     private readonly List<MouseEventWrapper> MouseEventListeners = [];
     private static readonly Dictionary<string, Type> uiComponentTypeLookup = [];
+
+    public float UIScale { get; private set; } = 1f;
 
     private readonly RasterizerState RasterizerState;
 
@@ -32,7 +41,7 @@ public class UIManager : Component, ISerializable {
 
     public MouseState CurrentMouseState { get; private set; }
     public MouseState PreviousMouseState { get; private set; }
-
+        
 #if DEBUG
     public bool Debug_DrawScissorTest = false;
     public bool Debug_DrawBounds = false;
@@ -51,12 +60,7 @@ public class UIManager : Component, ISerializable {
         };
 
         if (BaseGame.Instance.GraphicsDevice != null) {
-            ViewportRectangle = new() {
-                X = 0,
-                Y = 0,
-                Width = BaseGame.Instance.GraphicsDevice.Viewport.Width,
-                Height = BaseGame.Instance.GraphicsDevice.Viewport.Height
-            };
+            TriggerResize(BaseGame.Instance.GraphicsDevice.Viewport);
         }
     }
 
@@ -66,9 +70,24 @@ public class UIManager : Component, ISerializable {
 
     private void TriggerResize(Viewport viewport) {
         ViewportRectangle = new(0, 0, viewport.Width, viewport.Height);
+        UpdateScaleMatrix();
         foreach (AbstractUIComponent component in Components) {
             component.RecalculateScreenPosition(false);
         }
+    }
+
+    public void SetUIScale(float scale) {
+        UIScale = scale;
+        UpdateScaleMatrix();
+        TriggerResize(BaseGame.Instance.GraphicsDevice.Viewport);
+    }
+
+    public void UpdateScaleMatrix() {
+        float scaleX = (float)ViewportRectangle.Width / VIRTUAL_WIDTH * UIScale;
+        float scaleY = (float)ViewportRectangle.Height / VIRTUAL_HEIGHT * UIScale;
+
+        UIScaleFactor = (float)ViewportRectangle.Width / VIRTUAL_WIDTH;
+        UIScaleMatrix = Matrix.CreateScale(scaleX, scaleY, 1f);
     }
 
     public void AddComponent(AbstractUIComponent component, bool withChildren = true) {
@@ -150,7 +169,7 @@ public class UIManager : Component, ISerializable {
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, float alpha) {
-        spriteBatch.Begin(rasterizerState: RasterizerState, sortMode: SpriteSortMode.Immediate);
+        spriteBatch.Begin(rasterizerState: RasterizerState, sortMode: SpriteSortMode.Immediate, transformMatrix: UIScaleMatrix);
         foreach (AbstractUIComponent component in Components) {
             if (component.ShouldDraw) {
                 if (component.Depth <= ScissorDepth) {
