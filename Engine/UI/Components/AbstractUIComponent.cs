@@ -167,6 +167,10 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         localArea = RecalculateStretching(localArea, bounds, Stretch, Padding);
         localArea = RecalculateConstraints(localArea, ConstraintsEnabled, Constraints);
 
+        Vector2 matrixPosition = Vector2.Transform(new Vector2(localArea.X, localArea.Y), UIManager.Singleton.UIScaleMatrix);
+        localArea.X = (int)matrixPosition.X;
+        localArea.Y = (int)matrixPosition.Y;
+
         Rectangle newScreenArea = GetAnchorRelativeRectangle(localArea, bounds, AnchorPosition);
         if (PositionRelativeToParent && HasParent) {
             newScreenArea.X += Parent.ScreenArea.X;
@@ -175,6 +179,8 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
 
         newScreenArea.X += ScreenAreaOffset.X;
         newScreenArea.Y += ScreenAreaOffset.Y;
+
+        
 
         ScreenArea = newScreenArea;
 
