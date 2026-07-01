@@ -104,6 +104,31 @@ public abstract class BaseGame : Game {
         Window.AllowUserResizing = isResizable;
     }
 
+    public void SetWindowSize(int width, int height) {
+        GraphicsDeviceManager.PreferredBackBufferWidth = width;
+        GraphicsDeviceManager.PreferredBackBufferHeight = height;
+        GraphicsDeviceManager.ApplyChanges();
+        Window_ClientSizeChanged(null, null);
+    }
+
+    public void SetFullscreen(bool isFullscreen = true) {
+        if (isFullscreen) {
+            GraphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            GraphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            GraphicsDeviceManager.IsFullScreen = true;
+            GraphicsDeviceManager.ApplyChanges();
+            UIManager.SetAspectToCurrent(false);
+        } else {
+            GraphicsDeviceManager.PreferredBackBufferWidth = AspectRatio._16x9.TargetWidth;
+            GraphicsDeviceManager.PreferredBackBufferHeight = AspectRatio._16x9.TargetHeight;
+            GraphicsDeviceManager.IsFullScreen = false;
+            GraphicsDeviceManager.ApplyChanges();
+            UIManager.SetAspectRatio(AspectRatio._16x9, false);
+        }
+
+        Window_ClientSizeChanged(null, null);
+    }
+
     protected override void Update(GameTime gameTime) {
         if (previousT == 0)
             previousT = (float)gameTime.TotalGameTime.TotalMilliseconds;

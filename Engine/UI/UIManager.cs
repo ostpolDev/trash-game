@@ -311,6 +311,17 @@ public class UIManager : Component, ISerializable {
         return ScreenViewportRectangle;
     }
 
+    public void SetAspectRatio(AspectRatio ratio, bool update = true) {
+        CurrentRatio = ratio;
+        if (update)
+            TriggerResize(BaseGame.Instance.GraphicsDevice.Viewport);
+    }
+
+    public void SetAspectToCurrent(bool update = true) {
+        Viewport v = BaseGame.Instance.GraphicsDevice.Viewport;
+        SetAspectRatio(new(v.Width, v.Height), update);
+    }
+
     static UIManager() {
         RegisterUIComponent(typeof(SimpleUIComponent));
         RegisterUIComponent(typeof(EmptyUIComponent));

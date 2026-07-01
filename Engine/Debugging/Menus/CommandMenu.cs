@@ -225,14 +225,18 @@ public class CommandMenu : DebugMenu {
                             return CommandActionResult.INVALID_ARGS;
                         }
 
-                        BaseGame.Instance.GraphicsDeviceManager.PreferredBackBufferWidth = w;
-                        BaseGame.Instance.GraphicsDeviceManager.PreferredBackBufferHeight = h;
-                        BaseGame.Instance.GraphicsDeviceManager.ApplyChanges();
+                        BaseGame.Instance.SetWindowSize(w, h);
                         break;
                     case "query":
                         int qw = BaseGame.Instance.GraphicsDevice.PresentationParameters.BackBufferWidth;
                         int qh = BaseGame.Instance.GraphicsDevice.PresentationParameters.BackBufferHeight;
                         WriteToOutput($"Window size: {qw}x{qh} ({MathHelpers.GetAspectRatioWhole(qw, qh)})");
+                        break;
+                    case "fullscreen":
+                        if (value == null) return CommandActionResult.MISSING_ARGS;
+                        if (value != "true" && value != "false") return CommandActionResult.INVALID_ARGS;
+                        BaseGame.Instance.SetFullscreen(value == "true");
+
                         break;
                     default:
                         return CommandActionResult.INVALID_ARGS;
@@ -240,7 +244,7 @@ public class CommandMenu : DebugMenu {
                 return CommandActionResult.SUCCESS;
             },
             ShortDescription = "Set window resizability",
-            Help = ["Usage: window <param> <value>", "Params:", "  resizable [true/false]", "  size [width x height] e.g. 800x600", "  query"]
+            Help = ["Usage: window <param> <value>", "Params:", "  resizable [true/false]", "  size [width x height] e.g. 800x600", "  query", "  fullscreen [true/false]"]
         });
     }
 
