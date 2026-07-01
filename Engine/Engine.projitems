@@ -83,6 +83,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)sprites\Spritesheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\SpritesheetExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)sprites\SpritesheetPacker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ui\AspectRatio.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\AbstractUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\components\EmptyUIComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ui\components\TextUIComponent.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)utility\HardwareSniffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Identifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Maths\BigIntegerSerializationExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utility\maths\MathHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\PathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\Plane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)utility\randomization\IWeighted.cs" />

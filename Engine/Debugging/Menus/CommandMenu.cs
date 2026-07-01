@@ -1,5 +1,6 @@
 using Engine.Events;
 using Engine.Utility;
+using Engine.Utility.Maths;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
@@ -202,19 +203,21 @@ public class CommandMenu : DebugMenu {
         });
         RegisterCommand("window", new() {
             Action = (args) => {
-                if (args == null || args.Length < 2) {
+                if (args == null || args.Length < 1) {
                     return CommandActionResult.MISSING_ARGS;
                 }
 
                 string param = args[0];
-                string value = args[1];
+                string value = args.Length > 1 ? args[1] : null;
 
                 switch (param) {
                     case "resizable":
+                        if (value == null) return CommandActionResult.MISSING_ARGS;
                         if (value != "true" && value != "false") return CommandActionResult.INVALID_ARGS;
                         BaseGame.Instance.SetResizable(value == "true");
                         break;
                     case "size":
+                        if (value == null) return CommandActionResult.MISSING_ARGS;
                         string[] parts = value.Split('x');
                         if (parts.Length != 2) return CommandActionResult.INVALID_ARGS;
 
@@ -226,13 +229,18 @@ public class CommandMenu : DebugMenu {
                         BaseGame.Instance.GraphicsDeviceManager.PreferredBackBufferHeight = h;
                         BaseGame.Instance.GraphicsDeviceManager.ApplyChanges();
                         break;
+                    case "query":
+                        int qw = BaseGame.Instance.GraphicsDevice.PresentationParameters.BackBufferWidth;
+                        int qh = BaseGame.Instance.GraphicsDevice.PresentationParameters.BackBufferHeight;
+                        WriteToOutput($"Window size: {qw}x{qh} ({MathHelpers.GetAspectRatioWhole(qw, qh)})");
+                        break;
                     default:
                         return CommandActionResult.INVALID_ARGS;
                 }
                 return CommandActionResult.SUCCESS;
             },
             ShortDescription = "Set window resizability",
-            Help = ["Usage: window <param> <value>", "Params:", "  resizable [true/false]", "  size [width x height] e.g. 800x600"]
+            Help = ["Usage: window <param> <value>", "Params:", "  resizable [true/false]", "  size [width x height] e.g. 800x600", "  query"]
         });
     }
 
