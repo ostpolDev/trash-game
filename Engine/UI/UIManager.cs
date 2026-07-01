@@ -15,6 +15,7 @@ namespace Engine.UI;
 public class UIManager : Component, ISerializable {
 
     public Matrix UIScaleMatrix { get; private set; }
+    public Matrix InverseUIScaleMatrix { get; private set; }
 
     const int VIRTUAL_WIDTH = 1280;
     const int VIRTUAL_HEIGHT = 720;
@@ -33,6 +34,7 @@ public class UIManager : Component, ISerializable {
     private readonly RasterizerState RasterizerState;
 
     public Rectangle ViewportRectangle { get; private set; }
+    public Rectangle ScreenViewportRectangle { get; private set; }
 
     public int ChildCount { get { return Components.Count; } }
     public static int RegisteredComponents { get { return uiComponentTypeLookup.Count; } }
@@ -42,6 +44,9 @@ public class UIManager : Component, ISerializable {
     public MouseState CurrentMouseState { get; private set; }
     public MouseState PreviousMouseState { get; private set; }
         
+    public Vector2 BottomRight { get; private set; }
+    public Vector2 ScreenBottomRight { get; private set; }
+
 #if DEBUG
     public bool Debug_DrawScissorTest = false;
     public bool Debug_DrawBounds = false;
@@ -70,7 +75,11 @@ public class UIManager : Component, ISerializable {
 
     private void TriggerResize(Viewport viewport) {
         ViewportRectangle = new(0, 0, viewport.Width, viewport.Height);
+        BottomRight = new(ViewportRectangle.Width, ViewportRectangle.Height);
         UpdateScaleMatrix();
+
+        ScreenViewportRectangle = new(0, 0, (int)ScreenBottomRight.X, (int)ScreenBottomRight.Y);
+
         foreach (AbstractUIComponent component in Components) {
             component.RecalculateScreenPosition(false);
         }
@@ -89,6 +98,9 @@ public class UIManager : Component, ISerializable {
 
         UIScaleFactor = (float)ViewportRectangle.Width / VIRTUAL_WIDTH * UIScale;
         UIScaleMatrix = Matrix.CreateScale(scaleX, scaleY, 1f);
+        InverseUIScaleMatrix = Matrix.Invert(UIScaleMatrix);
+
+        ScreenBottomRight = Vector2.Transform(BottomRight, InverseUIScaleMatrix);
     }
 
     public void AddComponent(AbstractUIComponent component, bool withChildren = true) {
@@ -297,7 +309,7 @@ public class UIManager : Component, ISerializable {
     }
 
     public Rectangle GetUIRectangle() {
-        return ViewportRectangle;
+        return ScreenViewportRectangle;
     }
 
     static UIManager() {
