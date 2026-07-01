@@ -2,10 +2,14 @@ using Engine.Utility.Maths;
 
 namespace Engine.UI;
 
-public struct AspectRatio {
+public struct AspectRatio(int width, int height) {
 
-    public int TargetWidth;
-    public int TargetHeight;
+    public static readonly AspectRatio _16x9 = new(1280, 720);
+    public static readonly AspectRatio _4x3 = new(800, 600);
+    public static readonly AspectRatio _3x2 = new(1080, 720);
+
+    public int TargetWidth = width;
+    public int TargetHeight = height;
 
     public readonly string Aspect {
         get {

@@ -14,11 +14,10 @@ namespace Engine.UI;
 
 public class UIManager : Component, ISerializable {
 
+    public AspectRatio CurrentRatio { get; private set; } = AspectRatio._16x9;
+
     public Matrix UIScaleMatrix { get; private set; }
     public Matrix InverseUIScaleMatrix { get; private set; }
-
-    const int VIRTUAL_WIDTH = 1280;
-    const int VIRTUAL_HEIGHT = 720;
 
     public float UIScaleFactor { get; private set; } = 1f;
 
@@ -93,10 +92,10 @@ public class UIManager : Component, ISerializable {
 
     // https://community.monogame.net/t/solved-right-way-to-use-matrices-to-scale-a-gui-across-different-display-configs/10590/7
     public void UpdateScaleMatrix() {
-        float scaleX = (float)ViewportRectangle.Width / VIRTUAL_WIDTH * UIScale;
-        float scaleY = (float)ViewportRectangle.Height / VIRTUAL_HEIGHT * UIScale;
+        float scaleX = (float)ViewportRectangle.Width / CurrentRatio.TargetWidth * UIScale;
+        float scaleY = (float)ViewportRectangle.Height / CurrentRatio.TargetHeight * UIScale;
 
-        UIScaleFactor = (float)ViewportRectangle.Width / VIRTUAL_WIDTH * UIScale;
+        UIScaleFactor = (float)ViewportRectangle.Width / CurrentRatio.TargetWidth * UIScale;
         UIScaleMatrix = Matrix.CreateScale(scaleX, scaleY, 1f);
         InverseUIScaleMatrix = Matrix.Invert(UIScaleMatrix);
 
