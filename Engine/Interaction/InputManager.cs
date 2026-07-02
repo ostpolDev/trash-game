@@ -26,7 +26,7 @@ public class InputManager {
     public bool IsCtrlDown { get; private set; }
     public bool IsShiftDown { get; private set; }
 
-    public InputMethod CurrentInputMethod { get; private set; } = InputMethod.MOUSE_KEYBOARD;
+    public InputMethod CurrentInputMethod { get; private set; } = InputMethod.CONTROLLER;
     public ControllerBrand CurrentControllerBrand { get; private set; } = ControllerBrand.NONE;
 
 
@@ -41,15 +41,15 @@ public class InputManager {
         IsCtrlDown = CurrentKeyboardState.IsKeyDown(Keys.LeftControl);
         IsShiftDown = CurrentKeyboardState.IsKeyDown(Keys.LeftShift);
 
-        if (CurrentInputMethod != InputMethod.MOUSE_KEYBOARD && (CurrentMouseState != OldMouseState || CurrentKeyboardState != OldKeyboardState)) {
+        if (CurrentInputMethod != InputMethod.CONTROLLER && CurrentGamepadState != OldGamepadState) {
+            CurrentControllerBrand = GetControllerBrandFromName(GamePad.GetCapabilities(0).DisplayName);
+            Logger.Info($"Changing to Gamepad input: {CurrentControllerBrand}");
+            CurrentInputMethod = InputMethod.CONTROLLER;
+            OnInputMethodChanged?.Invoke(this, new(CurrentInputMethod, CurrentControllerBrand));
+        } else if (CurrentInputMethod != InputMethod.MOUSE_KEYBOARD && (CurrentMouseState != OldMouseState || CurrentKeyboardState != OldKeyboardState)) {
             Logger.Info("Changing to Mouse & Keyboard input");
             CurrentInputMethod = InputMethod.MOUSE_KEYBOARD;
             CurrentControllerBrand = ControllerBrand.NONE;
-            OnInputMethodChanged?.Invoke(this, new(CurrentInputMethod, CurrentControllerBrand));
-        } else if (CurrentInputMethod != InputMethod.CONTROLLER && CurrentGamepadState != OldGamepadState) {
-            Logger.Info("Changing to Gamepad input");
-            CurrentInputMethod = InputMethod.CONTROLLER;
-            CurrentControllerBrand = GetControllerBrandFromName(GamePad.GetCapabilities(0).DisplayName);
             OnInputMethodChanged?.Invoke(this, new(CurrentInputMethod, CurrentControllerBrand));
         }
 
