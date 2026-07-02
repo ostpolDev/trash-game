@@ -46,11 +46,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)editors\windows\ConfirmationWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\windows\EditorWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)editors\windows\FilePickerWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)events\InputMethodChangeEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\LoadContentEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\LocaleChangeEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\LoggerEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)events\WindowResizeEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)interaction\ControllerBrand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)interaction\InputManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)interaction\InputMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)localization\LocalizationManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)scenemanagement\Scene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)scenemanagement\SceneManager.cs" />
