@@ -51,6 +51,7 @@ public class UIManager : Component, ISerializable {
     public bool Debug_DrawBounds = false;
     public bool Debug_DrawLocalBounds = false;
     public bool Debug_DisableMouseEventListeners = false;
+    public bool Debug_DrawGizmos = false;
 #endif
 
     public static UIManager Singleton { get; private set; }
@@ -218,6 +219,15 @@ public class UIManager : Component, ISerializable {
         }
         ScissorDepth = -1;
         spriteBatch.GraphicsDevice.ScissorRectangle = ViewportRectangle;
+
+#if DEBUG
+        if (Debug_DrawGizmos) {
+            foreach (AbstractUIComponent component in Components) {
+                component.DrawGizmos(spriteBatch);
+            }
+        }
+#endif
+
         spriteBatch.End();
     }
 

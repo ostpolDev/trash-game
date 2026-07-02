@@ -1,6 +1,7 @@
 using Engine.Serialization;
 using Engine.Sprites;
 using Engine.UI.Debugging;
+using Engine.Utility.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -63,6 +64,16 @@ public class NineSliceComponent : SimpleUIComponent {
         RecalculateSlice();
     }
 
+    public override void SetPosition(int x, int y) {
+        base.SetPosition(x, y);
+        RecalculateSlice();
+    }
+
+    public override void SetAnchorPosition(UIAnchorPosition anchor) {
+        base.SetAnchorPosition(anchor);
+        RecalculateSlice();
+    }
+
     private Rectangle GetSlice(UIAnchorPosition pos) {
         return Slices[(int)pos];
     }
@@ -91,9 +102,18 @@ public class NineSliceComponent : SimpleUIComponent {
 
 
 #if DEBUG
+
     protected override void CreateDebugRenderer() {
         DebugRenderer = new NineSliceRenderer(this);
     }
+
+    public override void DrawGizmos(SpriteBatch spriteBatch) {
+        for (int i = 0; i < SLICES; i++) {
+            spriteBatch.DrawRectangle(Slices[i], Color.Blue);
+            spriteBatch.DrawRectangle(Slices[SLICES + i], Color.Green);
+        }
+    }
+
 #endif
 
 }

@@ -386,6 +386,8 @@ internal class UIEditor : EditorScene {
                 ImGui.Checkbox("Draw Local UI Bounds", ref manager.Debug_DrawLocalBounds);
                 ImGui.Spacing();
                 ImGui.Checkbox("Disable Mouse Events", ref manager.Debug_DisableMouseEventListeners);
+                ImGui.Spacing();
+                ImGui.Checkbox("Draw Gizmos", ref manager.Debug_DrawGizmos);
                 ImGui.EndMenu();
             }
 

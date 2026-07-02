@@ -310,7 +310,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         RecalculateScreenPosition();
     }
 
-    public void SetAnchorPosition(UIAnchorPosition anchor) {
+    public virtual void SetAnchorPosition(UIAnchorPosition anchor) {
         AnchorPosition = anchor;
         RecalculateScreenPosition();
     }
@@ -493,6 +493,8 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
         if (DebugRenderer == null) CreateDebugRenderer();
         DebugRenderer?.Render();
     }
+
+    public virtual void DrawGizmos(SpriteBatch spriteBatch) { }
 
 #endif
 
