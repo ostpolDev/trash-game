@@ -326,6 +326,7 @@ public class UIManager : Component, ISerializable {
         RegisterUIComponent(typeof(SimpleUIComponent));
         RegisterUIComponent(typeof(EmptyUIComponent));
         RegisterUIComponent(typeof(TextUIComponent));
+        RegisterUIComponent(typeof(NineSliceComponent));
     }
 
 }

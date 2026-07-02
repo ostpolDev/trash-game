@@ -41,8 +41,11 @@ internal class UIEditor : EditorScene {
         { "Text", (_) => {
             return new TextUIComponent(0, 0, "Text");
         } },
-        { "Empty", (scene) => {
+        { "Empty", (_) => {
             return new EmptyUIComponent(0, 0);
+        } },
+        { "NineSlice", (scene) => {
+            return new NineSliceComponent(scene.UI_TEXTURE.Get(Identifier.EMPTY), 0, 0, 64, 64);
         } }
     };
 
