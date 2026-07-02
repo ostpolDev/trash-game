@@ -140,6 +140,7 @@ public class CommandMenu : DebugMenu {
             },
             ShortDescription = "Forces the game to exit"
         });
+#if DEBUG
         RegisterCommand("editors", new() {
             Action = (args) => {
                 if (args == null || args.Length <= 0) {
@@ -164,6 +165,7 @@ public class CommandMenu : DebugMenu {
             ShortDescription = "Editor scene management",
             Help = ["Usage: editors [action] <args>", "  action:", "    - load [editor_name]", "    - list"]
         });
+#endif
         RegisterCommand("opendir", new() {
             Action = (args) => {
                 if (args == null || args.Length <= 0) {

@@ -274,8 +274,10 @@ public class SerializableDictionary : AbstractEntry {
         return $"{Count} entries";
     }
 
+#if DEBUG
     public override void RenderDebugEditor() {
         ImGui.Text("No data to be edited");
     }
+#endif
 
 }
