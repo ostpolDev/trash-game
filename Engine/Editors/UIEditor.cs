@@ -9,6 +9,7 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +24,6 @@ internal class UIEditor : EditorScene {
 
     private bool isChildSelectionOpen;
     private AbstractUIComponent childSelectionTarget;
-    private AbstractUIComponent selectedComponent;
 
     public Spritesheet UI_TEXTURE { get; private set; }
 
@@ -31,6 +31,7 @@ internal class UIEditor : EditorScene {
 
     private bool isFontStatsOpen = false;
     private bool isUIInfoOpen = false;
+    private bool allowClickInteraction = true;
 
     private float uiScale = 0f;
 
@@ -107,7 +108,7 @@ internal class UIEditor : EditorScene {
 
         if (ImGui.TreeNodeEx("Root", flags)) {
             if (ImGui.IsItemClicked()) {
-                selectedComponent = null;
+                manager.SelectedObject = null;
             }
 
             for (int i = 0; i < manager.ChildCount; i++) {
@@ -132,7 +133,7 @@ internal class UIEditor : EditorScene {
 
         if (ImGui.TreeNodeEx($"{name}##{component.UID}", flags)) {
             if (ImGui.IsItemClicked()) {
-                selectedComponent = component;
+                manager.SelectedObject = component;
             }
 
             for (int j = 0; j < component.ChildCount; j++) {
@@ -218,18 +219,18 @@ internal class UIEditor : EditorScene {
         ImGui.SetNextWindowSize(new(250, DebugMenuManager.WindowViewport.Height), ImGuiCond.Once);
         ImGui.Begin("Inspector");
 
-        if (selectedComponent != null) {
-            ImGui.Text(selectedComponent.GetType().Name);
-            ImGui.Text(selectedComponent.UID);
-            selectedComponent.DrawDebugMenu();
+        if (manager.SelectedObject != null) {
+            ImGui.Text(manager.SelectedObject.GetType().Name);
+            ImGui.Text(manager.SelectedObject.UID);
+            manager.SelectedObject.DrawDebugMenu();
             ImGui.Separator();
             if (ImGui.Button("Add Child")) {
-                childSelectionTarget = selectedComponent;
+                childSelectionTarget = manager.SelectedObject;
                 isChildSelectionOpen = true;
             }
             if (ImGui.Button("Delete Component")) {
-                manager.RemoveComponent(selectedComponent);
-                selectedComponent = null;
+                manager.RemoveComponent(manager.SelectedObject);
+                manager.SelectedObject = null;
             }
         } else {
             ImGui.Text("Root Node");
@@ -402,6 +403,12 @@ internal class UIEditor : EditorScene {
                 ImGui.EndMenu();
             }
 
+            if (ImGui.BeginMenu("Interaction")) {
+                ImGui.Checkbox("Allow clicking elements", ref allowClickInteraction);
+                ImGui.Spacing();
+                ImGui.EndMenu();
+            }
+
             ImGui.Separator();
 
             if (ImGui.MenuItem("Delete all")) {
@@ -411,6 +418,12 @@ internal class UIEditor : EditorScene {
                     }
                 }, "This will delete all existing components and cannot be undone!", "Are you sure?", ConfirmationWindow.Buttons.OK | ConfirmationWindow.Buttons.CANCEL);
             }
+
+            ImGui.EndMenu();
+        }
+    
+        if (ImGui.BeginMenu("View")) {
+            ImGui.Checkbox("Highlight selected", ref manager.Debug_DrawSelection);
 
             ImGui.EndMenu();
         }
@@ -425,7 +438,10 @@ internal class UIEditor : EditorScene {
     }
 
     public override void Update(GameTime gameTime, float delta) {
-
+        if (allowClickInteraction && !ImGui.IsWindowHovered(ImGuiHoveredFlags.AnyWindow) && BaseGame.Instance.InputManager.IsLeftMouseDown()) {
+            MouseState state = Mouse.GetState();
+            manager.SelectedObject = manager.GetComponentAtPosition(state.X, state.Y);
+        }
     }
 
     protected override void OnBeginLoad() {

@@ -52,6 +52,9 @@ public class UIManager : Component, ISerializable {
     public bool Debug_DrawLocalBounds = false;
     public bool Debug_DisableMouseEventListeners = false;
     public bool Debug_DrawGizmos = false;
+    public bool Debug_DrawSelection = true;
+
+    public AbstractUIComponent SelectedObject;
 #endif
 
     public static UIManager Singleton { get; private set; }
@@ -226,6 +229,10 @@ public class UIManager : Component, ISerializable {
                 component.DrawGizmos(spriteBatch);
             }
         }
+
+        if (Debug_DrawSelection && SelectedObject != null) {
+            spriteBatch.DrawRectangle(SelectedObject.ScreenArea, Color.Red);
+        }
 #endif
 
         spriteBatch.End();
@@ -330,6 +337,21 @@ public class UIManager : Component, ISerializable {
     public void SetAspectToCurrent(bool update = true) {
         Viewport v = BaseGame.Instance.GraphicsDevice.Viewport;
         SetAspectRatio(new(v.Width, v.Height), update);
+    }
+
+    /// <summary>
+    /// Check which component contains the given point. Returns the 
+    /// first element or null. Only checks active elements.
+    /// </summary>
+    /// <param name="x">Screen X</param>
+    /// <param name="y">Screen Y</param>
+    /// <returns></returns>
+    public AbstractUIComponent GetComponentAtPosition(int x, int y) {
+        for (int i = Components.Count - 1; i >= 0; i--) {
+            AbstractUIComponent comp = Components[i];
+            if (comp.ShouldDraw && comp.ScreenArea.Contains(x, y)) return comp;
+        }
+        return null;
     }
 
     static UIManager() {
