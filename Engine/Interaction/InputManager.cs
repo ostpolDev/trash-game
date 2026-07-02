@@ -12,14 +12,14 @@ public class InputManager {
 
     public event EventHandler<InputMethodChangedEventArgs> OnInputMethodChanged;
 
-    private KeyboardState CurrentKeyboardState;
-    private KeyboardState OldKeyboardState;
+    public KeyboardState CurrentKeyboardState {get; private set;}
+    public KeyboardState OldKeyboardState {get; private set;}
 
-    private MouseState CurrentMouseState;
-    private MouseState OldMouseState;
+    public MouseState CurrentMouseState {get; private set;}
+    public MouseState OldMouseState {get; private set;}
 
-    private GamePadState CurrentGamepadState;
-    private GamePadState OldGamepadState;
+    public GamePadState CurrentGamepadState { get; private set; }
+    public GamePadState OldGamepadState {get; private set;}
 
     public Point MousePosition { get; private set; }
 
