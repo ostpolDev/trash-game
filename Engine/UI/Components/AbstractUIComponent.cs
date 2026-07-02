@@ -157,7 +157,7 @@ public abstract class AbstractUIComponent : IComparable<AbstractUIComponent>, IS
     /// 
     /// </summary>
     /// <param name="recursive">If children should be updated too</param>
-    public void RecalculateScreenPosition(bool recursive = true) {
+    public virtual void RecalculateScreenPosition(bool recursive = true) {
         Rectangle bounds = GetBounds();
 
         Rectangle localArea = LocalArea;

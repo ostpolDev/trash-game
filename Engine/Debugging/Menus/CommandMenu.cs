@@ -240,13 +240,16 @@ public class CommandMenu : DebugMenu {
                         BaseGame.Instance.SetFullscreen(value == "true");
 
                         break;
+                    case "updateaspect":
+                        BaseGame.Instance.UIManager.SetAspectToCurrent();
+                        break;
                     default:
                         return CommandActionResult.INVALID_ARGS;
                 }
                 return CommandActionResult.SUCCESS;
             },
             ShortDescription = "Set window resizability",
-            Help = ["Usage: window <param> <value>", "Params:", "  resizable [true/false]", "  size [width x height] e.g. 800x600", "  query", "  fullscreen [true/false]"]
+            Help = ["Usage: window <param> <value>", "Params:", "  resizable [true/false]", "  size [width x height] e.g. 800x600", "  query", "  fullscreen [true/false]", "  updateaspect"]
         });
     }
 

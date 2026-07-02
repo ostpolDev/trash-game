@@ -391,7 +391,7 @@ internal class UIEditor : EditorScene {
                 ImGui.EndMenu();
             }
 
-            if (ImGui.BeginMenu("Debug")) {
+            if (ImGui.BeginMenu("Generate")) {
                 if (ImGui.MenuItem("Create 3x3")) {
                     for (int i = 0; i < 9; i++) {
                         AbstractUIComponent component = AddChild("Simple");

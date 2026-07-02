@@ -13,7 +13,7 @@ public class NineSliceComponent : SimpleUIComponent {
 
     public Rectangle SliceRectangle { get; private set; }
 
-    private readonly Rectangle[] Slices = new Rectangle[SLICES * 2];
+    public readonly Rectangle[] Slices = new Rectangle[SLICES * 2];
 
     public NineSliceComponent() : base() { }
 
@@ -25,16 +25,17 @@ public class NineSliceComponent : SimpleUIComponent {
     }
 
     public void RecalculateSlice() {
+        if (Sprite == null) return;
         Rectangle origin = Sprite.SourceRectangle;
 
         // UV Slices
         Slices[(int)UIAnchorPosition.TOP_LEFT] =        new(origin.X, origin.Y, SliceRectangle.X, SliceRectangle.Y);
-        Slices[(int)UIAnchorPosition.TOP_CENTER] =      new(origin.X + GetSlice(UIAnchorPosition.TOP_LEFT).Width, origin.Y + GetSlice(UIAnchorPosition.TOP_LEFT).Height, SliceRectangle.Width, SliceRectangle.Y);
-        Slices[(int)UIAnchorPosition.TOP_RIGHT] =       new(origin.X + GetSlice(UIAnchorPosition.TOP_LEFT).Width + GetSlice(UIAnchorPosition.TOP_CENTER).Width, origin.Y + GetSlice(UIAnchorPosition.TOP_LEFT).Height, SliceRectangle.X + SliceRectangle.Width - origin.Width, SliceRectangle.Y);
+        Slices[(int)UIAnchorPosition.TOP_CENTER] =      new(origin.X + GetSlice(UIAnchorPosition.TOP_LEFT).Width, origin.Y, SliceRectangle.Width, SliceRectangle.Y);
+        Slices[(int)UIAnchorPosition.TOP_RIGHT] =       new(origin.X + GetSlice(UIAnchorPosition.TOP_LEFT).Width + GetSlice(UIAnchorPosition.TOP_CENTER).Width, origin.Y, origin.Width - GetSlice(UIAnchorPosition.TOP_LEFT).Width - GetSlice(UIAnchorPosition.TOP_CENTER).Width, SliceRectangle.Y);
 
         Slices[(int)UIAnchorPosition.CENTER_LEFT] =     new(origin.X, origin.Y + GetSlice(UIAnchorPosition.TOP_LEFT).Height, SliceRectangle.X, SliceRectangle.Height);
         Slices[(int)UIAnchorPosition.CENTER_CENTER] =   new(origin.X + GetSlice(UIAnchorPosition.TOP_LEFT).Width, origin.Y + GetSlice(UIAnchorPosition.TOP_LEFT).Height, SliceRectangle.Width, SliceRectangle.Height);
-        Slices[(int)UIAnchorPosition.CENTER_RIGHT] =    new(origin.X + GetSlice(UIAnchorPosition.TOP_LEFT).Width, origin.Y + GetSlice(UIAnchorPosition.TOP_LEFT).Width + GetSlice(UIAnchorPosition.CENTER_CENTER).Width, SliceRectangle.X + SliceRectangle.Width - origin.Width, SliceRectangle.Height);
+        Slices[(int)UIAnchorPosition.CENTER_RIGHT] =    new(origin.X + GetSlice(UIAnchorPosition.CENTER_LEFT).Width + GetSlice(UIAnchorPosition.CENTER_CENTER).Width, origin.Y + GetSlice(UIAnchorPosition.TOP_LEFT).Height, origin.Width - GetSlice(UIAnchorPosition.CENTER_LEFT).Width - GetSlice(UIAnchorPosition.CENTER_CENTER).Width, SliceRectangle.Height);
 
         Slices[(int)UIAnchorPosition.BOTTOM_LEFT] =     new(origin.X, origin.Y + GetSlice(UIAnchorPosition.TOP_LEFT).Height + GetSlice(UIAnchorPosition.CENTER_LEFT).Height, SliceRectangle.X, origin.Height - GetSlice(UIAnchorPosition.TOP_LEFT).Height - GetSlice(UIAnchorPosition.CENTER_LEFT).Height);
         Slices[(int)UIAnchorPosition.BOTTOM_CENTER] =   new(origin.X + GetSlice(UIAnchorPosition.BOTTOM_LEFT).Width, GetSlice(UIAnchorPosition.BOTTOM_LEFT).Y, SliceRectangle.Width, GetSlice(UIAnchorPosition.BOTTOM_LEFT).Height);
@@ -59,18 +60,8 @@ public class NineSliceComponent : SimpleUIComponent {
         RecalculateSlice();
     }
 
-    public override void SetArea(int w, int h, bool updateChildren = true) {
-        base.SetArea(w, h, updateChildren);
-        RecalculateSlice();
-    }
-
-    public override void SetPosition(int x, int y) {
-        base.SetPosition(x, y);
-        RecalculateSlice();
-    }
-
-    public override void SetAnchorPosition(UIAnchorPosition anchor) {
-        base.SetAnchorPosition(anchor);
+    public override void RecalculateScreenPosition(bool recursive = true) {
+        base.RecalculateScreenPosition(recursive);
         RecalculateSlice();
     }
 
