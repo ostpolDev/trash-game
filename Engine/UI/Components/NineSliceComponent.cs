@@ -1,5 +1,6 @@
 using Engine.Serialization;
 using Engine.Sprites;
+using Engine.UI.Debugging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -87,5 +88,12 @@ public class NineSliceComponent : SimpleUIComponent {
         base.ReadData(dictionary);
         SetSliceArea(dictionary.GetRectangle("slice"));
     }
+
+
+#if DEBUG
+    protected override void CreateDebugRenderer() {
+        DebugRenderer = new NineSliceRenderer(this);
+    }
+#endif
 
 }
