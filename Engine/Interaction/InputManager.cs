@@ -72,5 +72,13 @@ public class InputManager {
         return CurrentMouseState.LeftButton == ButtonState.Pressed && OldMouseState.LeftButton != ButtonState.Pressed;
     }
 
+    /// <summary>
+    /// If the left mouse button is up for the first time this frame.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsLeftMouseUp() {
+        return CurrentMouseState.LeftButton == ButtonState.Released && OldMouseState.LeftButton != ButtonState.Released;
+    }
+
 
 }
